@@ -63,6 +63,8 @@ end
 
 
 gem 'alchemy_cms', '~> 4.0'
+gem 'alchemy-devise', '~> 4.0'
+
 
 capistrano_installed = false
 if yes?("Vuoi installare capistrano per il deploy?")
@@ -81,6 +83,20 @@ if yes?("Vuoi installare capistrano per il deploy?")
 end
 
 
+lang = ask('Definisci la lingua di default[it]')
+lang = 'it' if lang.blank?
+
+timezone = ask('Definisci Timezone[Rome]')
+timezone = 'Rome' if timezone.blank?
+
+file 'config/initializers/base_setup.rb', <<-CODE
+Rails.application.config.time_zone = '#{timezone}'
+Rails.application.config.i18n.default_locale = :#{lang}
+
+Rails.application.config.action_mailer.delivery_method = :smtp
+Rails.application.config.action_mailer.smtp_settings = Rails.application.secrets.smtp
+CODE
+
 
 after_bundle do
 
@@ -93,7 +109,9 @@ require 'capistrano/rails/migrations'
 require 'capistrano/passenger'
 require 'capistrano-db-tasks'\n\n"
   end
-  
+
+  rails_command 'alchemy:install'
+  generate 'alchemy:devise:install'
 
 end
 
