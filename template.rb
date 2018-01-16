@@ -63,3 +63,37 @@ end
 
 
 gem 'alchemy_cms', '~> 4.0'
+
+capistrano_installed = false
+if yes?("Vuoi installare capistrano per il deploy?")
+
+  capistrano_installed = true
+  gem_group :development do
+    gem 'capistrano'
+    gem 'capistrano-rails'
+    gem 'capistrano-rvm'
+    gem 'capistrano-rails-console', '~> 1.0.0'
+    gem 'capistrano-rails-tail-log'
+    gem 'capistrano-db-tasks', require: false
+    gem 'capistrano-passenger'
+  end
+
+end
+
+
+
+after_bundle do
+
+  run "bundle exec cap install"
+  inject_into_file 'Capfile', :before => "# Load custom " do
+    "\nrequire 'capistrano/rvm'
+require 'capistrano/bundler'
+require 'capistrano/rails/assets'
+require 'capistrano/rails/migrations'
+require 'capistrano/passenger'
+require 'capistrano-db-tasks'\n\n"
+  end
+  
+
+end
+
