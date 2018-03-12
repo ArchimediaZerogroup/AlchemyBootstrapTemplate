@@ -56,6 +56,34 @@ if yes?("Vuoi le icone di font awesome?")
 
 end
 
+
+installed_cookie_law=false
+if yes?("Vuoi la gemma per cookie law ?")
+  gem "cookie_law"
+
+  inject_into_file application_css, :before => " */" do
+    "\n  *= require cookie_law\n"
+  end
+
+  inject_into_file application_js, before: '//' do
+    "\n//= require js.cookie\n//= require cookie_law\n"
+  end
+
+  inject_into_file "app/views/layouts/application.html.erb", :before => "</body>" do
+    "<%= cookie_law! %>"
+  end
+
+  say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb"
+
+  installed_cookie_law=true
+end
+
+
+
+
+
+
+
 gem 'js-routes'
 inject_into_file application_js, after: "//= require rails-ujs" do
   "\n//= require js-routes\n"
@@ -112,6 +140,8 @@ require 'capistrano-db-tasks'\n\n"
 
   rails_command 'alchemy:install'
   generate 'alchemy:devise:install'
+
+  generate 'cookie_law:install' if installed_cookie_law
 
 end
 
