@@ -79,9 +79,49 @@ if yes?("Vuoi la gemma per cookie law ?")
 end
 
 
+if yes?("Vuoi installare l'inizializzatore per gestire i login falliti con Fail2Ban")
+
+  file "config/initializers/fail2ban.rb", <<-CODE
+module Fail2ban
+
+  LOGGER = Logger.new(Rails.root.join('log', 'logins.log'), 'weekly')
+
+  ATTEMPT_PATHS = ["/admin/login",
+                   "/users/sign_in"]
+
+  Warden::Manager.before_failure do |env, opts|
+    if opts[:action] == 'unauthenticated' and Fail2ban::ATTEMPT_PATHS.include?(opts[:attempted_path])
+      ip = env['action_dispatch.remote_ip'] || env['REMOTE_ADDR']
+      user = env['action_dispatch.request.parameters']['user']['email'] rescue 'unknown'
+
+      Fail2ban::LOGGER.error "Failed login for '" + user + "' from " + ip + " at " + Time.now.utc.iso8601
+    end
+  end
 
 
+### Fail2Ban config
+## /etc/fail2ban/filter.d/your-rails-app.conf
 
+#[INCLUDES]
+#before = common.conf
+#[Definition]
+#failregex = ^\s*(\[.+?\] )*Failed login for '.*' from <HOST> at $
+
+
+##/etc/fail2ban/jail.local
+
+#[your-rails-app]
+#enabled = true
+#filter  = your-rails-app
+#port    = http,https
+#logpath = /path/to/your/production.log
+
+end
+
+CODE
+
+
+end
 
 
 gem 'js-routes'
