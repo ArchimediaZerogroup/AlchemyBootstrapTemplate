@@ -1,5 +1,7 @@
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+
+
 application_js = 'app/assets/javascripts/application.js'
 inject_into_file application_js, before: '//' do
   "\n//= require jquery3\n//= require jquery_ujs\n//= require jquery-ui\n"
@@ -73,13 +75,13 @@ if yes?("Vuoi la gemma per cookie law ?")
     "<%= cookie_law! %>"
   end
 
-  say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb"
+  say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb", [:red, :on_white, :bold]
 
   installed_cookie_law=true
 end
 
 
-if yes?("Vuoi installare l'inizializzatore per gestire i login falliti con Fail2Ban")
+if yes?("Vuoi installare l'inizializzatore per gestire i login falliti con Fail2Ban?")
 
   file "config/initializers/fail2ban.rb", <<-CODE
 module Fail2ban
@@ -120,8 +122,25 @@ end
 
 CODE
 
+  say "Ricordati che devi completare l'installazione configurando fail2ban, guarda in config/initializers/fail2ban.rb che c'è un esempio", [:red, :on_white, :bold]
 
 end
+
+if yes?("Vuoi installare Re-Captcha?")
+  gem "recaptcha", require: "recaptcha/rails"
+
+  file "config/initializers/fail2ban.rb", <<-CODE
+Recaptcha.configure do |config|
+  config.site_key  = Rails.application.secrets.recaptcha[:site_key]
+  config.secret_key = Rails.application.secrets.recaptcha[:secret_key]
+end
+CODE
+
+  say "Ricordati che devi completare l'installazione configurando Re-Captcha con le API-KEY in config/initializers/recaptcha.rb", [:red, :on_white, :bold]
+
+end
+
+
 
 
 gem 'js-routes'
