@@ -120,7 +120,7 @@ module Fail2ban
 
 end
 
-CODE
+  CODE
 
   say "Ricordati che devi completare l'installazione configurando fail2ban, guarda in config/initializers/fail2ban.rb che c'è un esempio", [:red, :on_white, :bold]
 
@@ -134,13 +134,18 @@ Recaptcha.configure do |config|
   config.site_key  = Rails.application.secrets.recaptcha[:site_key]
   config.secret_key = Rails.application.secrets.recaptcha[:secret_key]
 end
-CODE
+  CODE
 
   say "Ricordati che devi completare l'installazione configurando Re-Captcha con le API-KEY in config/initializers/recaptcha.rb", [:red, :on_white, :bold]
 
 end
 
 
+if yes?("Vuoi installare Airbrake?")
+  gem 'airbrake', '~> 5.0'
+
+  say "Ricordati che devi completare la configurazione", [:red, :on_white, :bold]
+end
 
 
 gem 'js-routes'
