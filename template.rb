@@ -1,89 +1,95 @@
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
+version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
+gem_version = Gem::Version.new(version)
+
+if gem_version<=Gem::Version.new("5.1")
 
 
-application_js = 'app/assets/javascripts/application.js'
-inject_into_file application_js, before: '//' do
-  "\n//= require jquery3\n//= require jquery_ujs\n//= require jquery-ui\n"
-end
+  gem 'jquery-rails'
+  gem 'jquery-ui-rails'
 
-application_css = 'app/assets/stylesheets/application.css'
-inject_into_file application_css, :before => " */" do
-  "\n  *= require sass_requires\n"
-end
 
-sass_requires = 'app/assets/stylesheets/sass_requires.scss'
+  application_js = 'app/assets/javascripts/application.js'
+  inject_into_file application_js, before: '//' do
+    "\n//= require jquery3\n//= require jquery_ujs\n//= require jquery-ui\n"
+  end
 
-file sass_requires, <<-CODE
+  application_css = 'app/assets/stylesheets/application.css'
+  inject_into_file application_css, :before => " */" do
+    "\n  *= require sass_requires\n"
+  end
+
+  sass_requires = 'app/assets/stylesheets/sass_requires.scss'
+
+  file sass_requires, <<-CODE
 //
-CODE
+  CODE
 
-if yes?("Vuoi Bourbon?(fratello di compass)")
-  gem 'bourbon'
+  if yes?("Vuoi Bourbon?(fratello di compass)")
+    gem 'bourbon'
 
-  inject_into_file sass_requires, before: '//' do
-    "\n  @import \"bourbon\";\n"
+    inject_into_file sass_requires, before: '//' do
+      "\n  @import \"bourbon\";\n"
+    end
+
   end
 
-end
+  if yes?("Vuoi owlcarousel2?")
+    gem 'owlcarousel2'
+    inject_into_file sass_requires, before: '//' do
+      "\n  @import \"owlcarousel2/owl.carousel\";\n  @import \"owlcarousel2/owl.theme.default\";\n"
+    end
 
-if yes?("Vuoi owlcarousel2?")
-  gem 'owlcarousel2'
-  inject_into_file sass_requires, before: '//' do
-    "\n  @import \"owlcarousel2/owl.carousel\";\n  @import \"owlcarousel2/owl.theme.default\";\n"
+    inject_into_file application_js, before: '//' do
+      "\n//= require owlcarousel2/owl.carousel\n"
+    end
   end
 
-  inject_into_file application_js, before: '//' do
-    "\n//= require owlcarousel2/owl.carousel\n"
-  end
-end
+  if yes?("Vuoi Bootstrap(4)?")
+    gem 'bootstrap', '~> 4.0.0.beta3'
+    inject_into_file sass_requires, before: '//' do
+      "\n  @import \"bootstrap\";\n"
+    end
+    inject_into_file application_js, before: '//' do
+      "\n//= require popper\n//= require bootstrap\n"
+    end
 
-if yes?("Vuoi Bootstrap(4)?")
-  gem 'bootstrap', '~> 4.0.0.beta3'
-  inject_into_file sass_requires, before: '//' do
-    "\n  @import \"bootstrap\";\n"
-  end
-  inject_into_file application_js, before: '//' do
-    "\n//= require popper\n//= require bootstrap\n"
   end
 
-end
+  if yes?("Vuoi le icone di font awesome?")
+    gem "font-awesome-rails"
 
-if yes?("Vuoi le icone di font awesome?")
-  gem "font-awesome-rails"
+    inject_into_file application_css, :before => " */" do
+      "\n  *= require font-awesome\n"
+    end
 
-  inject_into_file application_css, :before => " */" do
-    "\n  *= require font-awesome\n"
   end
 
-end
 
+  installed_cookie_law=false
+  if yes?("Vuoi la gemma per cookie law ?")
+    gem "cookie_law"
 
-installed_cookie_law=false
-if yes?("Vuoi la gemma per cookie law ?")
-  gem "cookie_law"
+    inject_into_file application_css, :before => " */" do
+      "\n  *= require cookie_law\n"
+    end
 
-  inject_into_file application_css, :before => " */" do
-    "\n  *= require cookie_law\n"
+    inject_into_file application_js, before: '//' do
+      "\n//= require js.cookie\n//= require cookie_law\n"
+    end
+
+    inject_into_file "app/views/layouts/application.html.erb", :before => "</body>" do
+      "<%= cookie_law! %>"
+    end
+
+    say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb", [:red, :on_white, :bold]
+
+    installed_cookie_law=true
   end
 
-  inject_into_file application_js, before: '//' do
-    "\n//= require js.cookie\n//= require cookie_law\n"
-  end
 
-  inject_into_file "app/views/layouts/application.html.erb", :before => "</body>" do
-    "<%= cookie_law! %>"
-  end
+  if yes?("Vuoi installare l'inizializzatore per gestire i login falliti con Fail2Ban?")
 
-  say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb", [:red, :on_white, :bold]
-
-  installed_cookie_law=true
-end
-
-
-if yes?("Vuoi installare l'inizializzatore per gestire i login falliti con Fail2Ban?")
-
-  file "config/initializers/fail2ban.rb", <<-CODE
+    file "config/initializers/fail2ban.rb", <<-CODE
 module Fail2ban
 
   LOGGER = Logger.new(Rails.root.join('log', 'logins.log'), 'weekly')
@@ -120,92 +126,94 @@ module Fail2ban
 
 end
 
-  CODE
+    CODE
 
-  say "Ricordati che devi completare l'installazione configurando fail2ban, guarda in config/initializers/fail2ban.rb che c'è un esempio", [:red, :on_white, :bold]
+    say "Ricordati che devi completare l'installazione configurando fail2ban, guarda in config/initializers/fail2ban.rb che c'è un esempio", [:red, :on_white, :bold]
 
-end
+  end
 
-if yes?("Vuoi installare Re-Captcha?")
-  gem "recaptcha", require: "recaptcha/rails"
+  if yes?("Vuoi installare Re-Captcha?")
+    gem "recaptcha", require: "recaptcha/rails"
 
-  file "config/initializers/fail2ban.rb", <<-CODE
+    file "config/initializers/fail2ban.rb", <<-CODE
 Recaptcha.configure do |config|
   config.site_key  = Rails.application.secrets.recaptcha[:site_key]
   config.secret_key = Rails.application.secrets.recaptcha[:secret_key]
 end
-  CODE
+    CODE
 
-  say "Ricordati che devi completare l'installazione configurando Re-Captcha con le API-KEY in config/initializers/recaptcha.rb", [:red, :on_white, :bold]
+    say "Ricordati che devi completare l'installazione configurando Re-Captcha con le API-KEY in config/initializers/recaptcha.rb", [:red, :on_white, :bold]
 
-end
-
-
-if yes?("Vuoi installare Airbrake?")
-  gem 'airbrake', '~> 5.0'
-
-  say "Ricordati che devi completare la configurazione", [:red, :on_white, :bold]
-end
-
-
-gem 'js-routes'
-inject_into_file application_js, after: "//= require rails-ujs" do
-  "\n//= require js-routes\n"
-end
-
-
-gem 'alchemy_cms', '~> 4.0'
-gem 'alchemy-devise', '~> 4.0'
-
-
-capistrano_installed = false
-if yes?("Vuoi installare capistrano per il deploy?")
-
-  capistrano_installed = true
-  gem_group :development do
-    gem 'capistrano'
-    gem 'capistrano-rails'
-    gem 'capistrano-rvm'
-    gem 'capistrano-rails-console', '~> 1.0.0'
-    gem 'capistrano-rails-tail-log'
-    gem 'capistrano-db-tasks', require: false
-    gem 'capistrano-passenger'
   end
 
-end
+
+  if yes?("Vuoi installare Airbrake?")
+    gem 'airbrake', '~> 5.0'
+
+    say "Ricordati che devi completare la configurazione", [:red, :on_white, :bold]
+  end
 
 
-lang = ask('Definisci la lingua di default[it]')
-lang = 'it' if lang.blank?
+  gem 'js-routes'
+  inject_into_file application_js, after: "//= require rails-ujs" do
+    "\n//= require js-routes\n"
+  end
 
-timezone = ask('Definisci Timezone[Rome]')
-timezone = 'Rome' if timezone.blank?
 
-file 'config/initializers/base_setup.rb', <<-CODE
+  gem 'alchemy_cms', '~> 4.0'
+  gem 'alchemy-devise', '~> 4.0'
+
+
+  capistrano_installed = false
+  if yes?("Vuoi installare capistrano per il deploy?")
+
+    capistrano_installed = true
+    gem_group :development do
+      gem 'capistrano'
+      gem 'capistrano-rails'
+      gem 'capistrano-rvm'
+      gem 'capistrano-rails-console', '~> 1.0.0'
+      gem 'capistrano-rails-tail-log'
+      gem 'capistrano-db-tasks', require: false
+      gem 'capistrano-passenger'
+    end
+
+  end
+
+
+  lang = ask('Definisci la lingua di default[it]')
+  lang = 'it' if lang.blank?
+
+  timezone = ask('Definisci Timezone[Rome]')
+  timezone = 'Rome' if timezone.blank?
+
+  file 'config/initializers/base_setup.rb', <<-CODE
 Rails.application.config.time_zone = '#{timezone}'
 Rails.application.config.i18n.default_locale = :#{lang}
 
 Rails.application.config.action_mailer.delivery_method = :smtp
 Rails.application.config.action_mailer.smtp_settings = Rails.application.secrets.smtp
-CODE
+  CODE
 
 
-after_bundle do
+  after_bundle do
 
-  run "bundle exec cap install"
-  inject_into_file 'Capfile', :before => "# Load custom " do
-    "\nrequire 'capistrano/rvm'
+    run "bundle exec cap install"
+    inject_into_file 'Capfile', :before => "# Load custom " do
+      "\nrequire 'capistrano/rvm'
 require 'capistrano/bundler'
 require 'capistrano/rails/assets'
 require 'capistrano/rails/migrations'
 require 'capistrano/passenger'
 require 'capistrano-db-tasks'\n\n"
+    end
+
+    rails_command 'alchemy:install'
+    generate 'alchemy:devise:install'
+
+    generate 'cookie_law:install' if installed_cookie_law
+
   end
-
-  rails_command 'alchemy:install'
-  generate 'alchemy:devise:install'
-
-  generate 'cookie_law:install' if installed_cookie_law
-
+else
+  raise "Alchemy 4.0 è compatibile con Rails <=5.1"
 end
-
