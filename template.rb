@@ -388,7 +388,7 @@ class UserSiteRegistration < ApplicationRecord
   end
 
   validates :email, :presence => {allow_blank: false}
-  validates_format_of :email, :with => /\A([-a-z0-9!\#$%&'*+\/=?^_`{|}~]+\.)*[-a-z0-9!\#$%&'*+\/=?^_`{|}~]+@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+  validates_format_of :email, :with => /\\A([-a-z0-9!\\#$%&'*+\\/=?^_`{|}~]+\\.)*[-a-z0-9!\\#$%&'*+\\/=?^_`{|}~]+@((?:[-a-z0-9]+\\.)+[a-z]{2,})\\Z/i
 
   #Mi serve per memorizzare l'elemento alchemy da cui è partita la form, in modo da poter idetificare la mail del destinatario
   attr_accessor :alcm_element
