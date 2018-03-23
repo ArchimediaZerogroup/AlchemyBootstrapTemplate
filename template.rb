@@ -137,8 +137,8 @@ end
 
     file "config/initializers/recaptcha.rb", <<-CODE
 Recaptcha.configure do |config|
-  config.site_key  = Rails.application.secrets.recaptcha[:site_key]
-  config.secret_key = Rails.application.secrets.recaptcha[:secret_key]
+  config.site_key  = Rails.application.secrets.recaptcha.nil? ? "" : Rails.application.secrets.recaptcha[:site_key]
+  config.secret_key = Rails.application.secrets.recaptcha.nil? ? "" : Rails.application.secrets.recaptcha[:secret_key]
 end
     CODE
 
@@ -681,7 +681,7 @@ Alchemy::Modules.register_module({
 Alchemy.register_ability(UserSiteRegistrationAbility)
     CODE
 
-    file "config/routes.rb", <<-CODE
+    append_to_file "config/routes.rb", <<-CODE
 namespace :admin do
     resources :user_site_registrations
     resources :form_newsletters
