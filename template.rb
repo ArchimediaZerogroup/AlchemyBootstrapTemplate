@@ -1,6 +1,9 @@
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
 
+puts "RICORDATI!!!! DISABLE_SPRING=true prima "
+
+
 if gem_version<=Gem::Version.new("5.2")
 
 
@@ -622,7 +625,7 @@ Email: <%= rec.email %>
 <%= render partial: @rec.class.name.underscore, locals: { rec: @rec } %>
     CODE
 
-    file "config/alchemy/elements.yml", <<-CODE
+    append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: form_iscrizione_newsletter
   hint: "Form per l'iscrizione della newsletter"
   unique: true
@@ -681,13 +684,15 @@ Alchemy::Modules.register_module({
 Alchemy.register_ability(UserSiteRegistrationAbility)
     CODE
 
-    append_to_file "config/routes.rb", <<-CODE
+    inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine'  do
+<<-CODE
 namespace :admin do
     resources :user_site_registrations
     resources :form_newsletters
     resources :contact_forms
 end
-    CODE
+CODE
+end
 
     file "db/migrate/20180102112803_create_user_site_registrations.rb", <<-CODE
 class CreateUserSiteRegistrations < ActiveRecord::Migration[5.1]
