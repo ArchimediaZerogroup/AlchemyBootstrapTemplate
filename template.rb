@@ -12,7 +12,7 @@ if gem_version<=Gem::Version.new("5.2")
 
 
   application_js = 'app/assets/javascripts/application.js'
-  inject_into_file application_js, before: '//' do
+  inject_into_file application_js, before: '//= require_tree .' do
     "\n//= require jquery3\n//= require jquery_ujs\n//= require jquery-ui\n"
   end
 
@@ -30,7 +30,7 @@ if gem_version<=Gem::Version.new("5.2")
   if yes?("Vuoi Bourbon?(fratello di compass)")
     gem 'bourbon'
 
-    inject_into_file sass_requires, before: '//' do
+    inject_into_file sass_requires, before: '//= require_tree .' do
       "\n  @import \"bourbon\";\n"
     end
 
@@ -38,21 +38,21 @@ if gem_version<=Gem::Version.new("5.2")
 
   if yes?("Vuoi owlcarousel2?")
     gem 'owlcarousel2'
-    inject_into_file sass_requires, before: '//' do
+    inject_into_file sass_requires, before: '//= require_tree .' do
       "\n  @import \"owlcarousel2/owl.carousel\";\n  @import \"owlcarousel2/owl.theme.default\";\n"
     end
 
-    inject_into_file application_js, before: '//' do
+    inject_into_file application_js, before: '//= require_tree .' do
       "\n//= require owlcarousel2/owl.carousel\n"
     end
   end
 
   if yes?("Vuoi Bootstrap(4)?")
     gem 'bootstrap', '~> 4.0.0.beta3'
-    inject_into_file sass_requires, before: '//' do
+    inject_into_file sass_requires, before: '//= require_tree .' do
       "\n  @import \"bootstrap\";\n"
     end
-    inject_into_file application_js, before: '//' do
+    inject_into_file application_js, before: '//= require_tree .' do
       "\n//= require popper\n//= require bootstrap\n"
     end
 
@@ -76,7 +76,7 @@ if gem_version<=Gem::Version.new("5.2")
       "\n  *= require cookie_law\n"
     end
 
-    inject_into_file application_js, before: '//' do
+    inject_into_file application_js, before: '//= require_tree .' do
       "\n//= require js.cookie\n//= require cookie_law\n"
     end
 
@@ -158,7 +158,7 @@ end
 
 
   gem 'js-routes'
-  inject_into_file application_js, after: "//= require rails-ujs" do
+  inject_into_file application_js, before: "//= require_tree ." do
     "\n//= require js-routes\n"
   end
 
@@ -228,6 +228,25 @@ class Admin::UserSiteRegistrationsController < Alchemy::Admin::ResourcesControll
 
 end
     CODE
+
+
+    file "app/controllers/admin/contact_forms_controller.rb", <<-CODE
+module Admin
+  class ContactFormsController < UserSiteRegistrationsController
+
+  end
+end
+    CODE
+
+
+    file "app/controllers/admin/form_newsletters_controller.rb", <<-CODE
+module Admin
+  class FormNewslettersController < UserSiteRegistrationsController
+
+  end
+end
+    CODE
+
 
 
     file "app/controllers/alchemy/base_controller_decorator.rb", <<-CODE
