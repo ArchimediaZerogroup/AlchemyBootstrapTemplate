@@ -219,6 +219,15 @@ require 'capistrano-db-tasks'\n\n"
 
 
   if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
+
+    file "config/locales/user_registration.it.yml", <<-CODE
+it:
+  alchemy:
+    modules:
+      form_newsletter: "Newsletter"
+      contact_form: "Form contatti"
+    CODE
+
     file "app/controllers/admin/user_site_registrations_controller.rb", <<-CODE
 class Admin::UserSiteRegistrationsController < Alchemy::Admin::ResourcesController
 
