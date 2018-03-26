@@ -217,6 +217,28 @@ require 'capistrano-db-tasks'\n\n"
     generate 'cookie_law:install' if installed_cookie_law
 
 
+  if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
+
+    file "app/helpers/link_languages_helper_decorator.rb", <<-CODE
+module LinkLanguagesHelper
+  def language_links_by_page(current_page)
+    r = []
+    Alchemy::Language.on_current_site.published.with_root_page.collect { |lang|
+      page= Alchemy::Page.published.with_language(lang.id).where(name: current_page.name).first
+      if not page.nil? and lang!=Alchemy::Language.current
+        url_page = show_page_path_params(page).merge(locale: lang.code)
+        r << content_tag(:link, nil, href: url_page[:locale] + '/' + url_page[:urlname], hreflang: lang.code, rel: "alternate")
+      end
+    }
+    r.join().html_safe
+  end
+end
+Alchemy::PagesHelper.include LinkLanguagesHelper
+    CODE
+
+    say "Creato helper 'language_links_by_page' da inserire nel layoyts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
+  end
+
 
   if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
 
