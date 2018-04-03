@@ -1,0 +1,29 @@
+- name: form_iscrizione_newsletter
+  hint: "Form per l'iscrizione della newsletter"
+  unique: true
+  contents:
+    - name: title
+      type: EssenceText
+      default: 'Resta Aggiornato sulle nostre novita'
+    - name: bottone
+      type: EssenceText
+      default: "Iscriviti"
+    - name: email_destinatario_notifica
+      type: EssenceText
+      default: "info@example.com"
+    - name: pagina_privacy
+      type: EssenceText
+      settings:
+        linkable: true
+
+- name: form_contatti
+  hint: "Form dei contatti per il sito"
+  unique: true
+  contents:
+    - name: pagina_privacy
+      type: EssenceText
+      settings:
+        linkable: true
+    - name: email_destinatario_notifica
+      type: EssenceText
+      default: "info@example.com"

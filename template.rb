@@ -7,9 +7,6 @@ repository_url = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplat
 ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
 
 
-
-
-
 if gem_version<=Gem::Version.new("5.2")
 
 
@@ -32,8 +29,6 @@ if gem_version<=Gem::Version.new("5.2")
   file sass_requires, <<-CODE
 //
   CODE
-
-
 
 
   if yes?("Vuoi Bourbon?(fratello di compass)")
@@ -226,465 +221,79 @@ require 'capistrano-db-tasks'\n\n"
     generate 'cookie_law:install' if installed_cookie_law
 
 
-  if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
-
-    file "app/helpers/link_languages_helper_decorator.rb", <<-CODE
-module LinkLanguagesHelper
-  def language_links_by_page(current_page)
-    r = []
-    Alchemy::Language.on_current_site.published.with_root_page.collect { |lang|
-      page= Alchemy::Page.published.with_language(lang.id).where(name: current_page.name).first
-      if not page.nil? and lang!=Alchemy::Language.current
-        url_page = show_page_path_params(page).merge(locale: lang.code)
-        r << content_tag(:link, nil, href: url_page[:locale] + '/' + url_page[:urlname], hreflang: lang.code, rel: "alternate")
-      end
-    }
-    r.join().html_safe
-  end
-end
-Alchemy::PagesHelper.include LinkLanguagesHelper
-    CODE
-
-    say "Creato helper 'language_links_by_page' da inserire nel layoyts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
-  end
-
-
-  if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
-
-    file "config/locales/user_registration.it.yml", <<-CODE
-it:
-  alchemy:
-    modules:
-      form_newsletter: "Newsletter"
-      contact_form: "Form contatti"
-    CODE
-
-    file "app/controllers/admin/user_site_registrations_controller.rb", <<-CODE
-class Admin::UserSiteRegistrationsController < Alchemy::Admin::ResourcesController
-
-  def resource_handler
-    @_resource_handler ||= ::UserSiteResource.new(controller_path, alchemy_module)
-  end
-
-end
-    CODE
-
-
-    file "app/controllers/admin/contact_forms_controller.rb", <<-CODE
-module Admin
-  class ContactFormsController < UserSiteRegistrationsController
-
-  end
-end
-    CODE
-
-
-    file "app/controllers/admin/form_newsletters_controller.rb", <<-CODE
-module Admin
-  class FormNewslettersController < UserSiteRegistrationsController
-
-  end
-end
-    CODE
-
-
-
-    file "app/controllers/alchemy/base_controller_decorator.rb", <<-CODE
-Alchemy::BaseController.include FormsConcern
-    CODE
-
-
-    file "app/controllers/concerns/forms_concern.rb", <<-CODE
-require 'active_support/concern'
-
-module FormsConcern
-  extend ActiveSupport::Concern
-
-  included do
-
-    before_action :form_newlsetter_register
-    before_action :contact_form_register
-
-
-    private
-
-    # Si occupa di ricevere i valori dell'invio della registrazione della newsletter
-    def form_newlsetter_register
-
-      if params[:form_newsletter]
-
-        @form_newsletter = FormNewsletter.new(params.require(:form_newsletter).permit(:email, :check_privacy,:alcm_element))
-        if (verify_recaptcha(model: @form_newsletter) or Rails.application.secrets.recaptcha[:simulate]) && @form_newsletter.valid?
-          #registro dati, invio email
-          @form_newsletter.save
-          @form_newsletter.mailer.deliver
-
-          # registro il successo dell'esecuzione
-          @form_newsletter.sended!
-        end
-
-      end
-
+    if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
+      filepath = "app/helpers/link_languages_helper_decorator.rb"
+      get "#{repository_url}/#{filepath}", filepath
+      say "Creato helper 'language_links_by_page' da inserire nel layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
     end
 
-    def contact_form_register
-
-      if params[:contact_form]
 
-        @form_contatti = ContactForm.new(params.require(:contact_form).permit(
-          :email,
-          :check_privacy,
-          :first_name,
-          :last_name,
-          :address,
-          :city,
-          :telephone,
-          :message,
-          :alcm_element
-        ))
-        if (verify_recaptcha(model: @form_contatti) or Rails.application.secrets.recaptcha[:simulate]) && @form_contatti.valid?
-          #registro dati, invio email
-          @form_contatti.save
-          @form_contatti.mailer.deliver
+    if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
 
-          # registro il successo dell'esecuzione
-          @form_contatti.sended!
-        end
+      filepath = "config/locales/user_registration.it.yml"
+      get "#{repository_url}/#{filepath}", filepath
 
-      end
-    end
-  end
-end
+      filepath = "app/controllers/admin/user_site_registrations_controller.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-    CODE
+      filepath = "app/controllers/admin/contact_forms_controller.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
+      filepath = "app/controllers/admin/form_newsletters_controller.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
+      filepath = "app/controllers/alchemy/base_controller_decorator.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-    file "app/lib/user_site_resource.rb", <<-CODE
-class UserSiteResource < Alchemy::Resource
+      filepath = "app/controllers/concerns/forms_concern.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-  def attributes
-    (super + model.stored_attributes[:serialized_data].collect{|col|
-      {
-        name: col,
-        type: :string
-      }
-    }).reject{|c|  [:serialized_data,:type,:check_privacy].include?(c[:name].to_sym) }
-  end
+      filepath = "app/lib/user_site_resource.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-  def searchable_attribute_names
-    [:email]
-  end
+      filepath = "app/mailers/user_data_registration_mailer.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-end
-    CODE
+      filepath = "app/models/contact_form.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
+      filepath = "app/models/form_newsletter.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-
-    file "app/mailers/user_data_registration_mailer.rb", <<-CODE
-class UserDataRegistrationMailer < ApplicationMailer
-
-
-  def notify_registration(r)
-    @rec = r
-    mail(to: r.emails_recipient, subject: 'Nuova registrazione Sito')
-  end
-
-end
-
-    CODE
-
-    file "app/models/contact_form.rb", <<-CODE
-class ContactForm < UserSiteRegistration
-  store :serialized_data, accessors: [
-    :check_privacy,
-    :first_name,
-    :last_name,
-    :address,
-    :city,
-    :telephone,
-    :message
-  ], coder: JSON
-
-  attribute :first_name, :string
-  attribute :last_name, :string
-  attribute :address, :string
-  attribute :city, :string
-  attribute :telephone, :string
-  attribute :message, :string
-  attribute :check_privacy, :boolean
-
-  validates :first_name,
-            :last_name,
-            :message,
-            :presence => { allow_blank: false }
-
-  validates :check_privacy, inclusion: [true, '1']
-
-end
-    CODE
+      filepath = "app/models/user_site_registration.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-    file "app/models/form_newsletter.rb", <<-CODE
-class FormNewsletter < UserSiteRegistration
-  store :serialized_data, accessors: [:check_privacy], coder: JSON
+      filepath = "app/models/user_site_registration_ability.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-  attribute :check_privacy, :boolean
+      filepath = "app/views/alchemy/elements/_form_contatti_editor.html.erb"
+      get "#{repository_url}/#{filepath}", filepath
 
-  validates :check_privacy, inclusion: [true, '1']
-end
-    CODE
-
-
-    file "app/models/user_site_registration.rb", <<-CODE
-class UserSiteRegistration < ApplicationRecord
-
-  def sended!
-    @_sended = true
-  end
-
-  def sended?
-    @_sended === true
-  end
-
-  validates :email, :presence => {allow_blank: false}
-  validates_format_of :email, :with => /\\A([-a-z0-9!\\#$%&'*+\\/=?^_`{|}~]+\\.)*[-a-z0-9!\\#$%&'*+\\/=?^_`{|}~]+@((?:[-a-z0-9]+\\.)+[a-z]{2,})\\Z/i
-
-  #Mi serve per memorizzare l'elemento alchemy da cui è partita la form, in modo da poter idetificare la mail del destinatario
-  attr_accessor :alcm_element
-
-  def mailer
-    UserDataRegistrationMailer.notify_registration(self)
-  end
-
-  def emails_recipient
-    element = Alchemy::Element.find(self.alcm_element)
-    element.content_by_name(:email_destinatario_notifica).essence.body
-  rescue
-    ""
-  end
-end
-    CODE
-
-    file "app/models/user_site_registration_ability.rb", <<-CODE
-class UserSiteRegistrationAbility
-  include CanCan::Ability
-
-  def initialize(user)
-
-    if user.present? && user.is_admin?
-      # can :manage, ::UserSiteRegistration
-      # can :manage, :admin_user_site_registrations
-
-      [
-        [::FormNewsletter, :admin_form_newsletters],
-        [::ContactForm, :admin_contact_forms]
-      ].each do |objs|
-        objs.each do |o|
-          can :manage, o
-          cannot :create, o
-          cannot :update, o
-        end
-      end
-    end
-  end
-end
-    CODE
-
-
-
-    file "app/views/alchemy/elements/_form_contatti_editor.html.erb", <<-CODE
-<%= element_editor_for(element) do |el| -%>
-  <%= el.edit :email_destinatario_notifica %>
-<%- end -%>
-    CODE
-
-    file "app/views/alchemy/elements/_form_contatti_view.html.erb", <<-CODE
-<%- cache(element) do -%>
-  <%= element_view_for(element) do |el| -%>
-
-
-    <%
-      pagina_privacy = element.content_by_name(:pagina_privacy).essence
-      #
-      # Composta da questi elementi
-      # pagina_privacy =  body: "Iscriviti",
-      #                   link: nil,
-      #                   link_title: nil,
-      #                   link_class_name: nil,
-      #                   link_target: nil
-      #
-    %>
-
-
-    <%-
-      @form_contatti = @form_contatti || ContactForm.new
-      @form_contatti.alcm_element = element.id
-
-    %>
-
-
-    <% if @form_contatti.sended? %>
-      <div class="messaggio_invio successo">Invio avvenuto con successo</div>
-    <% else %>
-
-      <%
-        # TODO completare la questione di come renderizzare gli errori nel caso ci fossero
-        unless @form_contatti.errors.empty?
-      %>
-        <div class="messaggio_invio errore">Errore nella compilazione del form</div>
-        <%#= @form_contatti.errors.inspect %>
-      <% end %>
-      <div class="container">
-        <div class="form_contatti_pagina">
-          <%= form_for(@form_contatti, url: "?" + request.query_string + element_dom_id(element), method: 'post') do |f| %>
-
-            <%= hidden_field_tag :_method, 'get' %>
-            <%= f.hidden_field :alcm_element %>
-
-            <div class="row">
-              <div class="box_contatti col-xs-12 col-sm-6">
-                <%= f.text_field :first_name, placeholder: f.object.class.human_attribute_name(:first_name) + "*", required: 'required' %>
-              </div>
-              <div class="box_contatti col-xs-12 col-sm-6">
-                <%= f.text_field :last_name, placeholder: f.object.class.human_attribute_name(:last_name) + "*", required: 'required' %>
-              </div>
-              <div class="box_contatti col-xs-12 col-sm-6">
-                <%= f.text_field :city, placeholder: f.object.class.human_attribute_name(:city) %>
-              </div>
-              <div class="box_contatti col-xs-12 col-sm-6">
-                <%= f.text_field :address, placeholder: f.object.class.human_attribute_name(:address) %>
-              </div>
-              <div class="box_contatti col-xs-12 col-sm-6">
-                <%= f.text_field :email, placeholder: f.object.class.human_attribute_name(:email) + "*", required: 'required' %>
-              </div>
-              <div class="box_contatti col-xs-12 col-sm-6">
-                <%= f.telephone_field :telephone, placeholder: f.object.class.human_attribute_name(:telephone) %>
-              </div>
-              <div class="box_contatti col-xs-12 col-sm-12">
-                <%= f.text_area :message, placeholder: f.object.class.human_attribute_name(:message) + "*", required: 'required' %>
-              </div>
-            </div>
-            <div class="trattamento">
-              <div class="single_trattamento"><%= f.check_box :check_privacy, required: 'required' %>
-                <label>Accosenti al trattamento dei tuoi dati in base al D.Lgs 30/06/2003 n.196</label></div>
-            </div>
-            <div class="invia">
-              <%= f.submit 'Contattaci', class: "invisible_recaptcha" %>
-            </div>
-
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-
-
-
-  <%- end -%>
-<%- end -%>
-    CODE
-
-    file "app/views/alchemy/elements/_form_iscrizione_newsletter_editor.html.erb", <<-CODE
-<%= element_editor_for(element) do |el| -%>
-  <%= el.edit :title %>
-  <%= el.edit :bottone %>
-  <%= el.edit :email_destinatario_notifica %>
-  <%= el.edit :pagina_privacy %>
-<%- end -%>
-
-    CODE
-
-    file "app/views/alchemy/elements/_form_iscrizione_newsletter_view.html.erb", <<-CODE
-<%- cache(element) do -%>
-  <%= element_view_for(element) do |el| -%>
-
-    <%
-      testo_bottone = element.content_by_name(:bottone).essence.body
-      pagina_privacy = element.content_by_name(:pagina_privacy).essence
-      #
-      # Composta da questi elementi
-      # pagina_privacy =  body: "Iscriviti",
-      #                   link: nil,
-      #                   link_title: nil,
-      #                   link_class_name: nil,
-      #                   link_target: nil
-      #
-    %>
-
-    <div class="title">
-      <%= el.render :title %>
-    </div>
-    <div class="pagina_privacy">
-      <%#= el.render :pagina_privacy %>
-    </div>
-
-    <%-
-      @form_newsletter = @form_newsletter || FormNewsletter.new
-      @form_newsletter.alcm_element = element.id
-    %>
-
-    <% if @form_newsletter.sended? %>
-      <div class="messaggio_invio successo">Invio avvenuto con successo</div>
-    <% else %>
-
-      <%
-        # TODO completare la questione di come renderizzare gli errori nel caso ci fossero
-        unless @form_newsletter.errors.empty?
-      %>
-        <div class="messaggio_invio errore">Errori nella compilazione del form</div>
-        <%#= @form_newsletter.errors.inspect %>
-      <% end %>
-
-      <%= form_for(@form_newsletter, url: "?" + request.query_string + element_dom_id(element)", method: 'post') do |f| %>
-
-        <%= hidden_field_tag :_method, 'get' %>
-        <%= f.hidden_field :alcm_element %>
-        <div class="input_newsletter">
-          <%= f.email_field :email, placeholder: 'Email', required: true %>
-          <%= f.submit testo_bottone, class: "invisible_recaptcha" %>
-        </div>
-        <%#= @form_newsletter.errors.full_messages_for(:email) %>
-        <div class="trattamento">
-          <%= f.check_box :check_privacy, required: true %>
-          <label>ho letto e compreso l’informativa sulla privacy</label>
-        </div>
-
-      <% end %>
-    <% end %>
-
-  <%- end -%>
-<%- end -%>
-    CODE
-
-    file "app/views/user_data_registration_mailer/_contact_form.html.erb", <<-CODE
-<h1>Nuova contatto dal sito</h1>
-
-Email: <%= rec.email %>
-<br>
-first_name: <%= rec.first_name %>
-<br>
-last_name: <%= rec.last_name %>
-<br>
-address: <%= rec.address %>
-<br>
-city: <%= rec.city %>
-<br>
-telephone: <%= rec.telephone %>
-<br>
-message: <%= rec.message %>
-
-    CODE
-
-    file "app/views/user_data_registration_mailer/_form_newsletter.html", <<-CODE
-<h1>Nuova registrazione al sito per ricezione newsletter</h1>
-
-Email: <%= rec.email %>
-    CODE
-
-    file "app/views/user_data_registration_mailer/notify_registration.html.erb", <<-CODE
-<%= render partial: @rec.class.name.underscore, locals: { rec: @rec } %>
-    CODE
-
-    append_to_file "config/alchemy/elements.yml", <<-CODE
+      filepath = "app/views/alchemy/elements/_form_contatti_view.html.erb"
+      get "#{repository_url}/#{filepath}", filepath
+
+      filepath = "app/views/alchemy/elements/_form_iscrizione_newsletter_editor.html.erb"
+      get "#{repository_url}/#{filepath}", filepath
+
+      filepath = "app/views/alchemy/elements/_form_iscrizione_newsletter_view.html.erb"
+      get "#{repository_url}/#{filepath}", filepath
+
+      filepath = "app/views/user_data_registration_mailer/_contact_form.html.erb"
+      get "#{repository_url}/#{filepath}", filepath
+
+      filepath = "app/views/user_data_registration_mailer/_form_newsletter.html.erb"
+      get "#{repository_url}/#{filepath}", filepath
+
+      filepath = "app/views/user_data_registration_mailer/notify_registration.html.erb"
+      get "#{repository_url}/#{filepath}", filepath
+
+      filepath = "images/user_site_registrations_module.png"
+      get "#{repository_url}/#{filepath}", filepath
+
+      filepath = "config/initializers/alchemy_user_site_registrations.rb"
+      get "#{repository_url}/#{filepath}", filepath
+
+      append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: form_iscrizione_newsletter
   hint: "Form per l'iscrizione della newsletter"
   unique: true
@@ -715,64 +324,26 @@ Email: <%= rec.email %>
       type: EssenceText
       default: "info@example.com"
 
-    CODE
+      CODE
 
-    get "#{repository_url}/images/user_site_registrations_module.png", "app/assets/images/alchemy/user_site_registrations_module.png"
-
-    file "config/initializers/alchemy_user_site_registrations.rb", <<-CODE
-Alchemy::Modules.register_module({
-                                   name: 'user_site_registrations',
-                                   order: 1,
-                                   navigation: {
-                                     name: 'modules.form_newsletter',
-                                     controller: '/admin/form_newsletters',
-                                     action: 'index',
-                                     image: 'alchemy/user_site_registrations_module.png',
-                                     sub_navigation: [{
-                                                        name: 'modules.form_newsletter',
-                                                        controller: '/admin/form_newsletters',
-                                                        action: 'index'
-                                                      },
-                                                      {
-                                                        name: 'modules.contact_form',
-                                                        controller: '/admin/contact_forms',
-                                                        action: 'index'
-                                                      }
-                                                      ]
-                                   }
-                                 })
-
-Alchemy.register_ability(UserSiteRegistrationAbility)
-    CODE
-
-    inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine'  do
-<<-CODE
+      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
+        <<-CODE
 namespace :admin do
     resources :user_site_registrations
     resources :form_newsletters
     resources :contact_forms
 end
-CODE
-end
+        CODE
+      end
 
-    file "db/migrate/20180102112803_create_user_site_registrations.rb", <<-CODE
-class CreateUserSiteRegistrations < ActiveRecord::Migration[5.1]
-  def change
-    create_table :user_site_registrations do |t|
-      t.string :email
-      t.string :type
-      t.text :serialized_data
+      filepath = "db/migrate/20180102112803_create_user_site_registrations.rb"
+      get "#{repository_url}/#{filepath}", filepath
 
-      t.timestamps
+
+
+      rails_command 'db:migrate'
+
     end
-  end
-end
-    CODE
-    rails_command 'db:migrate'
-
-  end
-
-
 
 
   end

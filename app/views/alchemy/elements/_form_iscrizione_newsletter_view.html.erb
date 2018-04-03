@@ -1,0 +1,59 @@
+<%- cache(element) do -%>
+  <%= element_view_for(element) do |el| -%>
+
+    <%
+      testo_bottone = element.content_by_name(:bottone).essence.body
+      pagina_privacy = element.content_by_name(:pagina_privacy).essence
+      #
+      # Composta da questi elementi
+      # pagina_privacy =  body: "Iscriviti",
+      #                   link: nil,
+      #                   link_title: nil,
+      #                   link_class_name: nil,
+      #                   link_target: nil
+      #
+    %>
+
+    <div class="title">
+      <%= el.render :title %>
+    </div>
+    <div class="pagina_privacy">
+      <%#= el.render :pagina_privacy %>
+    </div>
+
+    <%-
+      @form_newsletter = @form_newsletter || FormNewsletter.new
+      @form_newsletter.alcm_element = element.id
+    %>
+
+    <% if @form_newsletter.sended? %>
+      <div class="messaggio_invio successo">Invio avvenuto con successo</div>
+    <% else %>
+
+      <%
+        # TODO completare la questione di come renderizzare gli errori nel caso ci fossero
+        unless @form_newsletter.errors.empty?
+      %>
+        <div class="messaggio_invio errore">Errori nella compilazione del form</div>
+        <%#= @form_newsletter.errors.inspect %>
+      <% end %>
+
+      <%= form_for(@form_newsletter, url: "?" + request.query_string + element_dom_id(element), method: 'post') do |f| %>
+
+        <%= hidden_field_tag :_method, 'get' %>
+        <%= f.hidden_field :alcm_element %>
+        <div class="input_newsletter">
+          <%= f.email_field :email, placeholder: 'Email', required: true %>
+          <%= f.submit testo_bottone, class: "invisible_recaptcha" %>
+        </div>
+        <%#= @form_newsletter.errors.full_messages_for(:email) %>
+        <div class="trattamento">
+          <%= f.check_box :check_privacy, required: true %>
+          <label>ho letto e compreso l’informativa sulla privacy</label>
+        </div>
+
+      <% end %>
+    <% end %>
+
+  <%- end -%>
+<%- end -%>

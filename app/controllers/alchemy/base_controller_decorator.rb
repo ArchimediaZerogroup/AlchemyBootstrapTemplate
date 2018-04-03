@@ -1,0 +1,1 @@
+Alchemy::BaseController.include FormsConcern
