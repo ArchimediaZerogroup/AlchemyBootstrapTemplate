@@ -1,7 +1,13 @@
+require "open-uri"
+
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
+repository_url = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
 
-puts "RICORDATI!!!! DISABLE_SPRING=true prima "
+ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
+
+
+
 
 
 if gem_version<=Gem::Version.new("5.2")
@@ -26,6 +32,9 @@ if gem_version<=Gem::Version.new("5.2")
   file sass_requires, <<-CODE
 //
   CODE
+
+
+
 
   if yes?("Vuoi Bourbon?(fratello di compass)")
     gem 'bourbon'
@@ -707,6 +716,8 @@ Email: <%= rec.email %>
       default: "info@example.com"
 
     CODE
+
+    get "#{repository_url}/images/user_site_registrations_module.png", "app/assets/images/alchemy/user_site_registrations_module.png"
 
     file "config/initializers/alchemy_user_site_registrations.rb", <<-CODE
 Alchemy::Modules.register_module({
