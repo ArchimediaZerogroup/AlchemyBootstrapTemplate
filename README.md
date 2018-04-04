@@ -58,4 +58,17 @@ Le funzioni autogenerate, previa comferma da parte dell'utente sono:
  Helper per la generazione di link languages per page. L'helper deve poi essere aggiunto al layout applicativo per l'utilizzo
   
 ### Form contatti / Form registrazione newsletter ###
- Modelli, Mailer, Controller, Viste per la gestione di form di contatti dal sito e form di registrazione alla newsletter 
+ Modelli, Mailer, Controller, Viste per la gestione di form di contatti dal sito e form di registrazione alla newsletter
+  
+  
+## TODO ##
+Altre funzionalità Work in Progress
+
+* Docker / Deploy con Docker 
+* Globalize (per traduzione modelli specifici)
+* Friendly ID (per link slag modelli specifici)
+* Modello Proxy Essence (funzionalità proxy tra modello personalizzato ed elemento Alchemy )
+* [https://github.com/presidentbeef/brakeman](https://github.com/presidentbeef/brakeman)
+* [https://github.com/thredded/db_text_search](https://github.com/thredded/db_text_search)
+
+  
