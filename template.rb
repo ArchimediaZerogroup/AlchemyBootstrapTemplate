@@ -1,4 +1,5 @@
 require "open-uri"
+require 'yaml'
 
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
@@ -7,7 +8,7 @@ repository_url = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplat
 ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
 
 
-if gem_version<=Gem::Version.new("5.2")
+if gem_version <= Gem::Version.new("5.2")
 
 
   gem 'jquery-rails'
@@ -72,7 +73,7 @@ if gem_version<=Gem::Version.new("5.2")
   end
 
 
-  installed_cookie_law=false
+  installed_cookie_law = false
   if yes?("Vuoi la gemma per cookie law ?")
     gem "cookie_law"
 
@@ -90,7 +91,7 @@ if gem_version<=Gem::Version.new("5.2")
 
     say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb", [:red, :on_white, :bold]
 
-    installed_cookie_law=true
+    installed_cookie_law = true
   end
 
 
@@ -166,27 +167,56 @@ end
     "\n//= require js-routes\n"
   end
 
+  if yes?("Vuoi predisporre la cache in produzione per utilizzare rack-cache con redis come backend?")
+    gem_group :production do
+      gem 'redis-rack-cache'
+      gem 'redis-rails'
+    end
+
+    append_to_file 'config/environments/production.rb', <<-CODE
+Rails.application.configure do
+     config.cache_store = :redis_store, "redis://redis:6379/0/cache", { expires_in: 90.minutes }
+     
+     config.action_dispatch.rack_cache = {
+       metastore: "redis://redis:6379/1/metastore",
+       entitystore: "redis://redis:6379/1/entitystore"
+     }
+end
+    CODE
+
+
+  end
 
   gem 'alchemy_cms', '~> 4.0'
   gem 'alchemy-devise', '~> 4.0'
 
-
+  deploy_with_docker = false
   capistrano_installed = false
   if yes?("Vuoi installare capistrano per il deploy?")
+
+    if yes?("Vorrai eseguire il deploy tramite Docker?")
+      deploy_with_docker = true
+    end
 
     capistrano_installed = true
     gem_group :development do
       gem 'capistrano'
-      gem 'capistrano-rails'
-      gem 'capistrano-rvm'
-      gem 'capistrano-rails-console', '~> 1.0.0'
-      gem 'capistrano-rails-tail-log'
       gem 'capistrano-db-tasks', require: false
-      gem 'capistrano-passenger'
+
+      if deploy_with_docker
+        gem 'capose', require: false
+      else
+        gem 'capistrano-rails'
+        gem 'capistrano-rvm'
+        gem 'capistrano-rails-console', '~> 1.0.0'
+        gem 'capistrano-rails-tail-log'
+        gem 'capistrano-passenger'
+      end
+
     end
 
-  end
 
+  end
 
   lang = ask('Definisci la lingua di default[it]')
   lang = 'it' if lang.blank?
@@ -205,14 +235,42 @@ Rails.application.config.action_mailer.smtp_settings = Rails.application.secrets
 
   after_bundle do
 
-    run "bundle exec cap install"
-    inject_into_file 'Capfile', :before => "# Load custom " do
-      "\nrequire 'capistrano/rvm'
+    if capistrano_installed
+      run "bundle exec cap install"
+      if deploy_with_docker
+        append_to_file 'config/deploy.rb' do
+          "\n
+set :assets_dir, %w(public/system/. uploads/. public/pages/. public/noimage/.)
+set :local_assets_dir, %w(../../shared/public/system ../../shared/uploads ../../shared/public/pages ../../shared/public/noimage)
+set :capose_copy, %w(config/secrets.yml)
+set :capose_commands, ['build', 'run --rm app rails assets:precompile', 'run --rm app rails db:migrate', 'up -d']
+'\n\n"
+        end
+
+        [
+          "lib/capistrano/tasks/docker.rake",
+          "Dockerfile",
+          "docker-compose.yml",
+          ".dockerignore"
+        ].each do |f|
+          get "#{repository_url}/#{f}", f
+        end
+
+        inject_into_file 'Capfile', :before => "# Load custom " do
+          "\nrequire 'capistrano-db-tasks'
+require 'capose'\n\n"
+        end
+
+      else
+        inject_into_file 'Capfile', :before => "# Load custom " do
+          "\nrequire 'capistrano/rvm'
 require 'capistrano/bundler'
 require 'capistrano/rails/assets'
 require 'capistrano/rails/migrations'
 require 'capistrano/passenger'
 require 'capistrano-db-tasks'\n\n"
+        end
+      end
     end
 
     rails_command 'alchemy:install'
@@ -338,7 +396,6 @@ end
 
       filepath = "db/migrate/20180102112803_create_user_site_registrations.rb"
       get "#{repository_url}/#{filepath}", filepath
-
 
 
       rails_command 'db:migrate'

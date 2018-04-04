@@ -60,11 +60,25 @@ Le funzioni autogenerate, previa comferma da parte dell'utente sono:
 ### Form contatti / Form registrazione newsletter ###
  Modelli, Mailer, Controller, Viste per la gestione di form di contatti dal sito e form di registrazione alla newsletter
   
+### Docker / Deploy con Docker ###
+ Predispone il deploy attraverso Docker. Viene installalo capose (gemma per eseguire docker-compose online).
+ Impostate le cartelle degli assets per la sincronizzazione fra sviluppo e online, tenendo conto di sincronizzare 
+ con la shared.
+ 
+ Per poter avere il sistema completo per il deploy sarà necessario prima lanciare il task 
+ `docker:create_online_docker_compose_file`
+ il quale genera il file docker-compose-production.yml con le impostazioni necessarie per il deploy,
+ seguire poi le istruzioni aggiuntive visualizzate mentre si lancia il task
+ 
+ 
+ Task di capistrano aggiuntivi:
+ * docker:db:push  -> Carica il database online (**Attenzione**, non viene richiesta conferma )
+ * docker:db:pull  -> Scarica il database in sviluppo (**Attenzione**, non viene richiesta conferma )
+ * docker:create_online_docker_compose_file -> Genera il file compose localmente per il deploy
   
 ## TODO ##
 Altre funzionalità Work in Progress
 
-* Docker / Deploy con Docker 
 * Globalize (per traduzione modelli specifici)
 * Friendly ID (per link slag modelli specifici)
 * Modello Proxy Essence (funzionalità proxy tra modello personalizzato ed elemento Alchemy )
