@@ -191,6 +191,8 @@ Rails.application.configure do
 end
     CODE
 
+    say "Ricordati poi che hai bisogno del servizio redis online, se utilizzerai il deploy con docker avrai già tutto configurato"
+
 
   end
 
