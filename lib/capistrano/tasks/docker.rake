@@ -28,6 +28,9 @@ namespace :docker do
 
     ask(:need_redis_service, true)
 
+    log_folder = "/var/log/dockerized/#{fetch(:application)}"
+
+    puts "Ricorda di generare la cartella #{log_folder}"
 
     compose_production = {
       version: '3',
@@ -42,7 +45,7 @@ namespace :docker do
                         :WEB_CONCURRENCY => 1},
           volumes: ['.:/usr/share/www',
                     "#{shared_path}/db_volume:/usr/share/application_storage",
-                    "/var/log/dockerized/#{fetch(:application)}/:/usr/share/www/log",
+                    "#{log_folder}/:/usr/share/www/log",
                     "#{shared_path}/tmp/pids:/usr/share/www/tmp/pids",
                     "#{shared_path}/tmp/cache:/usr/share/www/tmp/cache",
                     "#{shared_path}/tmp/sockets:/usr/share/www/tmp/sockets",
