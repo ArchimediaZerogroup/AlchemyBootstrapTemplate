@@ -3,9 +3,16 @@ require 'yaml'
 
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
-repository_url = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
+REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
 
 ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
+
+def download_file(source_path, destination: nil,repository_url:REPOSITORY_URL)
+
+  destination = destination || source_path
+  get "#{repository_url}/#{source_path}", destination
+
+end
 
 
 if gem_version <= Gem::Version.new("5.2")
@@ -238,13 +245,14 @@ Rails.application.config.action_mailer.smtp_settings = Rails.application.secrets
     if capistrano_installed
       run "bundle exec cap install"
       if deploy_with_docker
+
         append_to_file 'config/deploy.rb' do
           "\n
 set :assets_dir, %w(public/system/. uploads/. public/pages/. public/noimage/.)
 set :local_assets_dir, %w(../../shared/public/system ../../shared/uploads ../../shared/public/pages ../../shared/public/noimage)
 set :capose_copy, %w(config/secrets.yml)
 set :capose_commands, ['build', 'run --rm app rails assets:precompile', 'run --rm app rails db:migrate', 'up -d']
-'\n\n"
+\n\n"
         end
 
         [
@@ -253,7 +261,7 @@ set :capose_commands, ['build', 'run --rm app rails assets:precompile', 'run --r
           "docker-compose.yml",
           ".dockerignore"
         ].each do |f|
-          get "#{repository_url}/#{f}", f
+          download_file f
         end
 
         inject_into_file 'Capfile', :before => "# Load custom " do
@@ -280,76 +288,54 @@ require 'capistrano-db-tasks'\n\n"
 
 
     if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
-      filepath = "app/helpers/link_languages_helper_decorator.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/helpers/link_languages_helper_decorator.rb"
       say "Creato helper 'language_links_by_page' da inserire nel layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
     end
 
 
     if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
 
-      filepath = "config/locales/user_registration.it.yml"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "config/locales/user_registration.it.yml"
 
-      filepath = "app/controllers/admin/user_site_registrations_controller.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/controllers/admin/user_site_registrations_controller.rb"
 
-      filepath = "app/controllers/admin/contact_forms_controller.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/controllers/admin/contact_forms_controller.rb"
 
-      filepath = "app/controllers/admin/form_newsletters_controller.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/controllers/admin/form_newsletters_controller.rb"
 
-      filepath = "app/controllers/alchemy/base_controller_decorator.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/controllers/alchemy/base_controller_decorator.rb"
 
-      filepath = "app/controllers/concerns/forms_concern.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/controllers/concerns/forms_concern.rb"
 
-      filepath = "app/lib/user_site_resource.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/lib/user_site_resource.rb"
 
-      filepath = "app/mailers/user_data_registration_mailer.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/mailers/user_data_registration_mailer.rb"
 
-      filepath = "app/models/contact_form.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file  "app/models/contact_form.rb"
 
-      filepath = "app/models/form_newsletter.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/models/form_newsletter.rb"
 
-      filepath = "app/models/user_site_registration.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/models/user_site_registration.rb"
 
-      filepath = "app/models/user_site_registration_ability.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/models/user_site_registration_ability.rb"
 
-      filepath = "app/views/alchemy/elements/_form_contatti_editor.html.erb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/views/alchemy/elements/_form_contatti_editor.html.erb"
 
-      filepath = "app/views/alchemy/elements/_form_contatti_view.html.erb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/views/alchemy/elements/_form_contatti_view.html.erb"
 
-      filepath = "app/views/alchemy/elements/_form_iscrizione_newsletter_editor.html.erb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/views/alchemy/elements/_form_iscrizione_newsletter_editor.html.erb"
 
-      filepath = "app/views/alchemy/elements/_form_iscrizione_newsletter_view.html.erb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/views/alchemy/elements/_form_iscrizione_newsletter_view.html.erb"
 
-      filepath = "app/views/user_data_registration_mailer/_contact_form.html.erb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/views/user_data_registration_mailer/_contact_form.html.erb"
 
-      filepath = "app/views/user_data_registration_mailer/_form_newsletter.html.erb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/views/user_data_registration_mailer/_form_newsletter.html.erb"
 
-      filepath = "app/views/user_data_registration_mailer/notify_registration.html.erb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "app/views/user_data_registration_mailer/notify_registration.html.erb"
 
-      filepath = "images/user_site_registrations_module.png"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "images/user_site_registrations_module.png"
 
-      filepath = "config/initializers/alchemy_user_site_registrations.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "config/initializers/alchemy_user_site_registrations.rb"
 
       append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: form_iscrizione_newsletter
@@ -394,8 +380,7 @@ end
         CODE
       end
 
-      filepath = "db/migrate/20180102112803_create_user_site_registrations.rb"
-      get "#{repository_url}/#{filepath}", filepath
+      download_file "db/migrate/20180102112803_create_user_site_registrations.rb"
 
 
       rails_command 'db:migrate'
