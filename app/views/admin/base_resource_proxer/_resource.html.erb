@@ -1,0 +1,30 @@
+<tr class="<%= cycle('even', 'odd') %>" data-element_id="<%= resource.id %>">
+<% resource_handler.index_attributes.each do |attribute| %>
+  <td class="<%= attribute[:type] %> <%= attribute[:name] %>">
+  <% if attribute[:type] == :boolean %>
+    <%= render_icon !!resource.send(attribute[:name]) %>
+  <% else %>
+    <%= render_attribute(resource, attribute) %>
+  <% end %>
+  </td>
+<% end %>
+  <td class="tools">
+    <% if can?(:destroy, resource) %>
+    <%= delete_button resource_path(resource, current_location_params) %>
+    <% end %>
+    <% if can?(:edit, resource) %>
+    <%= link_to_dialog(
+      '',
+      edit_resource_path(resource, current_location_params),
+      {
+        title: Alchemy.t('Edit'),
+        size: resource_window_size
+      },
+      {
+        class: 'icon edit',
+        title: Alchemy.t('Edit')
+      }
+    ) %>
+    <% end %>
+  </td>
+</tr>

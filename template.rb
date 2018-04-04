@@ -295,6 +295,45 @@ require 'capistrano-db-tasks'\n\n"
     end
 
 
+    if yes?("Vuoi avere la base per i moduli estesi con le essenze di Alchemy (es. le News) ?")
+
+      download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
+
+      download_file "app/assets/stylesheets/alchemy/custom_records.scss"
+
+      # inject vendor/assets/javascripts/alchemy/admin/all.js ( //= require custom_admin_elementEditor )
+      # inject vendor/assets/stylesheets/alchemy/admin/all.css ( *= require alchemy/custom_records.scss )
+
+      download_file "app/models/advice.rb"
+
+      download_file "app/models/advice_ability.rb"
+
+      download_file "app/models/concerns/alchemy_element_proxer_concern.rb"
+
+      download_file "app/lib/advice_resource.rb"
+
+      download_file "app/lib/element_proxer_resource.rb"
+
+      download_file "app/lib/alchemy/resources_helper.rb"
+
+      download_file "app/lib/alchemy/touching_decorator.rb"
+
+      download_file "app/inputs/alchemy_element_input.rb"
+
+      download_file "app/views/admin/base_resource_proxer/_resource.html.erb"
+
+      download_file "app/views/admin/base_resource_proxer/_table.html.erb"
+
+      download_file "app/controllers/admin/advices_controller.rb"
+
+      download_file "app/controllers/admin/base_resource_proxer_controller.rb"
+
+      download_file ""
+
+
+    end
+
+
     if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
 
       download_file "config/locales/user_registration.it.yml"
@@ -335,7 +374,7 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/views/user_data_registration_mailer/notify_registration.html.erb"
 
-      download_file "images/user_site_registrations_module.png"
+      download_file "app/assets/alchemy/images/user_site_registrations_module.png"
 
       download_file "config/initializers/alchemy_user_site_registrations.rb"
 
