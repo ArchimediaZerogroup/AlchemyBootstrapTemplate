@@ -1,14 +1,14 @@
-#Bootrap Alchemy Template#
-
+# Bootrap Alchemy Template #
+                           
 Questo è il template applicativo che utilizziamo per creare i progetti relativamente allo sviluppo di siti web.
 Utilizziamo come CMS [AlchemyCMS](https://github.com/AlchemyCMS/alchemy_cms) ed una serie di altri componenti utili per l'implementazione.
 
-##Requisiti##
+## Requisiti ##
 Questo template necessita di:
 
 * Ruby on Rails 5.1.x
 
-##Utilizzo##
+## Utilizzo ##
 
 Nuovo progetto
 
@@ -24,7 +24,7 @@ DISABLE_SPRING=true bin/rails app:template LOCATION=https://raw.githubuserconten
 
 ```
 
-##Cosa fa il template?##
+## Cosa fa il template? ##
 1. Genera una nuova applicazione Rails
 2. Include Jquery
 3. Configura assets/javascript
@@ -54,7 +54,7 @@ Le funzioni autogenerate, previa comferma da parte dell'utente sono:
  a livello di rete, certi indirizzi IP che tentano (per esempio) brute force od altro. L'integrazione avviene attraveso un inizializzatore specifico dove viene anche inclusa la parte di 
  configurazione per Fail2Ban
  
-### Link url per lingua###
+### Link url per lingua ###
  Helper per la generazione di link languages per page. L'helper deve poi essere aggiunto al layout applicativo per l'utilizzo
   
 ### Form contatti / Form registrazione newsletter ###
