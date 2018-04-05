@@ -191,7 +191,7 @@ Rails.application.configure do
 end
     CODE
 
-    say "Ricordati poi che hai bisogno del servizio redis online, se utilizzerai il deploy con docker avrai già tutto configurato"
+    say "Ricordati poi che hai bisogno del servizio redis online, se utilizzerai il deploy con docker avrai già tutto configurato", [:red, :on_white, :bold]
 
 
   end
@@ -401,7 +401,7 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/views/user_data_registration_mailer/notify_registration.html.erb"
 
-      download_file "app/assets/alchemy/images/user_site_registrations_module.png"
+      download_file "app/assets/images/alchemy/user_site_registrations_module.png"
 
       download_file "config/initializers/alchemy_user_site_registrations.rb"
 
