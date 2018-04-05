@@ -7,7 +7,7 @@ REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplat
 
 ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
 
-def download_file(source_path, destination: nil,repository_url:REPOSITORY_URL)
+def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
 
   destination = destination || source_path
   get "#{repository_url}/#{source_path}", destination
@@ -258,10 +258,10 @@ set :capose_commands, ['build', 'run --rm app rails assets:precompile', 'run --r
         end
 
         [
-          "lib/capistrano/tasks/docker.rake",
-          "Dockerfile",
-          "docker-compose.yml",
-          ".dockerignore"
+            "lib/capistrano/tasks/docker.rake",
+            "Dockerfile",
+            "docker-compose.yml",
+            ".dockerignore"
         ].each do |f|
           download_file f
         end
@@ -301,6 +301,16 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/assets/stylesheets/alchemy/custom_records.scss"
 
+      application_js = 'vendor/assets/javascripts/alchemy/admin/all.js'
+      inject_into_file application_js, after: '//= require alchemy/admin' do
+        "\n//= require custom_admin_elementEditor\n"
+      end
+
+      application_css = 'vendor/assets/stylesheets/alchemy/admin/all.css'
+      inject_into_file application_css, :before => " */" do
+        "\n  *= require alchemy/custom_records.scss\n"
+      end
+
       # inject vendor/assets/javascripts/alchemy/admin/all.js ( //= require custom_admin_elementEditor )
       # inject vendor/assets/stylesheets/alchemy/admin/all.css ( *= require alchemy/custom_records.scss )
 
@@ -328,9 +338,26 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/controllers/admin/base_resource_proxer_controller.rb"
 
-      download_file ""
+      append_to_file "config/alchemy/elements.yml", <<-CODE
+- name: "proxed_advice"
+  hint: "Dati aggiuntivi struttura delle  news"
+  picture_gallery: true
+  contents:
+    - name: immagine_anteprima
+      type: EssencePicture
+    - name: corpo_news
+      type: EssenceRichtext
+
+      CODE
+
+      download_file "db/migrate/20180328100935_create_advices.rb"
+
+      download_file "config/initializers/alchemy_advice.rb"
+
+      download_file "app/assets/images/alchemy/newspapers.png"
 
 
+      rails_command 'db:migrate'
     end
 
 
@@ -352,7 +379,7 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/mailers/user_data_registration_mailer.rb"
 
-      download_file  "app/models/contact_form.rb"
+      download_file "app/models/contact_form.rb"
 
       download_file "app/models/form_newsletter.rb"
 
