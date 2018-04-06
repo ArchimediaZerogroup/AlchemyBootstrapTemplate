@@ -3,7 +3,7 @@ require 'yaml'
 
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
-REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/wip_proxyed"
+REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
 
 ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
 
