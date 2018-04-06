@@ -7,7 +7,7 @@ REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplat
 
 ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
 
-def download_file(source_path, destination: nil,repository_url:REPOSITORY_URL)
+def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
 
   destination = destination || source_path
   get "#{repository_url}/#{source_path}", destination
@@ -161,11 +161,12 @@ end
 
   end
 
-
+  airbrake_installed=false
   if yes?("Vuoi installare Airbrake?")
     gem 'airbrake', '~> 5.0'
 
     say "Ricordati che devi completare la configurazione", [:red, :on_white, :bold]
+    airbrake_installed=true
   end
 
 
@@ -191,7 +192,7 @@ Rails.application.configure do
 end
     CODE
 
-    say "Ricordati poi che hai bisogno del servizio redis online, se utilizzerai il deploy con docker avrai già tutto configurato"
+    say "Ricordati poi che hai bisogno del servizio redis online, se utilizzerai il deploy con docker avrai già tutto configurato", [:red, :on_white, :bold]
 
 
   end
@@ -258,10 +259,10 @@ set :capose_commands, ['build', 'run --rm app rails assets:precompile', 'run --r
         end
 
         [
-          "lib/capistrano/tasks/docker.rake",
-          "Dockerfile",
-          "docker-compose.yml",
-          ".dockerignore"
+            "lib/capistrano/tasks/docker.rake",
+            "Dockerfile",
+            "docker-compose.yml",
+            ".dockerignore"
         ].each do |f|
           download_file f
         end
@@ -288,10 +289,94 @@ require 'capistrano-db-tasks'\n\n"
 
     generate 'cookie_law:install' if installed_cookie_law
 
+    generate 'airbrake 0123 abcd' if airbrake_installed
+
+    download_file "config/locales/devise.it.yml"
+
+    download_file "config/puma.rb"
+
+
 
     if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
       say "Creato helper 'language_links_by_page' da inserire nel layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
+    end
+
+
+    if yes?("Vuoi avere la base per i moduli estesi con le essenze di Alchemy (es. le News) ?")
+
+      download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
+
+      download_file "app/assets/stylesheets/alchemy/custom_records.scss"
+
+      application_js = 'vendor/assets/javascripts/alchemy/admin/all.js'
+      inject_into_file application_js, after: '//= require alchemy/admin' do
+        "\n//= require custom_admin_elementEditor\n"
+      end
+
+      application_css = 'vendor/assets/stylesheets/alchemy/admin/all.css'
+      inject_into_file application_css, :before => " */" do
+        "\n  *= require alchemy/custom_records.scss\n"
+      end
+
+      # inject vendor/assets/javascripts/alchemy/admin/all.js ( //= require custom_admin_elementEditor )
+      # inject vendor/assets/stylesheets/alchemy/admin/all.css ( *= require alchemy/custom_records.scss )
+
+      download_file "app/models/advice.rb"
+
+      download_file "app/models/advice_ability.rb"
+
+      download_file "app/models/concerns/alchemy_element_proxer_concern.rb"
+
+      download_file "app/lib/advice_resource.rb"
+
+      download_file "app/lib/element_proxer_resource.rb"
+
+      download_file "app/lib/alchemy/resources_helper.rb"
+
+      download_file "app/lib/alchemy/touching_decorator.rb"
+
+      download_file "app/inputs/alchemy_element_input.rb"
+
+      download_file "app/views/admin/base_resource_proxer/_resource.html.erb"
+
+      download_file "app/views/admin/base_resource_proxer/_table.html.erb"
+
+      download_file "app/controllers/admin/advices_controller.rb"
+
+      download_file "app/controllers/admin/base_resource_proxer_controller.rb"
+
+      append_to_file "config/alchemy/elements.yml", <<-CODE
+- name: "proxed_advice"
+  hint: "Dati aggiuntivi struttura delle  news"
+  picture_gallery: true
+  contents:
+    - name: immagine_anteprima
+      type: EssencePicture
+    - name: corpo_news
+      type: EssenceRichtext
+
+      CODE
+
+      download_file "db/migrate/20180328100935_create_advices.rb"
+
+      download_file "config/initializers/alchemy_advice.rb"
+
+      download_file "app/assets/images/alchemy/newspapers.png"
+
+
+      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
+        <<-CODE
+namespace :admin do
+    resources :advices
+end
+        CODE
+      end
+
+      download_file "config/locales/advice.it.yml"
+
+
+      rails_command 'db:migrate'
     end
 
 
@@ -313,7 +398,7 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/mailers/user_data_registration_mailer.rb"
 
-      download_file  "app/models/contact_form.rb"
+      download_file "app/models/contact_form.rb"
 
       download_file "app/models/form_newsletter.rb"
 
@@ -335,7 +420,7 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/views/user_data_registration_mailer/notify_registration.html.erb"
 
-      download_file "images/user_site_registrations_module.png"
+      download_file "app/assets/images/alchemy/user_site_registrations_module.png"
 
       download_file "config/initializers/alchemy_user_site_registrations.rb"
 

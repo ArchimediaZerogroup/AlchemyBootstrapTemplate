@@ -1,0 +1,34 @@
+.advices {
+
+  .alchemy-dialog.modal {
+    width: 80% !important;
+    form .control-label {
+      width: 15%;
+    }
+    form {
+      input[type="url"],
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      textarea,
+      .select2-container,
+      .autocomplete_tag_list,
+      .mce-tinymce,
+      .with-hint,
+      .hint-with-icon {
+        width: 85%;
+      }
+      .tinymce_container {
+        width: 85%;
+        float: left;
+      }
+
+    }
+    .proxed_element_blk {
+      label {
+        display: none;
+      }
+    }
+  }
+
+}
