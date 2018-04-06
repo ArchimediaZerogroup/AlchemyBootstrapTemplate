@@ -161,11 +161,12 @@ end
 
   end
 
-
+  airbrake_installed=false
   if yes?("Vuoi installare Airbrake?")
     gem 'airbrake', '~> 5.0'
 
     say "Ricordati che devi completare la configurazione", [:red, :on_white, :bold]
+    airbrake_installed=true
   end
 
 
@@ -288,6 +289,9 @@ require 'capistrano-db-tasks'\n\n"
 
     generate 'cookie_law:install' if installed_cookie_law
 
+    generate 'airbrake 0123 abcd' if airbrake_installed
+
+    download_file "config/locales/devise.it.yml"
 
     if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
@@ -355,6 +359,17 @@ require 'capistrano-db-tasks'\n\n"
       download_file "config/initializers/alchemy_advice.rb"
 
       download_file "app/assets/images/alchemy/newspapers.png"
+
+
+      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
+        <<-CODE
+namespace :admin do
+    resources :advices
+end
+        CODE
+      end
+
+      download_file "config/locales/advice.it.yml"
 
 
       rails_command 'db:migrate'

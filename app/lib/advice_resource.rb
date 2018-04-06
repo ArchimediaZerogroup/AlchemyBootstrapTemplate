@@ -1,18 +1,22 @@
 class AdviceResource < ElementProxerResource
 
-  def attributes
 
 
-    fields = super + model.translated_attribute_names.collect {|col|
-      {
-        name: col,
-        type: model.translation_class.type_for_attribute(col.to_s).type
-      }
-    }
 
-    fields
-
-  end
+  # Globalize - Se usi globalize, serve questo metodo
+  #def attributes
+  #
+  #
+  #  fields = super + model.translated_attribute_names.collect {|col|
+  #    {
+  #      name: col,
+  #      type: model.translation_class.type_for_attribute(col.to_s).type
+  #    }
+  #  }
+  #
+  #  fields
+  #
+  #end
 
 
   def index_attributes

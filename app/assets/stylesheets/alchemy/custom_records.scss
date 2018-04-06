@@ -1,4 +1,4 @@
-.categories, .products, .advices {
+.advices {
 
   .alchemy-dialog.modal {
     width: 80% !important;
@@ -31,23 +31,4 @@
     }
   }
 
-}
-
-.sorting {
-  #categories_list {
-    tr {
-      td, th {
-        &:last-child {
-          display: none;
-        }
-      }
-    }
-  }
-  .icon.save {
-    background-image: image_url("alchemy/disk-pencil.png");
-  }
-}
-
-#save_category_order {
-  display: none;
 }
