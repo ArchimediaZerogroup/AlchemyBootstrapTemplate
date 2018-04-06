@@ -293,6 +293,10 @@ require 'capistrano-db-tasks'\n\n"
 
     download_file "config/locales/devise.it.yml"
 
+    download_file "config/puma.rb"
+
+
+
     if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
       say "Creato helper 'language_links_by_page' da inserire nel layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
