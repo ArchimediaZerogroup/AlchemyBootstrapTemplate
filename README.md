@@ -32,6 +32,7 @@ DISABLE_SPRING=true bin/rails app:template LOCATION=https://raw.githubuserconten
 5. Installa i componenti richiesti
 6. Installa AlchemyCMS
 7. Configura AlchemyCMS
+8. Configura Docker Stack e Capistrano per deploy 
 
 
 ## Gemme incluse ##
@@ -60,21 +61,21 @@ Le funzioni autogenerate, previa comferma da parte dell'utente sono:
 ### Form contatti / Form registrazione newsletter ###
  Modelli, Mailer, Controller, Viste per la gestione di form di contatti dal sito e form di registrazione alla newsletter
   
-### Docker / Deploy con Docker ###
- Predispone il deploy attraverso Docker. Viene installalo capose (gemma per eseguire docker-compose online).
+### Docker / Deploy con Docker Stack ###
+ Predispone il deploy attraverso Docker. Viene installalo stackose (gemma per eseguire docker stack online).
  Impostate le cartelle degli assets per la sincronizzazione fra sviluppo e online, tenendo conto di sincronizzare 
  con la shared.
  
  Per poter avere il sistema completo per il deploy sarà necessario prima lanciare il task 
- `docker:create_online_docker_compose_file`
- il quale genera il file docker-compose-production.yml con le impostazioni necessarie per il deploy,
+ `stackose:create_online_docker_compose_file`
+ il quale genera il file docker-compose-{STAGE}.yml con le impostazioni necessarie per il deploy,
  seguire poi le istruzioni aggiuntive visualizzate mentre si lancia il task
  
  
  Task di capistrano aggiuntivi:
- * docker:db:push  -> Carica il database online (**Attenzione**, non viene richiesta conferma )
- * docker:db:pull  -> Scarica il database in sviluppo (**Attenzione**, non viene richiesta conferma )
- * docker:create_online_docker_compose_file -> Genera il file compose localmente per il deploy
+ * docker:db:push  -> Carica il database online
+ * docker:db:pull  -> Scarica il database in sviluppo
+ * stackose:create_online_docker_compose_file -> Genera il file compose localmente per il deploy
   
 ## TODO ##
 Altre funzionalità Work in Progress
