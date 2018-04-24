@@ -214,7 +214,7 @@ end
       gem 'capistrano-db-tasks', require: false
 
       if deploy_with_docker
-        gem 'capose', require: false
+        gem 'stackose', require: false
       else
         gem 'capistrano-rails'
         gem 'capistrano-rvm'
@@ -253,8 +253,22 @@ Rails.application.config.action_mailer.smtp_settings = Rails.application.secrets
           "\n
 set :assets_dir, %w(public/system/. uploads/. public/pages/. public/noimage/.)
 set :local_assets_dir, %w(../../shared/public/system ../../shared/uploads ../../shared/public/pages ../../shared/public/noimage)
-set :capose_copy, %w(config/secrets.yml)
-set :capose_commands, ['build', 'run --rm app rails assets:precompile', 'run --rm app rails db:migrate', 'up -d']
+
+set :stackose_copy, %w[config/secrets.yml]
+
+set :stackose_commands, ['run --rm --no-deps app rails assets:precompile', 'run --rm  --no-deps app rails db:migrate']
+
+set :stackose_linked_folders, ['public/system',
+                               'public/pictures',
+                               'public/attachments',
+                               'public/pages',
+                               'public/assets',
+                               'uploads',
+                               :'__shared_path__/db_volume' => '/usr/share/application_storage',
+                               :\"/var/log/dockerized/\#{fetch(:application)}\"=>\"\#{fetch(:capose_docker_mount_point)}/log\"
+]
+
+
 \n\n"
         end
 
@@ -269,7 +283,7 @@ set :capose_commands, ['build', 'run --rm app rails assets:precompile', 'run --r
 
         inject_into_file 'Capfile', :before => "# Load custom " do
           "\nrequire 'capistrano-db-tasks'
-require 'capose'\n\n"
+require 'stackose'\n\n"
         end
 
       else
