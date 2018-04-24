@@ -214,7 +214,7 @@ end
       gem 'capistrano-db-tasks', require: false
 
       if deploy_with_docker
-        gem 'stackose', require: false
+        gem 'stackose', '~> 0.1.1', require: false
       else
         gem 'capistrano-rails'
         gem 'capistrano-rvm'
@@ -265,9 +265,8 @@ set :stackose_linked_folders, ['public/system',
                                'public/assets',
                                'uploads',
                                :'__shared_path__/db_volume' => '/usr/share/application_storage',
-                               :\"/var/log/dockerized/\#{fetch(:application)}\"=>\"\#{fetch(:capose_docker_mount_point)}/log\"
+                               :\"/var/log/dockerized/__application__\"=>\"__capose_docker_mount_point__/log\"
 ]
-
 
 \n\n"
         end
