@@ -5,7 +5,7 @@ version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
 REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
 
-ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
+ask("Remeber!!!! DISABLE_SPRING=true before command.")
 
 def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
 
@@ -14,6 +14,7 @@ def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
 
 end
 
+say "You are using Rails #{gem_version.inspect}"
 
 if gem_version <= Gem::Version.new("5.2")
 
@@ -39,7 +40,7 @@ if gem_version <= Gem::Version.new("5.2")
   CODE
 
 
-  if yes?("Vuoi Bourbon?(fratello di compass)")
+  if yes?("Do you want to use 'Bourbon?'? (https://www.bourbon.io/) ")
     gem 'bourbon'
 
     inject_into_file sass_requires, before: '//= require_tree .' do
@@ -59,7 +60,7 @@ if gem_version <= Gem::Version.new("5.2")
     end
   end
 
-  if yes?("Vuoi Bootstrap(4)?")
+  if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")
     gem 'bootstrap', '~> 4.0.0.beta3'
     inject_into_file sass_requires, before: '//= require_tree .' do
       "\n  @import \"bootstrap\";\n"
@@ -70,7 +71,7 @@ if gem_version <= Gem::Version.new("5.2")
 
   end
 
-  if yes?("Vuoi le icone di font awesome?")
+  if yes?("Do you want to use 'Font awesome'? (https://fontawesome.com/)")
     gem "font-awesome-rails"
 
     inject_into_file application_css, :before => " */" do
@@ -81,7 +82,7 @@ if gem_version <= Gem::Version.new("5.2")
 
 
   installed_cookie_law = false
-  if yes?("Vuoi la gemma per cookie law ?")
+  if yes?("Do you want to use 'cookie_law' gem? (https://github.com/coders51/cookie_law) ")
     gem "cookie_law"
 
     inject_into_file application_css, :before => " */" do
@@ -96,13 +97,13 @@ if gem_version <= Gem::Version.new("5.2")
       "<%= cookie_law! %>"
     end
 
-    say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb", [:red, :on_white, :bold]
+    say "Remember! You must complete configuration with initializer config/initializers/cookie_law.rb", [:red, :on_white, :bold]
 
     installed_cookie_law = true
   end
 
 
-  if yes?("Vuoi installare l'inizializzatore per gestire i login falliti con Fail2Ban?")
+  if yes?("Do you want to use Fail2Ban script ?")
 
     file "config/initializers/fail2ban.rb", <<-CODE
 module Fail2ban
@@ -143,11 +144,11 @@ end
 
     CODE
 
-    say "Ricordati che devi completare l'installazione configurando fail2ban, guarda in config/initializers/fail2ban.rb che c'è un esempio", [:red, :on_white, :bold]
+    say "Remember! You must complete fail2ban configuration with initializer config/initializers/fail2ban.rb", [:red, :on_white, :bold]
 
   end
 
-  if yes?("Vuoi installare Re-Captcha?")
+  if yes?("Do you want to use Re-Captcha gem? (http://github.com/ambethia/recaptcha) ")
     gem "recaptcha", require: "recaptcha/rails"
 
     file "config/initializers/recaptcha.rb", <<-CODE
@@ -157,15 +158,15 @@ Recaptcha.configure do |config|
 end
     CODE
 
-    say "Ricordati che devi completare l'installazione configurando Re-Captcha con le API-KEY in config/initializers/recaptcha.rb", [:red, :on_white, :bold]
+    say "Remember! You must complete configuration into initializer config/initializers/recaptcha.rb with API-KEY ", [:red, :on_white, :bold]
 
   end
 
   airbrake_installed=false
-  if yes?("Vuoi installare Airbrake?")
+  if yes?("Do you want to use Airbrake gem? (https://github.com/airbrake/airbrake)")
     gem 'airbrake', '~> 5.0'
 
-    say "Ricordati che devi completare la configurazione", [:red, :on_white, :bold]
+    say "Remember! You must complete Airbrake configuration.", [:red, :on_white, :bold]
     airbrake_installed=true
   end
 
@@ -175,7 +176,7 @@ end
     "\n//= require js-routes\n"
   end
 
-  if yes?("Vuoi predisporre la cache in produzione per utilizzare rack-cache con redis come backend?")
+  if yes?("Do you want to use production cache with rack-cache and with redis as backend?")
     gem_group :production do
       gem 'redis-rack-cache'
       gem 'redis-rails'
@@ -192,7 +193,7 @@ Rails.application.configure do
 end
     CODE
 
-    say "Ricordati poi che hai bisogno del servizio redis online, se utilizzerai il deploy con docker avrai già tutto configurato", [:red, :on_white, :bold]
+    say "Remeber! You need Redis service in production environment. If you use docker deploy you will have already configured..", [:red, :on_white, :bold]
 
 
   end
@@ -202,9 +203,9 @@ end
 
   deploy_with_docker = false
   capistrano_installed = false
-  if yes?("Vuoi installare capistrano per il deploy?")
+  if yes?("Do you want to use Capistrano for deploy task?")
 
-    if yes?("Vorrai eseguire il deploy tramite Docker?")
+    if yes?("Do you want to use Docker for deploy task?")
       deploy_with_docker = true
     end
 
@@ -228,10 +229,10 @@ end
 
   end
 
-  lang = ask('Definisci la lingua di default[it]')
+  lang = ask('What\'s your default language? [it]')
   lang = 'it' if lang.blank?
 
-  timezone = ask('Definisci Timezone[Rome]')
+  timezone = ask('What\'s your default Timezone [Rome]')
   timezone = 'Rome' if timezone.blank?
 
   file 'config/initializers/base_setup.rb', <<-CODE
@@ -310,13 +311,13 @@ require 'capistrano-db-tasks'\n\n"
 
 
 
-    if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
+    if yes?("Do you want use 'language link url' helper into head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
-      say "Creato helper 'language_links_by_page' da inserire nel layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
+      say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
     end
 
 
-    if yes?("Vuoi avere la base per i moduli estesi con le essenze di Alchemy (es. le News) ?")
+    if yes?("Do you want extended module with Alchemy essence: News ?")
 
       download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
 
@@ -362,7 +363,7 @@ require 'capistrano-db-tasks'\n\n"
 
       append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: "proxed_advice"
-  hint: "Dati aggiuntivi struttura delle  news"
+  hint: "Dati aggiuntivi struttura delle news"
   picture_gallery: true
   contents:
     - name: immagine_anteprima
@@ -394,7 +395,7 @@ end
     end
 
 
-    if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
+    if yes?("Do you want extended module with Alchemy essence: contacts and e-mail registrations (for newsletter?)")
 
       download_file "config/locales/user_registration.it.yml"
 
@@ -491,5 +492,5 @@ end
 
   end
 else
-  raise "Alchemy 4.0 è compatibile con Rails <=5.1"
+  raise "Alchemy 4.1 it's not compatible with Rails version"
 end
