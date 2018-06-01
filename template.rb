@@ -197,8 +197,8 @@ end
 
   end
 
-  gem 'alchemy_cms', '~> 4.0'
-  gem 'alchemy-devise', '~> 4.0'
+  gem 'alchemy_cms', '~> 4.1.0.rc1'
+  gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
 
   deploy_with_docker = false
   capistrano_installed = false
@@ -323,6 +323,7 @@ require 'capistrano-db-tasks'\n\n"
       download_file "app/assets/stylesheets/alchemy/custom_records.scss"
 
       application_js = 'vendor/assets/javascripts/alchemy/admin/all.js'
+
       inject_into_file application_js, after: '//= require alchemy/admin' do
         "\n//= require custom_admin_elementEditor\n"
       end
