@@ -3,7 +3,7 @@ require 'yaml'
 
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
-REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/ajax_form"
+REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/searchable"
 
 
 ask("Remeber!!!! DISABLE_SPRING=true before command.")
@@ -229,9 +229,15 @@ end
       end
 
     end
-
-
   end
+
+
+  pg_search = false
+  if yes?("Do you want pg_search gem for full text search? It work only if use Postrgresql as DBMS.")
+    gem 'pg_search'
+    pg_search = true
+  end
+
 
   lang = ask('What\'s your default language? [it]')
   lang = 'it' if lang.blank?
@@ -314,6 +320,68 @@ require 'capistrano-db-tasks'\n\n"
     download_file "config/locales/devise.it.yml"
 
     download_file "config/puma.rb"
+
+    generate 'pg_search:migration:multisearch' if pg_search
+
+
+    if pg_search
+
+      download_file "app/lib/search_result.rb"
+
+      download_file "app/models/alchemy/content_decorator.rb"
+
+      download_file "app/models/alchemy/essence_html_decorator.rb"
+
+      download_file "app/models/alchemy/essence_richtext_decorator.rb"
+
+      download_file "app/models/alchemy/essence_text_decorator.rb"
+
+      download_file "app/models/alchemy/page_decorator.rb"
+
+      download_file "app/models/concerns/alchemy/content_dec.rb"
+
+      download_file "app/models/concerns/alchemy/essence_html_dec.rb"
+
+      download_file "app/models/concerns/alchemy/essence_richtext_dec.rb"
+
+      download_file "app/models/concerns/alchemy/essence_text_dec.rb"
+
+      download_file "app/models/concerns/alchemy/page_dec.rb"
+
+      download_file "app/models/concerns/searchable.rb"
+
+      download_file "app/views/alchemy/search/_form.html.erb"
+
+      download_file "app/views/alchemy/search/_result.html.erb"
+
+      download_file "app/views/alchemy/search/_results.html.erb"
+
+      download_file "db/migrate/20180405200556_add_searchable_to_alchemy_essence_texts.alchemy_pg_search.rb"
+
+      download_file "db/migrate/20180405200557_add_searchable_to_alchemy_essence_richtexts.alchemy_pg_search.rb"
+
+      download_file "db/migrate/20180405200558_add_searchable_to_alchemy_essence_pictures.alchemy_pg_search.rb"
+
+      download_file "config/initializers/archimedia_pgsearch.rb"
+
+      download_file "config/initializers/pg_search.rb"
+
+      append_to_file "config/alchemy/elements.yml", <<-CODE
+- name: search_form
+  hint: false
+  contents: []
+
+      CODE
+
+      append_to_file "config/alchemy/page_layouts.yml", <<-CODE
+- name: search_results
+  searchresults: true
+  unique: true
+
+      CODE
+
+      rails_command 'db:migrate'
+    end
 
 
     if yes?("Do you want use 'language link url' helper into head?")

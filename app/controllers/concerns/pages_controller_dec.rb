@@ -105,7 +105,7 @@ module PagesControllerDec
     end
 
     def paginate_per
-      EnteBilaterale::SEARCH_RESULTS_PAGINATION_NUMBER
+      ArchimediaPgsearch::SEARCH_RESULTS_PAGINATION_NUMBER
     end
 
 

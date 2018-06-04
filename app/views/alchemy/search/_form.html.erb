@@ -1,0 +1,8 @@
+<% if search_result_page %>
+  <%= form_tag show_alchemy_page_path(search_result_page),
+               method: 'get', id: options[:id], class: options[:class] do %>
+    <%= search_field_tag :query, nil,
+                         placeholder: Alchemy.t(:placeholder, scope: 'search_form') %>
+    <%= submit_tag Alchemy.t(:submit, scope: 'search_form'), name: nil %>
+  <% end %>
+<% end %>

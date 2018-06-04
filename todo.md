@@ -1,10 +1,5 @@
 
 
-
-
-  
-
-
   
   
 Searches
@@ -27,6 +22,9 @@ Searches
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/views/alchemy/search/_result.html.erb
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/views/alchemy/search/_results.html.erb
 
+  
+  
+  
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/config/alchemy/elements.yml
   - name: search_form
   hint: false
@@ -37,6 +35,8 @@ Searches
   - name: search_results
   searchresults: true
   unique: true
+
+
 
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/config/initializers/ente_bilaterale.rb
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/config/initializers/pg_serach.rb
