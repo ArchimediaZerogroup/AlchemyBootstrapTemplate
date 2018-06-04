@@ -8,27 +8,6 @@ ajax_form
 
 
   
-custom models
-  Aggiornare quanto c'è già dentro dei custom model
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/helpers/alchemy/pages_helper_decorator.rb  (escluso questo def print_news_home)
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/admin/friendly_loader.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/alchemy/pages_controller_decorator.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/alchemy/resource_controller_decorator.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/concerns/pages_controller_dec.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/concerns/resource_controller_dec.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/helpers/application_helper.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/inputs/alchemy_element_input.rb  (verifica se aggiornato)
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/lib/contact_form_resource.rb
-
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/config/alchemy/page_layouts.yml
-  - name: not_found
-    elements: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
-
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180406084907_add_proxed_element_id_to_element.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180430091924_add_proxed_element_type_to_alchemy_element.rb
-  
-
-  
 
 Varie
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/helpers/link_languages_helper_decorator.rb
@@ -47,6 +26,8 @@ Varie
 
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180504131126_add_description_and_title_to_advice.rb  + slug
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180504144212_add_seo_field_to_advice.rb
+
+
 
 
   
@@ -92,14 +73,42 @@ Searches
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180405200558_add_searchable_to_alchemy_essence_pictures.alchemy_pg_search.rb
   
 
+
+
+
+
+custom models
+  Aggiornare quanto c'è già dentro dei custom model
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/helpers/alchemy/pages_helper_decorator.rb  (escluso questo def print_news_home)  
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/admin/friendly_loader.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/alchemy/pages_controller_decorator.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/alchemy/resource_controller_decorator.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/concerns/pages_controller_dec.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/concerns/resource_controller_dec.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/helpers/application_helper.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/inputs/alchemy_element_input.rb  (verifica se aggiornato)
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/lib/contact_form_resource.rb
+
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/config/alchemy/page_layouts.yml
+  - name: not_found
+    elements: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
+
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180406084907_add_proxed_element_id_to_element.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180430091924_add_proxed_element_type_to_alchemy_element.rb
+
+
+
+
+
+
+
+
+======   DONE: ======
+
 Frielndly-id
 
   Gemfile: gem 'friendly_id', '~> 5.1.0' #Vedi generator
 
-
-  
-  
-  
 
 
 Arguments (argomenti degli advice)

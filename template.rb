@@ -417,6 +417,35 @@ end
       download_file "db/migrate/20180405154729_add_argument_to_advice.rb"
 
 
+      # Helpers and decorators
+      download_file "app/helpers/alchemy/pages_helper_decorator.rb"
+
+      download_file "app/controllers/alchemy/pages_controller_decorator.rb"
+
+      download_file "app/controllers/alchemy/resource_controller_decorator.rb"
+
+      download_file "app/controllers/concerns/pages_controller_dec.rb"
+
+      download_file "app/controllers/concerns/resource_controller_dec.rb"
+
+      download_file "app/helpers/application_helper.rb"
+
+      download_file "app/lib/contact_form_resource.rb"
+
+      download_file "db/migrate/20180406084907_add_proxed_element_id_to_element.rb"
+
+      download_file "db/migrate/20180430091924_add_proxed_element_type_to_alchemy_element.rb"
+
+      append_to_file "config/alchemy/page_layouts.yml", <<-CODE
+- name: not_found
+  elements: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
+            CODE
+
+
+
+
+
+
 append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: "proxed_advice"
   hint: "Dati aggiuntivi struttura delle  news"
