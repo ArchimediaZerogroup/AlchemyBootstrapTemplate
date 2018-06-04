@@ -343,6 +343,8 @@ require 'capistrano-db-tasks'\n\n"
       # inject vendor/assets/javascripts/alchemy/admin/all.js ( //= require custom_admin_elementEditor )
       # inject vendor/assets/stylesheets/alchemy/admin/all.css ( *= require alchemy/custom_records.scss )
 
+      download_file "app/models/custom_model.rb"
+
       download_file "app/models/advice.rb"
 
       download_file "app/models/advice_ability.rb"
@@ -405,6 +407,8 @@ end
       download_file "app/lib/argument_resource.rb"
 
       download_file "app/models/argument.rb"
+
+      download_file "app/models/custom_model.rb"
 
       download_file "app/models/argument_ability.rb"
 
