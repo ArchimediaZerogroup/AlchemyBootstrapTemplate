@@ -1,4 +1,7 @@
 it:
+  date:
+    formats:
+      datepicker: "%d/%m/%Y"
   time:
     formats:
       datepicker: "%d/%m/%Y"
