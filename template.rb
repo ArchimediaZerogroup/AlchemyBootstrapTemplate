@@ -317,7 +317,7 @@ require 'capistrano-db-tasks'\n\n"
     end
 
 
-    if yes?("Do you want extended module with Alchemy essence: News ?")
+    if yes?("Do you want extended module: News ?")
 
       download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
 
@@ -384,11 +384,32 @@ require 'capistrano-db-tasks'\n\n"
         <<-CODE
 namespace :admin do
     resources :advices
+    resources :arguments
 end
         CODE
       end
 
       download_file "config/locales/advice.it.yml"
+
+
+
+      # Model Arguments of News
+
+      download_file "app/controllers/admin/arguments_controller.rb"
+
+      download_file "app/lib/argument_resource.rb"
+
+      download_file "app/models/argument.rb"
+
+      download_file "app/models/argument_ability.rb"
+
+      download_file "config/initializers/alchemy_argument.rb"
+
+      download_file "db/migrate/20180405143720_create_argument.rb"
+
+      download_file "db/migrate/20180405154729_add_argument_to_advice.rb"
+
+
 
 
       rails_command 'db:migrate'
