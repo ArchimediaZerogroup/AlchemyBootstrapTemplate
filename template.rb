@@ -202,6 +202,8 @@ end
   gem 'alchemy_cms', '~> 4.1.0.rc1'
   gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
 
+  gem 'friendly_id', '~> 5.1.0'
+
   deploy_with_docker = false
   capistrano_installed = false
   if yes?("Do you want to use Capistrano for deploy task?")
@@ -302,6 +304,8 @@ require 'capistrano-db-tasks'\n\n"
     rails_command 'alchemy:install'
     generate 'alchemy:devise:install'
 
+    generate 'friendly_id'
+
     generate 'cookie_law:install' if installed_cookie_law
 
     generate 'airbrake 0123 abcd' if airbrake_installed
@@ -311,7 +315,6 @@ require 'capistrano-db-tasks'\n\n"
     download_file "config/puma.rb"
 
 
-
     if yes?("Do you want use 'language link url' helper into head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
       say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
@@ -319,6 +322,8 @@ require 'capistrano-db-tasks'\n\n"
 
 
     if yes?("Do you want extended module: News ?")
+
+
 
       download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
 
@@ -393,7 +398,6 @@ end
       download_file "config/locales/advice.it.yml"
 
 
-
       # Model Arguments of News
 
       download_file "app/controllers/admin/arguments_controller.rb"
@@ -409,8 +413,6 @@ end
       download_file "db/migrate/20180405143720_create_argument.rb"
 
       download_file "db/migrate/20180405154729_add_argument_to_advice.rb"
-
-
 
 
       rails_command 'db:migrate'
