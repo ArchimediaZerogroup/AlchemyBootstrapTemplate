@@ -1,10 +1,5 @@
 
-ajax_form
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/ajax_forms_controller.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/assets/javascripts/ajax_forms.js
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/views/ajax_forms/create.json.jbuilder
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/contact_forms_controller.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/lib/contact_form_resource.rb
+
 
 
   
@@ -75,6 +70,18 @@ Searches
 
 
 
+ajax_form
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/ajax_forms_controller.rb
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/contact_forms_controller.rb
+
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/assets/javascripts/ajax_forms.js
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/views/ajax_forms/create.json.jbuilder
+  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/lib/contact_form_resource.rb
+
+
+
+
+======   DONE: ======
 
 
 custom models
@@ -103,7 +110,7 @@ custom models
 
 
 
-======   DONE: ======
+
 
 Frielndly-id
 

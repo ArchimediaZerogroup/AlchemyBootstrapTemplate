@@ -321,6 +321,23 @@ require 'capistrano-db-tasks'\n\n"
       say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
     end
 
+    if yes?("Do you want ajax submit form ?")
+
+      download_file "app/controllers/ajax_forms_controller.rb"
+
+      download_file "app/controllers/contact_forms_controller.rb"
+
+      download_file "app/assets/javascripts/ajax_forms.js"
+
+      download_file "app/views/ajax_forms/create.json.jbuilder"
+
+      download_file "app/lib/contact_form_resource.rb"
+
+      inject_into_file application_js do
+        "\n//= require ajax_forms\n"
+      end
+
+    end
 
     if yes?("Do you want extended module: News ?")
 
@@ -439,14 +456,10 @@ end
       append_to_file "config/alchemy/page_layouts.yml", <<-CODE
 - name: not_found
   elements: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
-            CODE
+      CODE
 
 
-
-
-
-
-append_to_file "config/alchemy/elements.yml", <<-CODE
+      append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: "proxed_advice"
   hint: "Dati aggiuntivi struttura delle  news"
   contents:
@@ -460,7 +473,6 @@ append_to_file "config/alchemy/elements.yml", <<-CODE
   contents: []
 
       CODE
-
 
 
       rails_command 'db:migrate'
