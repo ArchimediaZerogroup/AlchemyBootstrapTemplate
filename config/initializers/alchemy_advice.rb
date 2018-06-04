@@ -5,11 +5,12 @@ Alchemy::Modules.register_module({
                                          name: 'modules.advice',
                                          controller: '/admin/advices',
                                          action: 'index',
-                                         image: 'alchemy/newspapers.png',
+                                         icon: 'newspaper',
                                          sub_navigation: [{
                                                               name: 'modules.arguments',
                                                               controller: '/admin/arguments',
-                                                              action: 'index'
+                                                              action: 'index',
+                                                              icon: 'newspaper'
                                                           }]
                                      }
                                  })

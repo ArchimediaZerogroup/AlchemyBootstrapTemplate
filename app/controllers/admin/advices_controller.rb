@@ -2,7 +2,7 @@ module Admin
   class AdvicesController < BaseResourceProxerController
 
     # Only if friendly_id gem loaded
-    # include FriendlyLoader
+    include FriendlyLoader
 
     def resource_handler
       @_resource_handler ||= AdviceResource.new(controller_path, alchemy_module)
