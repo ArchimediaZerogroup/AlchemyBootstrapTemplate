@@ -333,9 +333,17 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/lib/contact_form_resource.rb"
 
-      inject_into_file application_js do
+      append_file application_js do
         "\n//= require ajax_forms\n"
       end
+
+
+      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
+        <<-CODE
+resources :contact_forms , only: [:create]
+        CODE
+      end
+
 
     end
 

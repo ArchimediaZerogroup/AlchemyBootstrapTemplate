@@ -4,26 +4,6 @@
 
   
 
-Varie
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/helpers/link_languages_helper_decorator.rb
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/config/locales/it.yml
-
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/config/routes.rb
-  namespace admin
-    resources :advices, concerns: :switch_lang
-    resources :arguments, concerns: :switch_lang
-    resources :contact_forms  
-  end
-  
-  resources :contact_forms , only: [:create]
-
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180504081148_add_language_id_to_advice.rb
-
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180504131126_add_description_and_title_to_advice.rb  + slug
-  /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/db/migrate/20180504144212_add_seo_field_to_advice.rb
-
-
-
 
   
   
@@ -70,6 +50,18 @@ Searches
 
 
 
+
+
+
+
+
+
+
+
+
+
+======   DONE: ======
+
 ajax_form
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/ajax_forms_controller.rb
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/controllers/contact_forms_controller.rb
@@ -79,9 +71,6 @@ ajax_form
   /Users/jury/Lavori/ruby/workspaces/EnteBilaterale-alchemy/app/lib/contact_form_resource.rb
 
 
-
-
-======   DONE: ======
 
 
 custom models
