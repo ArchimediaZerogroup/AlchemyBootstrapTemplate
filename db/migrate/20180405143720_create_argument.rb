@@ -6,6 +6,7 @@ class CreateArgument < ActiveRecord::Migration[5.1]
       t.string :description
     end
 
+    add_reference :arguments, :language
 
   end
 end

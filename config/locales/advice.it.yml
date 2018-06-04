@@ -1,5 +1,9 @@
 it:
+  time:
+    formats:
+      datepicker: "%d/%m/%Y"
+      default: "%a %d %b %Y, %H:%M:%S %z"
   alchemy:
     modules:
       advice: "News"
-      arguments: "Argomenti Notizie"
+      arguments: "Argomenti"

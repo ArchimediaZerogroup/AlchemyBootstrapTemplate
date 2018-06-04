@@ -52,12 +52,12 @@ module AlchemyElementProxerConcern
 
         self.has_one(:alchemy_element, class_name: proxer_element_name, foreign_key: :page_id, :dependent => :destroy)
 
-        proxed_elements.each do |c|
-          define_method c[:name].to_sym do
-            self.alchemy_element.contents.named(:immagine_principale).first
-          end
-
-        end
+        #FIXME: This need?
+        #proxed_elements.each do |c|
+        #  define_method c[:name].to_sym do
+        #    self.alchemy_element.contents.named(:immagine_principale).first
+        #  end
+        #end
       else
         Rails.logger.debug{"Non abbiamo trovato la definizione per l'elemento:#{alchemy_element_name}"}
       end

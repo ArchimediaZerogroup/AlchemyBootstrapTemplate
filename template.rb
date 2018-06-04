@@ -202,7 +202,8 @@ end
   gem 'alchemy_cms', '~> 4.1.0.rc1'
   gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
 
-  gem 'friendly_id', '~> 5.1.0'
+  gem 'friendly_id', '~> 5.2', '>= 5.2.4'
+  gem 'rails-i18n', '~> 5.1'
 
   deploy_with_docker = false
   capistrano_installed = false
@@ -323,8 +324,6 @@ require 'capistrano-db-tasks'\n\n"
 
     if yes?("Do you want extended module: News ?")
 
-
-
       download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
 
       download_file "app/assets/stylesheets/alchemy/custom_records.scss"
@@ -349,6 +348,7 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/models/advice_ability.rb"
 
+      download_file "app/models/concerns/admin_override_to_param.rb"
       download_file "app/models/concerns/alchemy_element_proxer_concern.rb"
 
       download_file "app/lib/advice_resource.rb"
@@ -368,6 +368,8 @@ require 'capistrano-db-tasks'\n\n"
       download_file "app/controllers/admin/advices_controller.rb"
 
       download_file "app/controllers/admin/base_resource_proxer_controller.rb"
+
+      download_file "app/controllers/admin/friendly_loader.rb"
 
       append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: "proxed_advice"
@@ -400,7 +402,7 @@ end
       download_file "config/locales/advice.it.yml"
 
 
-      # Model Arguments of News
+      # Model Arguments News
 
       download_file "app/controllers/admin/arguments_controller.rb"
 
@@ -408,15 +410,28 @@ end
 
       download_file "app/models/argument.rb"
 
-      download_file "app/models/custom_model.rb"
-
       download_file "app/models/argument_ability.rb"
-
-      download_file "config/initializers/alchemy_argument.rb"
 
       download_file "db/migrate/20180405143720_create_argument.rb"
 
       download_file "db/migrate/20180405154729_add_argument_to_advice.rb"
+
+
+append_to_file "config/alchemy/elements.yml", <<-CODE
+- name: "proxed_advice"
+  hint: "Dati aggiuntivi struttura delle  news"
+  contents:
+  - name: preview_image
+    type: EssencePicture
+  - name: news_text
+    type: EssenceRichtext
+
+- name: "proxed_argument"
+  hint: "Dati aggiuntivi struttura degli  argomenti"
+  contents: []
+
+      CODE
+
 
 
       rails_command 'db:migrate'
@@ -515,6 +530,11 @@ end
 
       rails_command 'db:migrate'
 
+    end
+
+
+    if yes?("Do you want download IT locales from Alchemy_i18n?")
+      get "https://github.com/AlchemyCMS/alchemy_i18n/raw/master/config/locales/alchemy.it.yml", "config/locales/alchemy.it.yml"
     end
 
 
