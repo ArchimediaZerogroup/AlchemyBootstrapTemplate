@@ -1,0 +1,1 @@
+Alchemy::EssenceText.include Alchemy::EssenceTextDec

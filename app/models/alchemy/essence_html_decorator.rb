@@ -1,0 +1,1 @@
+Alchemy::EssenceHtml.include Alchemy::EssenceHtmlDec

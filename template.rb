@@ -3,9 +3,10 @@ require 'yaml'
 
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
 gem_version = Gem::Version.new(version)
-REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
+REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/searchable"
 
-ask("RICORDATI!!!! DISABLE_SPRING=true anteposto al comando")
+
+ask("Remeber!!!! DISABLE_SPRING=true before command.")
 
 def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
 
@@ -14,6 +15,7 @@ def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
 
 end
 
+say "You are using Rails #{gem_version.inspect}"
 
 if gem_version <= Gem::Version.new("5.2")
 
@@ -39,7 +41,7 @@ if gem_version <= Gem::Version.new("5.2")
   CODE
 
 
-  if yes?("Vuoi Bourbon?(fratello di compass)")
+  if yes?("Do you want to use 'Bourbon?'? (https://www.bourbon.io/) ")
     gem 'bourbon'
 
     inject_into_file sass_requires, before: '//= require_tree .' do
@@ -59,7 +61,7 @@ if gem_version <= Gem::Version.new("5.2")
     end
   end
 
-  if yes?("Vuoi Bootstrap(4)?")
+  if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")
     gem 'bootstrap', '~> 4.0.0.beta3'
     inject_into_file sass_requires, before: '//= require_tree .' do
       "\n  @import \"bootstrap\";\n"
@@ -70,7 +72,7 @@ if gem_version <= Gem::Version.new("5.2")
 
   end
 
-  if yes?("Vuoi le icone di font awesome?")
+  if yes?("Do you want to use 'Font awesome'? (https://fontawesome.com/)")
     gem "font-awesome-rails"
 
     inject_into_file application_css, :before => " */" do
@@ -81,7 +83,7 @@ if gem_version <= Gem::Version.new("5.2")
 
 
   installed_cookie_law = false
-  if yes?("Vuoi la gemma per cookie law ?")
+  if yes?("Do you want to use 'cookie_law' gem? (https://github.com/coders51/cookie_law) ")
     gem "cookie_law"
 
     inject_into_file application_css, :before => " */" do
@@ -96,13 +98,13 @@ if gem_version <= Gem::Version.new("5.2")
       "<%= cookie_law! %>"
     end
 
-    say "Ricordati che devi completare l'installazione configurando l'inizializzatore config/initializers/cookie_law.rb", [:red, :on_white, :bold]
+    say "Remember! You must complete configuration with initializer config/initializers/cookie_law.rb", [:red, :on_white, :bold]
 
     installed_cookie_law = true
   end
 
 
-  if yes?("Vuoi installare l'inizializzatore per gestire i login falliti con Fail2Ban?")
+  if yes?("Do you want to use Fail2Ban script ?")
 
     file "config/initializers/fail2ban.rb", <<-CODE
 module Fail2ban
@@ -143,11 +145,11 @@ end
 
     CODE
 
-    say "Ricordati che devi completare l'installazione configurando fail2ban, guarda in config/initializers/fail2ban.rb che c'è un esempio", [:red, :on_white, :bold]
+    say "Remember! You must complete fail2ban configuration with initializer config/initializers/fail2ban.rb", [:red, :on_white, :bold]
 
   end
 
-  if yes?("Vuoi installare Re-Captcha?")
+  if yes?("Do you want to use Re-Captcha gem? (http://github.com/ambethia/recaptcha) ")
     gem "recaptcha", require: "recaptcha/rails"
 
     file "config/initializers/recaptcha.rb", <<-CODE
@@ -157,15 +159,15 @@ Recaptcha.configure do |config|
 end
     CODE
 
-    say "Ricordati che devi completare l'installazione configurando Re-Captcha con le API-KEY in config/initializers/recaptcha.rb", [:red, :on_white, :bold]
+    say "Remember! You must complete configuration into initializer config/initializers/recaptcha.rb with API-KEY ", [:red, :on_white, :bold]
 
   end
 
   airbrake_installed=false
-  if yes?("Vuoi installare Airbrake?")
+  if yes?("Do you want to use Airbrake gem? (https://github.com/airbrake/airbrake)")
     gem 'airbrake', '~> 5.0'
 
-    say "Ricordati che devi completare la configurazione", [:red, :on_white, :bold]
+    say "Remember! You must complete Airbrake configuration.", [:red, :on_white, :bold]
     airbrake_installed=true
   end
 
@@ -175,7 +177,7 @@ end
     "\n//= require js-routes\n"
   end
 
-  if yes?("Vuoi predisporre la cache in produzione per utilizzare rack-cache con redis come backend?")
+  if yes?("Do you want to use production cache with rack-cache and with redis as backend?")
     gem_group :production do
       gem 'redis-rack-cache'
       gem 'redis-rails'
@@ -192,19 +194,22 @@ Rails.application.configure do
 end
     CODE
 
-    say "Ricordati poi che hai bisogno del servizio redis online, se utilizzerai il deploy con docker avrai già tutto configurato", [:red, :on_white, :bold]
+    say "Remeber! You need Redis service in production environment. If you use docker deploy you will have already configured..", [:red, :on_white, :bold]
 
 
   end
 
-  gem 'alchemy_cms', '~> 4.0'
-  gem 'alchemy-devise', '~> 4.0'
+  gem 'alchemy_cms', '~> 4.1.0.rc1'
+  gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
+
+  gem 'friendly_id', '~> 5.2', '>= 5.2.4'
+  gem 'rails-i18n', '~> 5.1'
 
   deploy_with_docker = false
   capistrano_installed = false
-  if yes?("Vuoi installare capistrano per il deploy?")
+  if yes?("Do you want to use Capistrano for deploy task?")
 
-    if yes?("Vorrai eseguire il deploy tramite Docker?")
+    if yes?("Do you want to use Docker for deploy task?")
       deploy_with_docker = true
     end
 
@@ -224,14 +229,20 @@ end
       end
 
     end
-
-
   end
 
-  lang = ask('Definisci la lingua di default[it]')
+
+  pg_search = false
+  if yes?("Do you want pg_search gem for full text search? It work only if use Postrgresql as DBMS.")
+    gem 'pg_search'
+    pg_search = true
+  end
+
+
+  lang = ask('What\'s your default language? [it]')
   lang = 'it' if lang.blank?
 
-  timezone = ask('Definisci Timezone[Rome]')
+  timezone = ask('What\'s your default Timezone [Rome]')
   timezone = 'Rome' if timezone.blank?
 
   file 'config/initializers/base_setup.rb', <<-CODE
@@ -300,6 +311,8 @@ require 'capistrano-db-tasks'\n\n"
     rails_command 'alchemy:install'
     generate 'alchemy:devise:install'
 
+    generate 'friendly_id'
+
     generate 'cookie_law:install' if installed_cookie_law
 
     generate 'airbrake 0123 abcd' if airbrake_installed
@@ -308,21 +321,108 @@ require 'capistrano-db-tasks'\n\n"
 
     download_file "config/puma.rb"
 
+    generate 'pg_search:migration:multisearch' if pg_search
 
 
-    if yes?("Vuoi l'helper per i 'link url per lingua' nell'head?")
-      download_file "app/helpers/link_languages_helper_decorator.rb"
-      say "Creato helper 'language_links_by_page' da inserire nel layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
+    if pg_search
+
+      download_file "app/lib/search_result.rb"
+
+      download_file "app/models/alchemy/content_decorator.rb"
+
+      download_file "app/models/alchemy/essence_html_decorator.rb"
+
+      download_file "app/models/alchemy/essence_richtext_decorator.rb"
+
+      download_file "app/models/alchemy/essence_text_decorator.rb"
+
+      download_file "app/models/alchemy/page_decorator.rb"
+
+      download_file "app/models/concerns/alchemy/content_dec.rb"
+
+      download_file "app/models/concerns/alchemy/essence_html_dec.rb"
+
+      download_file "app/models/concerns/alchemy/essence_richtext_dec.rb"
+
+      download_file "app/models/concerns/alchemy/essence_text_dec.rb"
+
+      download_file "app/models/concerns/alchemy/page_dec.rb"
+
+      download_file "app/models/concerns/searchable.rb"
+
+      download_file "app/views/alchemy/search/_form.html.erb"
+
+      download_file "app/views/alchemy/search/_result.html.erb"
+
+      download_file "app/views/alchemy/search/_results.html.erb"
+
+      download_file "db/migrate/20180405200556_add_searchable_to_alchemy_essence_texts.alchemy_pg_search.rb"
+
+      download_file "db/migrate/20180405200557_add_searchable_to_alchemy_essence_richtexts.alchemy_pg_search.rb"
+
+      download_file "db/migrate/20180405200558_add_searchable_to_alchemy_essence_pictures.alchemy_pg_search.rb"
+
+      download_file "config/initializers/archimedia_pgsearch.rb"
+
+      download_file "config/initializers/pg_search.rb"
+
+      append_to_file "config/alchemy/elements.yml", <<-CODE
+- name: search_form
+  hint: false
+  contents: []
+
+      CODE
+
+      append_to_file "config/alchemy/page_layouts.yml", <<-CODE
+- name: search_results
+  searchresults: true
+  unique: true
+
+      CODE
+
+      rails_command 'db:migrate'
     end
 
 
-    if yes?("Vuoi avere la base per i moduli estesi con le essenze di Alchemy (es. le News) ?")
+    if yes?("Do you want use 'language link url' helper into head?")
+      download_file "app/helpers/link_languages_helper_decorator.rb"
+      say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
+    end
+
+    if yes?("Do you want ajax submit form ?")
+
+      download_file "app/controllers/ajax_forms_controller.rb"
+
+      download_file "app/controllers/contact_forms_controller.rb"
+
+      download_file "app/assets/javascripts/ajax_forms.js"
+
+      download_file "app/views/ajax_forms/create.json.jbuilder"
+
+      download_file "app/lib/contact_form_resource.rb"
+
+      append_file application_js do
+        "\n//= require ajax_forms\n"
+      end
+
+
+      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
+        <<-CODE
+resources :contact_forms , only: [:create]
+        CODE
+      end
+
+
+    end
+
+    if yes?("Do you want extended module: News ?")
 
       download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
 
       download_file "app/assets/stylesheets/alchemy/custom_records.scss"
 
       application_js = 'vendor/assets/javascripts/alchemy/admin/all.js'
+
       inject_into_file application_js, after: '//= require alchemy/admin' do
         "\n//= require custom_admin_elementEditor\n"
       end
@@ -335,10 +435,13 @@ require 'capistrano-db-tasks'\n\n"
       # inject vendor/assets/javascripts/alchemy/admin/all.js ( //= require custom_admin_elementEditor )
       # inject vendor/assets/stylesheets/alchemy/admin/all.css ( *= require alchemy/custom_records.scss )
 
+      download_file "app/models/custom_model.rb"
+
       download_file "app/models/advice.rb"
 
       download_file "app/models/advice_ability.rb"
 
+      download_file "app/models/concerns/admin_override_to_param.rb"
       download_file "app/models/concerns/alchemy_element_proxer_concern.rb"
 
       download_file "app/lib/advice_resource.rb"
@@ -359,9 +462,11 @@ require 'capistrano-db-tasks'\n\n"
 
       download_file "app/controllers/admin/base_resource_proxer_controller.rb"
 
+      download_file "app/controllers/admin/friendly_loader.rb"
+
       append_to_file "config/alchemy/elements.yml", <<-CODE
 - name: "proxed_advice"
-  hint: "Dati aggiuntivi struttura delle  news"
+  hint: "Dati aggiuntivi struttura delle news"
   picture_gallery: true
   contents:
     - name: immagine_anteprima
@@ -382,6 +487,7 @@ require 'capistrano-db-tasks'\n\n"
         <<-CODE
 namespace :admin do
     resources :advices
+    resources :arguments
 end
         CODE
       end
@@ -389,11 +495,67 @@ end
       download_file "config/locales/advice.it.yml"
 
 
+      # Model Arguments News
+
+      download_file "app/controllers/admin/arguments_controller.rb"
+
+      download_file "app/lib/argument_resource.rb"
+
+      download_file "app/models/argument.rb"
+
+      download_file "app/models/argument_ability.rb"
+
+      download_file "db/migrate/20180405143720_create_argument.rb"
+
+      download_file "db/migrate/20180405154729_add_argument_to_advice.rb"
+
+
+      # Helpers and decorators
+      download_file "app/helpers/alchemy/pages_helper_decorator.rb"
+
+      download_file "app/controllers/alchemy/pages_controller_decorator.rb"
+
+      download_file "app/controllers/alchemy/resource_controller_decorator.rb"
+
+      download_file "app/controllers/concerns/pages_controller_dec.rb"
+
+      download_file "app/controllers/concerns/resource_controller_dec.rb"
+
+      download_file "app/helpers/application_helper.rb"
+
+      download_file "app/lib/contact_form_resource.rb"
+
+      download_file "db/migrate/20180406084907_add_proxed_element_id_to_element.rb"
+
+      download_file "db/migrate/20180430091924_add_proxed_element_type_to_alchemy_element.rb"
+
+      append_to_file "config/alchemy/page_layouts.yml", <<-CODE
+- name: not_found
+  elements: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
+      CODE
+
+
+      append_to_file "config/alchemy/elements.yml", <<-CODE
+- name: "proxed_advice"
+  hint: "Dati aggiuntivi struttura delle  news"
+  contents:
+  - name: preview_image
+    type: EssencePicture
+  - name: news_text
+    type: EssenceRichtext
+
+- name: "proxed_argument"
+  hint: "Dati aggiuntivi struttura degli  argomenti"
+  contents: []
+
+      CODE
+
+
       rails_command 'db:migrate'
     end
 
 
-    if yes?("Vuoi avere la base per la form contatti e la registrazione e-mail (per newsletter?)")
+    if yes?("Do you want extended module with Alchemy essence: contacts and e-mail registrations (for newsletter?)")
 
       download_file "config/locales/user_registration.it.yml"
 
@@ -488,7 +650,12 @@ end
     end
 
 
+    if yes?("Do you want download IT locales from Alchemy_i18n?")
+      get "https://github.com/AlchemyCMS/alchemy_i18n/raw/master/config/locales/alchemy.it.yml", "config/locales/alchemy.it.yml"
+    end
+
+
   end
 else
-  raise "Alchemy 4.0 è compatibile con Rails <=5.1"
+  raise "Alchemy 4.1 it's not compatible with Rails version"
 end

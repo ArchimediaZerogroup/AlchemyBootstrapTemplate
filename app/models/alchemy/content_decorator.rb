@@ -1,0 +1,1 @@
+Alchemy::Content.include Alchemy::ContentDec

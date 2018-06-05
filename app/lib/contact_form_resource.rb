@@ -1,0 +1,4 @@
+class ContactFormResource < UserSiteResource
+
+
+end

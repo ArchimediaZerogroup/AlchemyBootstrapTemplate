@@ -27,3 +27,15 @@
     - name: email_destinatario_notifica
       type: EssenceText
       default: "info@example.com"
+
+- name: "proxed_advice"
+  hint: "Dati aggiuntivi struttura delle  news"
+  contents:
+  - name: preview_image
+    type: EssencePicture
+  - name: news_text
+    type: EssenceRichtext
+
+- name: "proxed_argument"
+  hint: "Dati aggiuntivi struttura degli  argomenti"
+  contents: []
