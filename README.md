@@ -1,44 +1,46 @@
 # Bootrap Alchemy Template #
                            
-Questo è il template applicativo che utilizziamo per creare i progetti relativamente allo sviluppo di siti web.
-Utilizziamo come CMS [AlchemyCMS](https://github.com/AlchemyCMS/alchemy_cms) ed una serie di altri componenti utili per l'implementazione.
+This template is used for create project that use [AlchemyCMS](https://github.com/AlchemyCMS/alchemy_cms) as CMS.
+The template install Alchemy, other gems and other "snippets" that [Archimedia](https://www.archimedianet.it) often use into it's projects. 
 
-## Requisiti ##
-Questo template necessita di:
 
-* Ruby on Rails 5.1.x
+## Requirements ##
+This template require:
+  
+* Ruby on Rails 5.2.x
 
-## Utilizzo ##
+## USe ##
 
-Nuovo progetto
+New project
 
 ```
 DISABLE_SPRING=true rails _5.1.4_ new blog -m https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
 
 ```
 
-Applicare il template su un progetto già esistente
+Use the template into existing project:
 
 ```
 DISABLE_SPRING=true bin/rails app:template LOCATION=https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
 
 ```
 
-## Cosa fa il template? ##
-1. Genera una nuova applicazione Rails
+## What the template do? ##
+1. Generate new Rails application
 2. Include Jquery
-3. Configura assets/javascript
-4. Configura assets/css
-5. Installa i componenti richiesti
-6. Installa AlchemyCMS
-7. Configura AlchemyCMS
-8. Configura Docker Stack e Capistrano per deploy 
+3. Configure assets/javascript
+4. Configure assets/css
+5. Install required components
+6. Install AlchemyCMS
+7. Configure AlchemyCMS
+8. Configure Docker Stack e Capistrano per deploy 
 
 
-## Gemme incluse ##
-Le gemme che vegono incluse, previa conferma da parte dell'utente sono:
+## Included gems ##
+This is the gems that you can install with template:
  
-* [Alchemy CMS](https://alchemy-cms.com/) e Alchemy Devise
+* [Alchemy CMS](https://alchemy-cms.com/)
+* [Alchemy Devise](https://github.com/AlchemyCMS/alchemy-devise)
 * [Bourbon](http://bourbon.io/)
 * [Owlcarousel2](https://github.com/git-jls/owlcarousel2-rails)
 * [Bootstrap(4)](https://github.com/twbs/bootstrap-rubygem)
@@ -47,21 +49,48 @@ Le gemme che vegono incluse, previa conferma da parte dell'utente sono:
 * [Re-Captcha](http://github.com/ambethia/recaptcha)
 * [Airbrake](https://airbrake.io/)
 * [Capistrano](http://capistranorb.com/)
+* [Stackose](https://github.com/oniram88/stackose)
+* [PG Search](https://github.com/Casecommons/pg_search)
+* [Friendly Id](https://github.com/norman/friendly_id) 
+* [rails-i18n](http://github.com/svenfuchs/rails-i18n)
+* [redis-rack-cache](https://rubygems.org/gems/redis-rack-cache)
+* [redis-rails](https://github.com/redis-store/redis-rails)
 
-## Funzioni incluse ##
-Le funzioni autogenerate, previa comferma da parte dell'utente sono:
-### Fail 2 ban ###
- [Fail 2 Ban](https://www.fail2ban.org/wiki/index.php/Main_Page) E' un software pensato per leggere i file di log, ed attraverso il matching di regular expression, permette di "bannare"
- a livello di rete, certi indirizzi IP che tentano (per esempio) brute force od altro. L'integrazione avviene attraveso un inizializzatore specifico dove viene anche inclusa la parte di 
- configurazione per Fail2Ban
+
+## Included code snippets ##
+This is the snippets that you can install with template:
  
-### Link url per lingua ###
- Helper per la generazione di link languages per page. L'helper deve poi essere aggiunto al layout applicativo per l'utilizzo
+### Fail 2 ban ###
+ [Fail 2 Ban](https://www.fail2ban.org/wiki/index.php/Main_Page) 
+
+``` 
+ config/initializers/fail2ban.rb
+```
+ 
+### Language link url ###
+
+```
+app/helpers/link_languages_helper_decorator.rb
   
-### Form contatti / Form registrazione newsletter ###
- Modelli, Mailer, Controller, Viste per la gestione di form di contatti dal sito e form di registrazione alla newsletter
+<%= language_links_by_page(@page) %> 
+```  
   
-### Docker / Deploy con Docker Stack ###
+### Contact Form / Newsletter form registration ###
+Models, Mailer, Controller, View for implement contacts form site and contact registration newsletter 
+  
+## PG Search ##
+If you include pg_search gem, the template generate snippets that are useful for implement  full text search into project.
+  
+## Ajax Submit Form  ##  
+"Ajax submit form" snippets consist of function and views useful for implement ajax form and submit module
+
+  
+## News Module ##  
+News module consist into various snippets that
+  
+  
+                                                  
+### Docker / Deploy with Docker Stack ###
  Predispone il deploy attraverso Docker. Viene installalo stackose (gemma per eseguire docker stack online).
  Impostate le cartelle degli assets per la sincronizzazione fra sviluppo e online, tenendo conto di sincronizzare 
  con la shared.
@@ -77,12 +106,8 @@ Le funzioni autogenerate, previa comferma da parte dell'utente sono:
  * docker:db:pull  -> Scarica il database in sviluppo
  * stackose:create_online_docker_compose_file -> Genera il file compose localmente per il deploy
   
+  
 ## TODO ##
-Altre funzionalità Work in Progress
-
-* Globalize (per traduzione modelli specifici)
-* Friendly ID (per link slag modelli specifici)
-* Modello Proxy Essence (funzionalità proxy tra modello personalizzato ed elemento Alchemy )
 * [https://github.com/presidentbeef/brakeman](https://github.com/presidentbeef/brakeman)
 * [https://github.com/thredded/db_text_search](https://github.com/thredded/db_text_search)
 
