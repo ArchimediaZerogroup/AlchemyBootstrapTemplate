@@ -653,8 +653,9 @@ end
     end
 
 
-    if yes?("Do you want download IT locales from Alchemy_i18n?")
+    if yes?("Do you want download IT locales ?")
       get "https://github.com/AlchemyCMS/alchemy_i18n/raw/master/config/locales/alchemy.it.yml", "config/locales/alchemy.it.yml"
+      download_file "vendor/assets/javascripts/tinymce/langs/it.js"
     end
 
 
