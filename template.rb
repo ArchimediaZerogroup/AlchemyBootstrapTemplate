@@ -51,15 +51,18 @@ if gem_version <= Gem::Version.new("5.2")
   end
 
   if yes?("Vuoi owlcarousel2?")
-    gem 'owlcarousel2'
-    inject_into_file sass_requires, before: '//= require_tree .' do
-      "\n  @import \"owlcarousel2/owl.carousel\";\n  @import \"owlcarousel2/owl.theme.default\";\n"
-    end
+    gem 'rails-assets-OwlCarousel2', source: 'https://rails-assets.org'
 
     inject_into_file application_js, before: '//= require_tree .' do
-      "\n//= require owlcarousel2/owl.carousel\n"
+      "\n//= require OwlCarousel2\n"
+    end
+
+    inject_into_file application_css, before: '//= require_tree .' do
+      "\n//= require OwlCarousel2\n"
     end
   end
+
+
 
   if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")
     gem 'bootstrap', '~> 4.0.0.beta3'
