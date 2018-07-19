@@ -418,7 +418,7 @@ resources :contact_forms , only: [:create]
 
     end
 
-    if yes?("Do you want extended module: News ?")
+    if yes?("Do you want extended module with custom model?")
 
       download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
 
@@ -534,6 +534,8 @@ end
 
       append_to_file "config/alchemy/page_layouts.yml", <<-CODE
 - name: not_found
+  unique: true
+  autogenerate: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
   elements: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
       CODE
 
