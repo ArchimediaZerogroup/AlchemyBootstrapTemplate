@@ -205,7 +205,7 @@ end
 
   end
 
-  gem 'alchemy_cms', '~> 4.1.0.rc1'
+  gem 'alchemy_cms', '~> 4.1.0'
   gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
 
   gem 'friendly_id', '~> 5.2', '>= 5.2.4'
