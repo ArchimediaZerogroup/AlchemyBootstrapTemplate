@@ -17,7 +17,7 @@ end
 
 say "You are using Rails #{gem_version.inspect}"
 
-if gem_version <= Gem::Version.new("5.2")
+if gem_version <= Gem::Version.new("5.2.1")
 
 
   gem 'jquery-rails'
@@ -52,7 +52,7 @@ if gem_version <= Gem::Version.new("5.2")
       "\n//= require OwlCarousel2\n"
     end
 
-    inject_into_file application_css, before: '//= require_tree .' do
+    inject_into_file application_css, :before => " */" do
       "\n//= require OwlCarousel2\n"
     end
   end
