@@ -65,7 +65,7 @@ if gem_version <= Gem::Version.new("5.2")
 
 
   if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")
-    gem 'bootstrap', '~> 4.0.0.beta3'
+    gem 'bootstrap', '~> 4.1', '>= 4.1.3'
     inject_into_file sass_requires, before: '//= require_tree .' do
       "\n  @import \"bootstrap\";\n"
     end
