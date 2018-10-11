@@ -41,13 +41,8 @@ if gem_version <= Gem::Version.new("5.2")
   CODE
 
 
-  if yes?("Do you want to use 'Bourbon?'? (https://www.bourbon.io/) ")
-    gem 'bourbon'
-
-    inject_into_file sass_requires, before: '//= require_tree .' do
-      "\n  @import \"bourbon\";\n"
-    end
-
+  if yes?("Do you want to use 'Autoprefixer'?  ")
+    gem 'autoprefixer-rails', '~> 9.1', '>= 9.1.4'
   end
 
   if yes?("Vuoi owlcarousel2?")
