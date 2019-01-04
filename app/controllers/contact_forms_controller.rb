@@ -1,3 +1,0 @@
-class ContactFormsController < AjaxFormsController
-
-end

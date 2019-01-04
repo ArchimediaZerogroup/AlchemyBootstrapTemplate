@@ -58,7 +58,6 @@ if gem_version <= Gem::Version.new("5.2.1")
   end
 
 
-
   if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")
     gem 'bootstrap', '~> 4.1', '>= 4.1.3'
     inject_into_file sass_requires, before: '//= require_tree .' do
@@ -157,7 +156,6 @@ Recaptcha.configure do |config|
   config.skip_verify_env += ["development"]
 end
     CODE
-
 
 
     say "Remember! You must complete configuration into initializer config/initializers/recaptcha.rb with API-KEY ", [:red, :on_white, :bold]
@@ -390,266 +388,17 @@ require 'capistrano-db-tasks'\n\n"
       say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
     end
 
+
     if yes?("Do you want ajax submit form ?")
-
-      download_file "app/controllers/ajax_forms_controller.rb"
-
-      download_file "app/controllers/contact_forms_controller.rb"
-
-      download_file "app/assets/javascripts/ajax_forms.js"
-
-      download_file "app/views/ajax_forms/create.json.jbuilder"
-
-      download_file "app/lib/contact_form_resource.rb"
-
-      append_file application_js do
-        "\n//= require ajax_forms\n"
-      end
-
-
-      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
-        <<-CODE
-resources :contact_forms , only: [:create]
-        CODE
-      end
-
-
+      gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
     end
 
     if yes?("Do you want extended module with custom model?")
 
-      download_file "app/assets/javascripts/custom_admin_elementEditor.coffee"
-
-      download_file "app/assets/stylesheets/alchemy/custom_records.scss"
-
-      application_js = 'vendor/assets/javascripts/alchemy/admin/all.js'
-
-      inject_into_file application_js, after: '//= require alchemy/admin' do
-        "\n//= require custom_admin_elementEditor\n"
-      end
-
-      application_css = 'vendor/assets/stylesheets/alchemy/admin/all.css'
-      inject_into_file application_css, :before => " */" do
-        "\n  *= require alchemy/custom_records.scss\n"
-      end
-
-      # inject vendor/assets/javascripts/alchemy/admin/all.js ( //= require custom_admin_elementEditor )
-      # inject vendor/assets/stylesheets/alchemy/admin/all.css ( *= require alchemy/custom_records.scss )
-
-      download_file "app/models/custom_model.rb"
-
-      download_file "app/models/advice.rb"
-
-      download_file "app/models/advice_ability.rb"
-
-      download_file "app/models/concerns/admin_override_to_param.rb"
-      download_file "app/models/concerns/alchemy_element_proxer_concern.rb"
-
-      download_file "app/lib/advice_resource.rb"
-
-      download_file "app/lib/element_proxer_resource.rb"
-
-      download_file "app/lib/alchemy/resources_helper.rb"
-
-      download_file "app/lib/alchemy/touching_decorator.rb"
-
-      download_file "app/inputs/alchemy_element_input.rb"
-
-      download_file "app/views/admin/base_resource_proxer/_resource.html.erb"
-
-      download_file "app/views/admin/base_resource_proxer/_table.html.erb"
-
-      download_file "app/controllers/admin/advices_controller.rb"
-
-      download_file "app/controllers/admin/base_resource_proxer_controller.rb"
-
-      download_file "app/controllers/admin/friendly_loader.rb"
-
-      append_to_file "config/alchemy/elements.yml", <<-CODE
-- name: "proxed_advice"
-  hint: "Dati aggiuntivi struttura delle news"
-  picture_gallery: true
-  contents:
-    - name: immagine_anteprima
-      type: EssencePicture
-    - name: corpo_news
-      type: EssenceRichtext
-
-      CODE
-
-      download_file "db/migrate/20180328100935_create_advices.rb"
-
-      download_file "config/initializers/alchemy_advice.rb"
-
-      download_file "app/assets/images/alchemy/newspapers.png"
-
-
-      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
-        <<-CODE
-namespace :admin do
-    resources :advices
-    resources :arguments
-end
-        CODE
-      end
-
-      download_file "config/locales/advice.it.yml"
-
-
-      # Model Arguments News
-
-      download_file "app/controllers/admin/arguments_controller.rb"
-
-      download_file "app/lib/argument_resource.rb"
-
-      download_file "app/models/argument.rb"
-
-      download_file "app/models/argument_ability.rb"
-
-      download_file "db/migrate/20180405143720_create_argument.rb"
-
-      download_file "db/migrate/20180405154729_add_argument_to_advice.rb"
-
-
-      # Helpers and decorators
-      download_file "app/helpers/alchemy/pages_helper_decorator.rb"
-
-      download_file "app/controllers/alchemy/pages_controller_decorator.rb"
-
-      download_file "app/controllers/alchemy/resource_controller_decorator.rb"
-
-      download_file "app/controllers/concerns/pages_controller_dec.rb"
-
-      download_file "app/controllers/concerns/resource_controller_dec.rb"
-
-      download_file "app/helpers/application_helper.rb"
-
-      download_file "app/lib/contact_form_resource.rb"
-
-      download_file "db/migrate/20180406084907_add_proxed_element_id_to_element.rb"
-
-      download_file "db/migrate/20180430091924_add_proxed_element_type_to_alchemy_element.rb"
-
-      append_to_file "config/alchemy/page_layouts.yml", <<-CODE
-- name: not_found
-  unique: true
-  autogenerate: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
-  elements: [block_title,block_paragraph, block_image_in_paragraph, paragraph_with_image]
-      CODE
-
-
-      append_to_file "config/alchemy/elements.yml", <<-CODE
-- name: "proxed_advice"
-  hint: "Dati aggiuntivi struttura delle  news"
-  contents:
-  - name: preview_image
-    type: EssencePicture
-  - name: news_text
-    type: EssenceRichtext
-
-- name: "proxed_argument"
-  hint: "Dati aggiuntivi struttura degli  argomenti"
-  contents: []
-
-      CODE
-
+      gem 'alchemy-custom-model', '~> 0.1.0'
 
       rails_command 'db:migrate'
-    end
-
-
-    if yes?("Do you want extended module with Alchemy essence: contacts and e-mail registrations (for newsletter?)")
-
-      download_file "config/locales/user_registration.it.yml"
-
-      download_file "app/controllers/admin/user_site_registrations_controller.rb"
-
-      download_file "app/controllers/admin/contact_forms_controller.rb"
-
-      download_file "app/controllers/admin/form_newsletters_controller.rb"
-
-      download_file "app/controllers/alchemy/base_controller_decorator.rb"
-
-      download_file "app/controllers/concerns/forms_concern.rb"
-
-      download_file "app/lib/user_site_resource.rb"
-
-      download_file "app/mailers/user_data_registration_mailer.rb"
-
-      download_file "app/models/contact_form.rb"
-
-      download_file "app/models/form_newsletter.rb"
-
-      download_file "app/models/user_site_registration.rb"
-
-      download_file "app/models/user_site_registration_ability.rb"
-
-      download_file "app/views/alchemy/elements/_form_contatti_editor.html.erb"
-
-      download_file "app/views/alchemy/elements/_form_contatti_view.html.erb"
-
-      download_file "app/views/alchemy/elements/_form_iscrizione_newsletter_editor.html.erb"
-
-      download_file "app/views/alchemy/elements/_form_iscrizione_newsletter_view.html.erb"
-
-      download_file "app/views/user_data_registration_mailer/_contact_form.html.erb"
-
-      download_file "app/views/user_data_registration_mailer/_form_newsletter.html.erb"
-
-      download_file "app/views/user_data_registration_mailer/notify_registration.html.erb"
-
-      download_file "app/assets/images/alchemy/user_site_registrations_module.png"
-
-      download_file "config/initializers/alchemy_user_site_registrations.rb"
-
-      append_to_file "config/alchemy/elements.yml", <<-CODE
-- name: form_iscrizione_newsletter
-  hint: "Form per l'iscrizione della newsletter"
-  unique: true
-  contents:
-    - name: title
-      type: EssenceText
-      default: 'Resta Aggiornato sulle nostre novita'
-    - name: bottone
-      type: EssenceText
-      default: "Iscriviti"
-    - name: email_destinatario_notifica
-      type: EssenceText
-      default: "info@example.com"
-    - name: pagina_privacy
-      type: EssenceText
-      settings:
-        linkable: true
-
-- name: form_contatti
-  hint: "Form dei contatti per il sito"
-  unique: true
-  contents:
-    - name: pagina_privacy
-      type: EssenceText
-      settings:
-        linkable: true
-    - name: email_destinatario_notifica
-      type: EssenceText
-      default: "info@example.com"
-
-      CODE
-
-      inject_into_file "config/routes.rb", before: 'mount Alchemy::Engine' do
-        <<-CODE
-namespace :admin do
-    resources :user_site_registrations
-    resources :form_newsletters
-    resources :contact_forms
-end
-        CODE
-      end
-
-      download_file "db/migrate/20180102112803_create_user_site_registrations.rb"
-
-
-      rails_command 'db:migrate'
-
+      rails_command 'alchemy_custom_model:install'
     end
 
 

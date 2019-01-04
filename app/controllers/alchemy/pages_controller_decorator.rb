@@ -1,1 +1,0 @@
-Alchemy::PagesController.include PagesControllerDec
