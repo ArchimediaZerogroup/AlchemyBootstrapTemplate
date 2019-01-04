@@ -17,7 +17,7 @@ end
 
 say "You are using Rails #{gem_version.inspect}"
 
-if gem_version <= Gem::Version.new("5.2.1")
+if gem_version <= Gem::Version.new("5.2.2")
 
 
   gem 'jquery-rails'
@@ -231,6 +231,17 @@ end
   end
 
 
+  if yes?("Do you want ajax submit form ?")
+    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
+  end
+
+  alchemy_custom_model=false
+  if yes?("Do you want extended module with custom model?")
+    gem 'alchemy-custom-model', '~> 0.1.0'
+    alchemy_custom_model=true
+  end
+
+
   pg_search = false
   if yes?("Do you want pg_search gem for full text search? It work only if use Postrgresql as DBMS.")
     gem 'pg_search'
@@ -314,6 +325,9 @@ require 'capistrano-db-tasks'\n\n"
 
     generate 'cookie_law:install' if installed_cookie_law
 
+    generate 'alchemy_custom_model:install' if alchemy_custom_model
+
+
     generate 'airbrake 0123 abcd' if airbrake_installed
 
     download_file "config/locales/devise.it.yml"
@@ -386,19 +400,6 @@ require 'capistrano-db-tasks'\n\n"
     if yes?("Do you want use 'language link url' helper into head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
       say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
-    end
-
-
-    if yes?("Do you want ajax submit form ?")
-      gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
-    end
-
-    if yes?("Do you want extended module with custom model?")
-
-      gem 'alchemy-custom-model', '~> 0.1.0'
-
-      rails_command 'db:migrate'
-      rails_command 'alchemy_custom_model:install'
     end
 
 

@@ -14,7 +14,7 @@ This template require:
 New project
 
 ```
-DISABLE_SPRING=true rails _5.1.4_ new blog -m https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
+DISABLE_SPRING=true rails _5.2.2_ new blog -m https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
 
 ```
 
