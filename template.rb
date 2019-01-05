@@ -22,6 +22,8 @@ if gem_version <= Gem::Version.new("5.2.2")
 
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
+  gem 'alchemy_cms', '~> 4.1.0'
+  gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
 
 
   application_js = 'app/assets/javascripts/application.js'
@@ -198,8 +200,6 @@ end
 
   end
 
-  gem 'alchemy_cms', '~> 4.1.0'
-  gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
 
   gem 'friendly_id', '~> 5.2', '>= 5.2.4'
   gem 'rails-i18n', '~> 5.1'
@@ -231,14 +231,14 @@ end
   end
 
 
-  if yes?("Do you want ajax submit form ?")
-    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
-  end
-
   alchemy_custom_model=false
   if yes?("Do you want extended module with custom model?")
     gem 'alchemy-custom-model', '~> 0.1.0'
     alchemy_custom_model=true
+  end
+
+  if yes?("Do you want ajax submit form ?")
+    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
   end
 
 
@@ -265,6 +265,10 @@ Rails.application.config.action_mailer.smtp_settings = Rails.application.secrets
 
 
   after_bundle do
+
+    rails_command 'alchemy_devise:install:migrations'
+    rails_command 'alchemy:install'
+
 
     if capistrano_installed
       run "bundle exec cap install"
@@ -318,14 +322,12 @@ require 'capistrano-db-tasks'\n\n"
       end
     end
 
-    rails_command 'alchemy:install'
-    generate 'alchemy:devise:install'
 
     generate 'friendly_id'
 
     generate 'cookie_law:install' if installed_cookie_law
 
-    generate 'alchemy_custom_model:install' if alchemy_custom_model
+    rails_command 'alchemy_custom_model:install' if alchemy_custom_model
 
 
     generate 'airbrake 0123 abcd' if airbrake_installed
@@ -412,6 +414,8 @@ require 'capistrano-db-tasks'\n\n"
 
 
   end
+
+
 else
   raise "Alchemy 4.1 it's not compatible with Rails version"
 end
