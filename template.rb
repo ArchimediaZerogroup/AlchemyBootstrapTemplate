@@ -237,9 +237,9 @@ end
     alchemy_custom_model=true
   end
 
-  #if yes?("Do you want ajax submit form ?")
-  #  gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
-  #end
+  if yes?("Do you want ajax submit form ?")
+    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
+  end
 
 
   pg_search = false
