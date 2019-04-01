@@ -233,7 +233,7 @@ end
 
   alchemy_custom_model=false
   if yes?("Do you want extended module with custom model?")
-    gem 'alchemy-custom-model', '~> 0.1.0'
+    gem 'alchemy-custom-model', '~> 0.1.6'
     alchemy_custom_model=true
   end
 
@@ -297,10 +297,10 @@ set :stackose_linked_folders, ['public/system',
         end
 
         [
-            "lib/capistrano/tasks/docker.rake",
-            "Dockerfile",
-            "docker-compose.yml",
-            ".dockerignore"
+          "lib/capistrano/tasks/docker.rake",
+          "Dockerfile",
+          "docker-compose.yml",
+          ".dockerignore"
         ].each do |f|
           download_file f
         end
@@ -412,6 +412,12 @@ require 'capistrano-db-tasks'\n\n"
 
     end
 
+
+    #Configure Alchemy defaults
+
+    append_to_file "config/alchemy/config.yml" do
+      "\n items_per_page: 100"
+    end
 
   end
 
