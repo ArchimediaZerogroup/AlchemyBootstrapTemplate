@@ -17,7 +17,7 @@ end
 
 say "You are using Rails #{gem_version.inspect}"
 
-if gem_version <= Gem::Version.new("5.2.2")
+if gem_version <= Gem::Version.new("5.2.3")
 
 
   gem 'jquery-rails'
@@ -416,7 +416,7 @@ require 'capistrano-db-tasks'\n\n"
     #Configure Alchemy defaults
 
     append_to_file "config/alchemy/config.yml" do
-      "\n items_per_page: 100"
+      "\nitems_per_page: 100"
     end
 
   end
