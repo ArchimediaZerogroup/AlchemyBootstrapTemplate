@@ -249,19 +249,6 @@ end
   end
 
 
-  lang = ask('What\'s your default language? [it]')
-  lang = 'it' if lang.blank?
-
-  timezone = ask('What\'s your default Timezone [Rome]')
-  timezone = 'Rome' if timezone.blank?
-
-  file 'config/initializers/base_setup.rb', <<-CODE
-Rails.application.config.time_zone = '#{timezone}'
-Rails.application.config.i18n.default_locale = :#{lang}
-
-Rails.application.config.action_mailer.delivery_method = :smtp
-Rails.application.config.action_mailer.smtp_settings = Rails.application.secrets.smtp
-  CODE
 
 
   after_bundle do
