@@ -252,8 +252,6 @@ end
 
 
   after_bundle do
-
-    generate 'alchemy:devise:install'
     rails_command 'alchemy:install'
 
 
@@ -410,6 +408,14 @@ require 'capistrano-db-tasks'\n\n"
     download_file "config/initializers/static_assets_cache.rb"
 
 
+    # Add devise css require
+    generate 'alchemy:devise:install'
+
+
+    #application_css = 'vendor/assets/stylesheets/alchemy/admin/all.css'
+    #inject_into_file application_css, :before => " */" do
+    #  "\n  *= require alchemy/admin/alchemy-devise\n"
+    #end
 
   end
 
