@@ -233,7 +233,7 @@ end
 
   alchemy_custom_model=false
   if yes?("Do you want extended module with custom model?")
-    gem 'alchemy-custom-model', '~> 0.1.6'
+    gem 'alchemy-custom-model', '~> 2.0', '>= 2.0.3'
     alchemy_custom_model=true
   end
 
@@ -405,6 +405,11 @@ require 'capistrano-db-tasks'\n\n"
     append_to_file "config/alchemy/config.yml" do
       "\nitems_per_page: 100"
     end
+
+    #Cache assets initializer
+    download_file "config/initializers/static_assets_cache.rb"
+
+
 
   end
 

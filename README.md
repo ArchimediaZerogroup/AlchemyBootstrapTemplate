@@ -7,14 +7,14 @@ The template install Alchemy, other gems and other "snippets" that [Archimedia](
 ## Requirements ##
 This template require:
   
-* Ruby on Rails 5.2.x
+* Ruby on Rails 5.2.3
 
 ## Use ##
 
 New project
 
 ```
-DISABLE_SPRING=true rails _5.2.2_ new blog -m https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
+DISABLE_SPRING=true rails _5.2.3_ new blog -m https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
 
 ```
 
