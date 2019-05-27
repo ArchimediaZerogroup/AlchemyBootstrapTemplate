@@ -22,13 +22,13 @@ if gem_version <= Gem::Version.new("5.2.3")
 
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
-  gem 'alchemy_cms', '~> 4.1.0'
-  gem 'alchemy-devise', :git => 'https://github.com/AlchemyCMS/alchemy-devise.git'
+  gem 'alchemy_cms', '~> 4.2.0.rc1'
+  gem 'alchemy-devise', github: 'AlchemyCMS/alchemy-devise', branch: '4.2-stable'
 
 
   application_js = 'app/assets/javascripts/application.js'
   inject_into_file application_js, before: '//= require_tree .' do
-    "\n//= require jquery3\n//= require jquery_ujs\n//= require jquery-ui\n"
+    "\n//= require jquery3\n//= require jquery_ujs\n"
   end
 
   application_css = 'app/assets/stylesheets/application.css'
@@ -253,7 +253,7 @@ end
 
   after_bundle do
 
-    rails_command 'alchemy_devise:install:migrations'
+    generate 'alchemy:devise:install'
     rails_command 'alchemy:install'
 
 
