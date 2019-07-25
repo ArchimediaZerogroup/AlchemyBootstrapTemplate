@@ -412,6 +412,10 @@ require 'capistrano-db-tasks'\n\n"
     generate 'alchemy:devise:install'
 
 
+    if alchemy_custom_model
+      rails_command "alchemy_custom_model:install"
+    end
+
     #application_css = 'vendor/assets/stylesheets/alchemy/admin/all.css'
     #inject_into_file application_css, :before => " */" do
     #  "\n  *= require alchemy/admin/alchemy-devise\n"
