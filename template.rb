@@ -416,6 +416,11 @@ require 'capistrano-db-tasks'\n\n"
       rails_command "alchemy_custom_model:install"
     end
 
+    ["lib/tasks/alchemy_cache_clear.rake"].each do |f|
+      download_file f
+    end
+
+
     #application_css = 'vendor/assets/stylesheets/alchemy/admin/all.css'
     #inject_into_file application_css, :before => " */" do
     #  "\n  *= require alchemy/admin/alchemy-devise\n"
