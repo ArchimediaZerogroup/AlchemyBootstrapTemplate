@@ -233,17 +233,17 @@ end
 
   alchemy_custom_model=false
   if yes?("Do you want extended module with custom model?")
-    gem 'alchemy-custom-model', '~> 2.0', '>= 2.0.3'
+    gem 'alchemy-custom-model', '~> 2.1', '>= 2.1.1'
     alchemy_custom_model=true
   end
 
   if yes?("Do you want ajax submit form ?")
-    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "custom_message_response"
+    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "with_loading"
   end
 
 
   pg_search = false
-  if yes?("Do you want pg_search gem for full text search? It work only if use Postrgresql as DBMS.")
+  if yes?("Do you want pg_search gem for full text search? It work only if use Postgresql as DBMS.")
     gem 'pg_search'
     pg_search = true
   end
