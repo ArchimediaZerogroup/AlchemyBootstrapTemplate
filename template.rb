@@ -235,6 +235,12 @@ end
   if yes?("Do you want extended module with custom model?")
     gem 'alchemy-custom-model', '~> 2.1', '>= 2.1.1'
     alchemy_custom_model=true
+
+    inject_into_file 'config/application.rb', after: "config.load_defaults 5.2" do
+      "\n#in modo da far funzionare correttamente l'override degli helper come per i controller"
+      "\nconfig.action_controller.include_all_helpers=false"
+    end
+    
   end
 
   if yes?("Do you want ajax submit form ?")
@@ -252,6 +258,8 @@ end
 
 
   after_bundle do
+
+
     rails_command 'alchemy:install'
 
 
