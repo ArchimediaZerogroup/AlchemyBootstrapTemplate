@@ -1,0 +1,83 @@
+
+  <%= element_view_for(contact_landing_form_view) do |el| -%>
+
+<div class="title subtitle_orange">
+    <%= el.render :title %>
+  </div>
+  <div class="form_info">
+
+
+      <%
+        privacy_newsletter_link = contact_landing_form_view.content_by_name(:newsletter_privacy).essence.link
+        privacy_newsletter = contact_landing_form_view.content_by_name(:newsletter_privacy).essence.body
+        privacy_link = contact_landing_form_view.content_by_name(:privacy_page).essence.link
+        privacy_title = contact_landing_form_view.content_by_name(:privacy_page).essence.body
+        @contact_landing_form = ContactLandingForm.new
+        @contact_landing_form.alcm_element = contact_landing_form_view.id
+      %>
+
+
+      <div class="messages"></div>
+
+
+      <%= form_for(@contact_landing_form, url: main_app.contact_landing_forms_path, method: :post, multipart: true, html: {class: "ajax_forms"}) do |f| %>
+        <%= f.hidden_field :alcm_element %>
+        <div class="row">
+
+          <div class="box-input col-12">
+           <%= f.text_field :fullname, placeholder: ContactForm.human_attribute_name(:fullname) %>
+          </div>
+
+          <div class="box-input col-12">
+           <%= f.text_field :business_name, placeholder: ContactForm.human_attribute_name(:business_name) %>
+          </div>
+
+          <div class="box-input col-12">
+           <%= f.text_field :email, placeholder: ContactForm.human_attribute_name(:email) + "*" %>
+          </div>
+
+        </div>
+
+        <% if !privacy_title.blank? %>
+          <div class="privacy">
+            <div class="single_privacy">
+              <%= f.check_box :check_privacy %>
+              <%= link_to privacy_link do %>
+                <label><%= privacy_title %></label>
+              <% end %>
+            </div>
+          </div>
+        <% else %>
+          <%= f.check_box :check_privacy %>
+        <% end %>
+
+
+      <% if !privacy_newsletter.blank? %>
+        <div class="privacy">
+          <div class="single_privacy">
+            <%= f.check_box :newsletter_subscription %>
+            <%= link_to privacy_newsletter_link do %>
+              <label><%= privacy_newsletter %></label>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <%= f.check_box :check_privacy %>
+      <% end %>
+
+
+        <div class="submit">
+          <%= f.submit t(:submit), data: {disable_with: false} %>
+        </div>
+
+      <% end %>
+
+
+
+  </div>
+
+    <div class="icons">
+      <%= render contact_landing_form_view.nested_elements.available %>
+    </div>
+
+  <%- end -%>

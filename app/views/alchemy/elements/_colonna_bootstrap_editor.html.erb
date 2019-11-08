@@ -1,0 +1,4 @@
+<%= element_editor_for(element) do |el| -%>
+  <%= el.edit :larghezza, select_values: AlchemyBootstrapGrid.column_widths.collect{ |el| [el[:title], el[:larg]]} %>
+  <%= el.edit :classi_css %>
+<%- end -%>

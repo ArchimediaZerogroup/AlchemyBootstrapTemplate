@@ -388,8 +388,64 @@ require 'capistrano-db-tasks'\n\n"
 
       CODE
 
+
       rails_command 'db:migrate'
     end
+
+# Configure generic template Bootstrap based
+    append_to_file "config/alchemy/elements.yml", <<-CODE
+- name: single_image
+  unique: true
+  contents:
+  - name: image
+    type: EssencePicture
+
+- name: single_text
+  unique: true
+  contents:
+  - name: text
+    type: EssenceRichtext
+
+- name: contenitore_colonne
+  hint: false
+  contents:
+  - name: classi_css
+    type: EssenceText
+    default: "mx-3 my-3 mx-lg-5 my-lg-5"
+  nestable_elements:
+  - colonna_bootstrap
+
+- name: colonna_bootstrap
+  hint: false
+  contents:
+  - name: larghezza
+    type: EssenceSelect
+  - name: classi_css
+    type: EssenceText
+    default: "px-2 py-2 px-lg-3 py-lg-0"
+  nestable_elements: <%= AlchemyBootstrapGrid.column_elements %>
+          
+                CODE
+    
+      append_to_file "config/alchemy/page_layouts.yml", <<-CODE
+- name: landing_page
+  elements: [header_landing,contenitore_colonne]      
+            CODE
+
+      download_file "app/assets/stylesheets/_landing_page.scss"
+      download_file "app/lib/alchemy_bootstrap_grid/col_options_builder.rb"            
+      download_file "app/lib/alchemy_bootstrap_grid/row_options_builder.rb"            
+      download_file "app/views/alchemy/elements/_colonna_bootstrap_editor.html.erb"            
+      download_file "app/views/alchemy/elements/_colonna_bootstrap_view.html.erb"            
+      download_file "app/views/alchemy/elements/_contact_landing_form_view.html.erb"            
+      download_file "app/views/alchemy/elements/_contenitore_colonne_editor.html.erb"            
+      download_file "app/views/alchemy/elements/_contenitore_colonne_view.html.erb"            
+      download_file "app/views/alchemy/elements/_single_image_editor.html.erb"            
+      download_file "app/views/alchemy/elements/_single_image_view.html.erb"            
+      download_file "app/views/alchemy/elements/_single_text_editor.html.erb"            
+      download_file "app/views/alchemy/elements/_single_text_view.html.erb"            
+      download_file "app/views/alchemy/elements/_text_landing_view.html.erb"            
+      download_file "config/initializers/alchemy_bootstrap_grid.rb"            
 
 
     if yes?("Do you want use 'language link url' helper into head?")

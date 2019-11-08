@@ -1,0 +1,5 @@
+<%- cache(single_image_view) do -%>
+  <%= element_view_for(single_image_view) do |el| -%>
+    <%= el.render :image %>
+  <%- end -%>
+<%- end -%>

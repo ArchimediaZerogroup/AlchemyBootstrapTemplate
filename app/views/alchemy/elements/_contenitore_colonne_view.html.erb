@@ -1,0 +1,5 @@
+<%- cache(contenitore_colonne_view) do -%>
+  <%= element_view_for(contenitore_colonne_view, AlchemyBootstrapGrid.row_options_builder.().new(contenitore_colonne_view).view_options) do |el| -%>
+    <%= render contenitore_colonne_view.nested_elements.available %>
+  <%- end -%>
+<%- end -%>
