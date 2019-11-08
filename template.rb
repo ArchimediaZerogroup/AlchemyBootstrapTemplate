@@ -21,9 +21,9 @@ if gem_version <= Gem::Version.new("5.2.3")
 
 
   gem 'jquery-rails'
-  gem 'jquery-ui-rails'
-  gem 'alchemy_cms', '~> 4.2.0.rc1'
-  gem 'alchemy-devise', github: 'AlchemyCMS/alchemy-devise', branch: '4.2-stable'
+  gem 'jquery-ui-rails'  
+  gem 'alchemy_cms', '~> 4.3', '>= 4.3.2'
+  gem 'alchemy-devise', '~> 4.3'
 
 
   application_js = 'app/assets/javascripts/application.js'
