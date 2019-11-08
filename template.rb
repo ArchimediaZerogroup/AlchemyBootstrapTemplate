@@ -448,6 +448,11 @@ require 'capistrano-db-tasks'\n\n"
       download_file "config/initializers/alchemy_bootstrap_grid.rb"            
       download_file "config/initializers/recaptcha.rb" 
 
+      inject_into_file 'config/application.rb', after: "config.load_defaults 5.2" do
+        "\nconfig.time_zone = 'Rome'"
+        "\nconfig.i18n.default_locale = :it"
+      end
+
     if yes?("Do you want use 'language link url' helper into head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
       say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
