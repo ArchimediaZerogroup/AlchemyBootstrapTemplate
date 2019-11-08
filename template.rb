@@ -446,7 +446,7 @@ require 'capistrano-db-tasks'\n\n"
       download_file "app/views/alchemy/elements/_single_text_view.html.erb"            
       download_file "app/views/alchemy/elements/_text_landing_view.html.erb"            
       download_file "config/initializers/alchemy_bootstrap_grid.rb"            
-
+      download_file "config/initializers/recaptcha.rb" 
 
     if yes?("Do you want use 'language link url' helper into head?")
       download_file "app/helpers/link_languages_helper_decorator.rb"
