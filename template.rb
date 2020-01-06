@@ -24,7 +24,7 @@ if gem_version <= Gem::Version.new("5.2.3")
   gem 'jquery-ui-rails'  
   gem 'alchemy_cms', '~> 4.4'
   gem 'alchemy-devise', '~> 4.3', '>= 4.3.1'
-
+  gem 'alchemy_i18n', '~> 2.0'
 
   application_js = 'app/assets/javascripts/application.js'
   inject_into_file application_js, before: '//= require_tree .' do
@@ -459,11 +459,11 @@ require 'capistrano-db-tasks'\n\n"
     end
 
 
-    if yes?("Do you want download IT locales ?")
-      get "https://github.com/AlchemyCMS/alchemy_i18n/raw/master/config/locales/alchemy.it.yml", "config/locales/alchemy.it.yml"
-      download_file "vendor/assets/javascripts/tinymce/langs/it.js"
-      get "https://raw.githubusercontent.com/AlchemyCMS/alchemy_i18n/master/app/assets/javascripts/alchemy_i18n/it.js", "app/assets/javascript/alchemy_i18n/it.js"
-
+    if yes?("Do you want install IT locales ?")
+      generate 'alchemy_i18n:install --locales=it'
+    #  get "https://github.com/AlchemyCMS/alchemy_i18n/raw/master/config/locales/alchemy.it.yml", "config/locales/alchemy.it.yml"
+    #  download_file "vendor/assets/javascripts/tinymce/langs/it.js"
+    #  get "https://raw.githubusercontent.com/AlchemyCMS/alchemy_i18n/master/app/assets/javascripts/alchemy_i18n/it.js", "app/assets/javascript/alchemy_i18n/it.js"
     end
 
 
@@ -479,7 +479,7 @@ require 'capistrano-db-tasks'\n\n"
 
     # Add devise css require
     generate 'alchemy:devise:install'
-
+    
 
     if alchemy_custom_model
       rails_command "alchemy_custom_model:install"
@@ -499,5 +499,5 @@ require 'capistrano-db-tasks'\n\n"
 
 
 else
-  raise "Alchemy 4.1 it's not compatible with Rails version"
+  raise "Alchemy it's not compatible with Rails version"
 end
