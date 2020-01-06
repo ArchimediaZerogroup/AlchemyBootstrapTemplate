@@ -22,8 +22,8 @@ if gem_version <= Gem::Version.new("5.2.3")
 
   gem 'jquery-rails'
   gem 'jquery-ui-rails'  
-  gem 'alchemy_cms', '~> 4.3', '>= 4.3.2'
-  gem 'alchemy-devise', '~> 4.3'
+  gem 'alchemy_cms', '~> 4.4'
+  gem 'alchemy-devise', '~> 4.3', '>= 4.3.1'
 
 
   application_js = 'app/assets/javascripts/application.js'
@@ -244,7 +244,7 @@ end
   end
 
   if yes?("Do you want ajax submit form ?")
-    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "with_loading"
+    gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form"
   end
 
 
