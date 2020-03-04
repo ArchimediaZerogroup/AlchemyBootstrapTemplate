@@ -17,7 +17,7 @@ end
 
 say "You are using Rails #{gem_version.inspect}"
 
-if gem_version <= Gem::Version.new("5.2.3")
+if gem_version <= Gem::Version.new("5.2.4")
 
 
   gem 'jquery-rails'
@@ -250,25 +250,26 @@ end
     gem 'alchemy-custom-model', '~> 2.1', '>= 2.1.1'
     alchemy_custom_model=true
 
-    inject_into_file 'config/application.rb', after: "config.load_defaults 5.2" do
-      "\n#in modo da far funzionare correttamente l'override degli helper come per i controller"
-      "\nconfig.action_controller.include_all_helpers=false"
-      "\nconfig.i18n.default_locale = :it"
-      "\ncconfig.time_zone = 'Rome'"
-      "\nif Rails.application.credentials[Rails.env.to_sym] and Rails.application.credentials[Rails.env.to_sym][:default_url_options]"
-      "\nconfig.action_mailer.default_url_options = Rails.application.credentials[Rails.env.to_sym][:default_url_options]"
-      "\nconfig.action_mailer.asset_host = \"#{Rails.application."
-        "\ncredentials[Rails.env.to_sym][:default_url_options][:protocol]}://#{Rails.application."
-        "\ncredentials[Rails.env.to_sym][:default_url_options][:host]}:#{Rails.application."
-        "\ncredentials[Rails.env.to_sym][:default_url_options][:port]}\""
-      "\nend"
-      "\n"
-      "\nconfig.to_prepare do"
-        "\n# Load application's model / class decorators"
-        "\nDir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|"
-          "\nRails.configuration.cache_classes ? require(c) : load(c)"
-        "\nend"
-      "\nend"
+    inject_into_file 'config/application.rb', after: "config.load_defaults 5.2\n" do <<-CODE
+      #in modo da far funzionare correttamente l'override degli helper come per i controller
+      config.action_controller.include_all_helpers=false
+      config.i18n.default_locale = :it
+      config.time_zone = 'Rome'
+      if Rails.application.credentials[Rails.env.to_sym] and Rails.application.credentials[Rails.env.to_sym][:default_url_options]
+        config.action_mailer.default_url_options = Rails.application.credentials[Rails.env.to_sym][:default_url_options]
+        config.action_mailer.asset_host = "Rails.application.
+        credentials[Rails.env.to_sym][:default_url_options][:protocol]}://Rails.application.
+        credentials[Rails.env.to_sym][:default_url_options][:host]}:Rails.application.
+        credentials[Rails.env.to_sym][:default_url_options][:port]"
+      end
+      
+      config.to_prepare do
+        # Load application's model / class decorators
+        Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
+          Rails.configuration.cache_classes ? require(c) : load(c)
+        end
+      end
+    CODE
     end
     
   end
