@@ -22,9 +22,10 @@ if gem_version <= Gem::Version.new("5.2.3")
 
   gem 'jquery-rails'
   gem 'jquery-ui-rails'  
-  gem 'alchemy_cms', '~> 4.4'
-  gem 'alchemy-devise', '~> 4.3', '>= 4.3.1'
+  gem 'alchemy_cms', '~> 4.4', '>= 4.4.4'
+  gem 'alchemy-devise', '~> 4.4'
   gem 'alchemy_i18n', '~> 2.0'
+  gem 'letter_opener'
 
   application_js = 'app/assets/javascripts/application.js'
   inject_into_file application_js, before: '//= require_tree .' do
@@ -153,8 +154,8 @@ end
 
     file "config/initializers/recaptcha.rb", <<-CODE
 Recaptcha.configure do |config|
-  config.site_key  = Rails.application.secrets.recaptcha.nil? ? "" : Rails.application.secrets.recaptcha[:site_key]
-  config.secret_key = Rails.application.secrets.recaptcha.nil? ? "" : Rails.application.secrets.recaptcha[:secret_key]
+  config.site_key  = Rails.application.credentials.recaptcha.nil? ? "" : Rails.application.credentials.recaptcha[:site_key]
+  config.secret_key = Rails.application.credentials.recaptcha.nil? ? "" : Rails.application.credentials.recaptcha[:secret_key]
   config.skip_verify_env += ["development"]
 end
     CODE
@@ -200,6 +201,19 @@ end
 
   end
 
+    append_to_file 'config/environments/production.rb', <<-CODE
+Rails.application.configure do
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = Rails.application.credentials[Rails.env.to_sym][:smtp_settings]
+end
+    CODE
+
+    append_to_file 'config/environments/development.rb', <<-CODE
+Rails.application.configure do
+  config.action_mailer.delivery_method = :letter_opener
+end
+    CODE
+
 
   gem 'friendly_id', '~> 5.2', '>= 5.2.4'
   gem 'rails-i18n', '~> 5.1'
@@ -239,6 +253,22 @@ end
     inject_into_file 'config/application.rb', after: "config.load_defaults 5.2" do
       "\n#in modo da far funzionare correttamente l'override degli helper come per i controller"
       "\nconfig.action_controller.include_all_helpers=false"
+      "\nconfig.i18n.default_locale = :it"
+      "\ncconfig.time_zone = 'Rome'"
+      "\nif Rails.application.credentials[Rails.env.to_sym] and Rails.application.credentials[Rails.env.to_sym][:default_url_options]"
+      "\nconfig.action_mailer.default_url_options = Rails.application.credentials[Rails.env.to_sym][:default_url_options]"
+      "\nconfig.action_mailer.asset_host = \"#{Rails.application."
+        "\ncredentials[Rails.env.to_sym][:default_url_options][:protocol]}://#{Rails.application."
+        "\ncredentials[Rails.env.to_sym][:default_url_options][:host]}:#{Rails.application."
+        "\ncredentials[Rails.env.to_sym][:default_url_options][:port]}\""
+      "\nend"
+      "\n"
+      "\nconfig.to_prepare do"
+        "\n# Load application's model / class decorators"
+        "\nDir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|"
+          "\nRails.configuration.cache_classes ? require(c) : load(c)"
+        "\nend"
+      "\nend"
     end
     
   end
