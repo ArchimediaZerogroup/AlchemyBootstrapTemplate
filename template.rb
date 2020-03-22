@@ -257,10 +257,10 @@ end
       config.time_zone = 'Rome'
       if Rails.application.credentials[Rails.env.to_sym] and Rails.application.credentials[Rails.env.to_sym][:default_url_options]
         config.action_mailer.default_url_options = Rails.application.credentials[Rails.env.to_sym][:default_url_options]
-        config.action_mailer.asset_host = "Rails.application.
-        credentials[Rails.env.to_sym][:default_url_options][:protocol]}://Rails.application.
-        credentials[Rails.env.to_sym][:default_url_options][:host]}:Rails.application.
-        credentials[Rails.env.to_sym][:default_url_options][:port]"
+        config.action_mailer.asset_host = Rails.application.
+        credentials[Rails.env.to_sym][:default_url_options][:protocol] + "://" + 
+        Rails.application.credentials[Rails.env.to_sym][:default_url_options][:host] + ":" + Rails.application.
+        credentials[Rails.env.to_sym][:default_url_options][:port]
       end
       
       config.to_prepare do
