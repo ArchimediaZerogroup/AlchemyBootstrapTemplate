@@ -6,26 +6,43 @@ gem_version = Gem::Version.new(version)
 REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
 
 
+
+
 ask("Remeber!!!! DISABLE_SPRING=true before command.")
-
-def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
-
-  destination = destination || source_path
-  get "#{repository_url}/#{source_path}", destination
-
-end
 
 say "You are using Rails #{gem_version.inspect}"
 
 if gem_version <= Gem::Version.new("5.2.4")
+  
+  default_gems
 
 
+
+
+end
+
+
+
+
+def default_gems
   gem 'jquery-rails'
   gem 'jquery-ui-rails'  
   gem 'alchemy_cms', '~> 4.4', '>= 4.4.4'
   gem 'alchemy-devise', '~> 4.4'
   gem 'alchemy_i18n', '~> 2.0'
   gem 'letter_opener'
+end
+
+def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
+  destination = destination || source_path
+  get "#{repository_url}/#{source_path}", destination
+end
+
+
+if gem_version <= Gem::Version.new("5.2.4")
+
+
+  
 
   application_js = 'app/assets/javascripts/application.js'
   inject_into_file application_js, before: '//= require_tree .' do
