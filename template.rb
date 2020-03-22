@@ -15,35 +15,17 @@ say "You are using Rails #{gem_version.inspect}"
 if gem_version <= Gem::Version.new("5.2.4")
   
   default_gems
-
-
-
+  default_patch
+  bootstrap4
+  fontawesome
+  cookie_law
 
 end
 
 
 
 
-def default_gems
-  gem 'jquery-rails'
-  gem 'jquery-ui-rails'  
-  gem 'alchemy_cms', '~> 4.4', '>= 4.4.4'
-  gem 'alchemy-devise', '~> 4.4'
-  gem 'alchemy_i18n', '~> 2.0'
-  gem 'letter_opener'
-end
-
-def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
-  destination = destination || source_path
-  get "#{repository_url}/#{source_path}", destination
-end
-
-
-if gem_version <= Gem::Version.new("5.2.4")
-
-
-  
-
+def default_patch
   application_js = 'app/assets/javascripts/application.js'
   inject_into_file application_js, before: '//= require_tree .' do
     "\n//= require jquery3\n//= require jquery_ujs\n"
@@ -59,12 +41,64 @@ if gem_version <= Gem::Version.new("5.2.4")
   file sass_requires, <<-CODE
 //
   CODE
+end
 
+def bootstrap4
+  gem 'bootstrap', '~> 4.1', '>= 4.1.3'
+  inject_into_file sass_requires, before: '//= require_tree .' do
+    "\n  @import \"bootstrap\";\n"
+  end
+  inject_into_file application_js, before: '//= require_tree .' do
+    "\n//= require popper\n//= require bootstrap\n"
+  end
+end
 
-  if yes?("Do you want to use 'Autoprefixer'?  ")
-    gem 'autoprefixer-rails', '~> 9.1', '>= 9.1.4'
+def fontawesome
+  gem "font-awesome-rails"
+
+  inject_into_file application_css, :before => " */" do
+    "\n  *= require font-awesome\n"
+  end
+end
+
+def cookie_law
+  gem "cookie_law"
+
+  inject_into_file application_css, :before => " */" do
+    "\n  *= require cookie_law\n"
   end
 
+  inject_into_file application_js, before: '//= require_tree .' do
+    "\n//= require js.cookie\n//= require cookie_law\n"
+  end
+
+  inject_into_file "app/views/layouts/application.html.erb", :before => "</body>" do
+    "<%= cookie_law! %>"
+  end
+
+  say "Remember! You must complete configuration with initializer config/initializers/cookie_law.rb", [:red, :on_white, :bold]
+end
+
+
+def default_gems
+  gem 'jquery-rails'
+  gem 'jquery-ui-rails'  
+  gem 'alchemy_cms', '~> 4.4', '>= 4.4.4'
+  gem 'alchemy-devise', '~> 4.4'
+  gem 'alchemy_i18n', '~> 2.0'
+  gem 'letter_opener'
+  gem 'autoprefixer-rails', '~> 9.1', '>= 9.1.4'
+end
+
+def download_file(source_path, destination: nil, repository_url: REPOSITORY_URL)
+  destination = destination || source_path
+  get "#{repository_url}/#{source_path}", destination
+end
+
+
+if gem_version <= Gem::Version.new("5.2.4")
+
+  #FIXME
   if yes?("Vuoi owlcarousel2?")
     gem 'rails-assets-OwlCarousel2', source: 'https://rails-assets.org'
 
@@ -77,46 +111,15 @@ if gem_version <= Gem::Version.new("5.2.4")
     end
   end
 
-
-  if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")
-    gem 'bootstrap', '~> 4.1', '>= 4.1.3'
-    inject_into_file sass_requires, before: '//= require_tree .' do
-      "\n  @import \"bootstrap\";\n"
-    end
-    inject_into_file application_js, before: '//= require_tree .' do
-      "\n//= require popper\n//= require bootstrap\n"
-    end
-
+  if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")    
   end
 
   if yes?("Do you want to use 'Font awesome'? (https://fontawesome.com/)")
-    gem "font-awesome-rails"
-
-    inject_into_file application_css, :before => " */" do
-      "\n  *= require font-awesome\n"
-    end
-
   end
 
 
   installed_cookie_law = false
   if yes?("Do you want to use 'cookie_law' gem? (https://github.com/coders51/cookie_law) ")
-    gem "cookie_law"
-
-    inject_into_file application_css, :before => " */" do
-      "\n  *= require cookie_law\n"
-    end
-
-    inject_into_file application_js, before: '//= require_tree .' do
-      "\n//= require js.cookie\n//= require cookie_law\n"
-    end
-
-    inject_into_file "app/views/layouts/application.html.erb", :before => "</body>" do
-      "<%= cookie_law! %>"
-    end
-
-    say "Remember! You must complete configuration with initializer config/initializers/cookie_law.rb", [:red, :on_white, :bold]
-
     installed_cookie_law = true
   end
 
