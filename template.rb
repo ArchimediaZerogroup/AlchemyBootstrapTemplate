@@ -329,6 +329,18 @@ def bootstrap_template(repository_url)
   end
 end
 
+def carousel(application_js, application_css)
+  run "yarn add tiny-slider"
+  inject_into_file application_js, before: '//= require_tree .' do
+    "\n//= require tiny-slider/dist/tiny-slider\n//= require tiny-slider/dist/tiny-slider.helper.ie8\n"
+  end
+  
+  inject_into_file application_css, :before => " */" do
+    "\n*= require tiny-slider/dist/tiny-slider\n"
+  end
+
+end
+
 
 
 
@@ -393,6 +405,8 @@ say "You are using Rails #{gem_version.inspect}"
     ["lib/tasks/alchemy_cache_clear.rake"].each do |f|
       download_file f,nil,REPOSITORY_URL
     end
+
+    carousel(application_js, application_css)
   end  
 
 #else
