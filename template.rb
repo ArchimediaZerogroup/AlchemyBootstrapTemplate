@@ -354,6 +354,7 @@ say "You are using Rails #{gem_version.inspect}"
   cookie_law(application_css, application_js)
   recaptcha_gem
   redis_backend
+  alchemy_custom_model
 
   if pg_search
     gem 'pg_search'
