@@ -352,7 +352,7 @@ REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplat
 sass_requires = 'app/assets/stylesheets/sass_requires.scss'
 application_js = 'app/assets/javascripts/application.js'
 application_css = 'app/assets/stylesheets/application.css'
-pg_search = true
+pg_search = false
 
 
 ask("Remeber!!!! DISABLE_SPRING=true before command.")
