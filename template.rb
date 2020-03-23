@@ -341,6 +341,11 @@ def carousel(application_js, application_css)
 
 end
 
+def update_gitignore  
+  append_to_file ".gitignore", <<-CODE
+uploads/
+  CODE
+end
 
 
 
@@ -407,6 +412,8 @@ after_bundle do
   end
 
   carousel(application_js, application_css)
+
+  update_gitignore
 end  
 
 
