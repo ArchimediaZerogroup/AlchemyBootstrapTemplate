@@ -357,127 +357,60 @@ pg_search = false
 
 ask("Remeber!!!! DISABLE_SPRING=true before command.")
 say "You are using Rails #{gem_version.inspect}"
-#if gem_version <= Gem::Version.new("5.2.4")
+
   
-  default_gems(true)
-  default_patch(sass_requires, application_js, application_css)
-  bootstrap4(sass_requires,application_js)
-  fontawesome(application_css)
-  cookie_law(application_css, application_js)
-  recaptcha_gem
-  redis_backend
-  alchemy_custom_model
+default_gems(true)
+default_patch(sass_requires, application_js, application_css)
+bootstrap4(sass_requires,application_js)
+fontawesome(application_css)
+cookie_law(application_css, application_js)
+recaptcha_gem
+redis_backend
+alchemy_custom_model
+
+if pg_search
+  gem 'pg_search'
+end
+
+after_bundle do
+  rails_command 'alchemy:install'
+  generate 'friendly_id'
+  generate 'cookie_law:install'
+  rails_command 'alchemy_custom_model:install'
+  download_file "config/locales/devise.it.yml",nil,REPOSITORY_URL
+  download_file "config/puma.rb",nil,REPOSITORY_URL
 
   if pg_search
-    gem 'pg_search'
+    pg_search_finalize(REPOSITORY_URL)
   end
 
-  after_bundle do
-    rails_command 'alchemy:install'
-    generate 'friendly_id'
-    generate 'cookie_law:install'
-    rails_command 'alchemy_custom_model:install'
-    download_file "config/locales/devise.it.yml",nil,REPOSITORY_URL
-    download_file "config/puma.rb",nil,REPOSITORY_URL
+  capistrano_finalize(true,REPOSITORY_URL)
+  bootstrap_template(REPOSITORY_URL)
 
-    if pg_search
-      pg_search_finalize(REPOSITORY_URL)
-    end
+  download_file "app/helpers/link_languages_helper_decorator.rb",nil,REPOSITORY_URL
+  say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
 
-    capistrano_finalize(true,REPOSITORY_URL)
-    bootstrap_template(REPOSITORY_URL)
+  generate 'alchemy_i18n:install --locales=it'
 
-    download_file "app/helpers/link_languages_helper_decorator.rb",nil,REPOSITORY_URL
-    say "Created 'language_links_by_page' helper that must be insert into layouts (<%= language_links_by_page(@page)  %>)", [:red, :on_white, :bold]
-
-    generate 'alchemy_i18n:install --locales=it'
-
-    #Configure Alchemy defaults
-    append_to_file "config/alchemy/config.yml" do
-      "\nitems_per_page: 100"
-    end
-    #Cache assets initializer
-    download_file "config/initializers/static_assets_cache.rb",nil,REPOSITORY_URL
-    # Add devise css require
-    generate 'alchemy:devise:install'
-    rails_command "alchemy_custom_model:install"
-    
-    ["lib/tasks/alchemy_cache_clear.rake"].each do |f|
-      download_file f,nil,REPOSITORY_URL
-    end
-
-    carousel(application_js, application_css)
-  end  
-
-#else
-#  raise "Alchemy it's not compatible with Rails version"
-#end
-
-
-
-=begin
-  #FIXME
-  if yes?("Vuoi owlcarousel2?")
-    gem 'rails-assets-OwlCarousel2', source: 'https://rails-assets.org'
-
-    inject_into_file application_js, before: '//= require_tree .' do
-      "\n//= require OwlCarousel2\n"
-    end
-
-    inject_into_file application_css, :before => " */" do
-      "\n//= require OwlCarousel2\n"
-    end
+  #Configure Alchemy defaults
+  append_to_file "config/alchemy/config.yml" do
+    "\nitems_per_page: 100"
+  end
+  #Cache assets initializer
+  download_file "config/initializers/static_assets_cache.rb",nil,REPOSITORY_URL
+  # Add devise css require
+  generate 'alchemy:devise:install'
+  rails_command "alchemy_custom_model:install"
+  
+  ["lib/tasks/alchemy_cache_clear.rake"].each do |f|
+    download_file f,nil,REPOSITORY_URL
   end
 
-  if yes?("Do you want to use 'Bootstrap 4'? (https://getbootstrap.com/)  ")    
-  end
-
-  if yes?("Do you want to use 'Font awesome'? (https://fontawesome.com/)")
-  end
+  carousel(application_js, application_css)
+end  
 
 
-  installed_cookie_law = false
-  if yes?("Do you want to use 'cookie_law' gem? (https://github.com/coders51/cookie_law) ")
-    installed_cookie_law = true
-  end
 
-
-  if yes?("Do you want to use Re-Captcha gem? (http://github.com/ambethia/recaptcha) ")
-  end
-
-
-  if yes?("Do you want to use production cache with rack-cache and with redis as backend?")
-  end
-
-
-  deploy_with_docker = false
-  capistrano_installed = false
-  if yes?("Do you want to use Capistrano for deploy task?")
-
-    if yes?("Do you want to use Docker for deploy task?")
-      deploy_with_docker = true
-    end
-
-    capistrano_installed = true    
-  end
-
-
-  alchemy_custom_model=false
-  if yes?("Do you want extended module with custom model?")    
-    
-  end
-
-  if yes?("Do you want ajax submit form ?")
-    
-  end
-
-
-  pg_search = false
-  if yes?("Do you want pg_search gem for full text search? It work only if use Postgresql as DBMS.")
-    gem 'pg_search'
-    pg_search = true
-  end
-=end
 
 
   
