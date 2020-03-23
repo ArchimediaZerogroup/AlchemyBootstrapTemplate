@@ -204,8 +204,8 @@ contents: []
   CODE
   append_to_file "config/alchemy/page_layouts.yml", <<-CODE
 - name: search_results
-searchresults: true
-unique: true
+  searchresults: true
+  unique: true
 
   CODE
   rails_command 'db:migrate'
