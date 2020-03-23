@@ -2,11 +2,10 @@ it:
   alchemy:
     modules:
       users: "Utenti"
+      menus: "Menus"
   menu_names:
     main_menu: Menu pricipale
-    footer_menu: Menu footer
-  modules:
-    menus: "Menus"
+    footer_menu: Menu footer    
   activerecord:
     attributes:
       user:
