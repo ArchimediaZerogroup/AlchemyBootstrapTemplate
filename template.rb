@@ -357,7 +357,7 @@ def alchemy_backend_improvements(repository_url)
 //= require simplebar/dist/simplebar.js
   CODE
 
-  append_to_file "vendor/assets/javascripts/alchemy/admin/all.css", <<-CODE
+  append_to_file "vendor/assets/stylesheets/alchemy/admin/all.css", <<-CODE
 *= require backend
 *= require simplebar/dist/simplebar.css
   CODE
