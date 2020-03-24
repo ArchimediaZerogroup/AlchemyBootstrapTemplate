@@ -347,7 +347,22 @@ uploads/
   CODE
 end
 
+def alchemy_backend_improvements(repository_url)
+  download_file "app/assets/javascripts/mega-menu.js.erb",nil,repository_url
+  download_file "app/assets/stylesheets/backend.scss",nil,repository_url
+  run "yarn add simplebar"
 
+  append_to_file "vendor/assets/javascripts/alchemy/admin/all.js", <<-CODE
+//= require mega-menu
+//= require simplebar/dist/simplebar.js
+  CODE
+
+  append_to_file "vendor/assets/javascripts/alchemy/admin/all.css", <<-CODE
+*= require backend
+*= require simplebar/dist/simplebar.css
+  CODE
+
+end
 
 
 version = %x(bin/rails version).gsub("\n", "").gsub("Rails", "")
@@ -412,6 +427,8 @@ after_bundle do
   end
 
   carousel(application_js, application_css)
+  
+  alchemy_backend_improvements(REPOSITORY_URL)
 
   update_gitignore
 end  

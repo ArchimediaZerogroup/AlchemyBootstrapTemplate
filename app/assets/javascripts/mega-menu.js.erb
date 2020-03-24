@@ -1,0 +1,24 @@
+jQuery(window).on('load', function () {
+
+});
+
+jQuery(document).on("page:change turbolinks:load", function () {
+
+
+  $( "#top_menu #header" ).prepend( '<span id="open_menu"><i class="fa fa-arrow-left" aria-hidden="true"></i></span>' );
+  $(".main_navi_entry.has_sub_navigation.active").addClass('expanded');
+  $(".main_navi_entry.has_sub_navigation").click(function(event){
+    //event.stopPropagation();
+    var target= $(event.target);
+    if(target.hasClass('main_navi_entry')){
+      $(this).toggleClass('expanded');
+    }
+  });
+
+  $("#open_menu").click(function(){
+    $('body').toggleClass('collapsed-menu');
+  });
+
+  new SimpleBar($('#left_menu')[0]);
+});
+
