@@ -113,6 +113,7 @@ end
 
 def alchemy_custom_model
   gem 'alchemy-custom-model', '~> 2.1', '>= 2.1.1'  
+  gem 'alchemy_file_selector', '~> 0.1.4'
 
   inject_into_file 'config/application.rb', after: "config.load_defaults 5.2\n" do <<-CODE
     #in modo da far funzionare correttamente l'override degli helper come per i controller
@@ -355,6 +356,7 @@ def alchemy_backend_improvements(repository_url)
   append_to_file "vendor/assets/javascripts/alchemy/admin/all.js", <<-CODE
 //= require mega-menu
 //= require simplebar/dist/simplebar.js
+//= require alchemy_file_selector/alchemy_admin_require.js
   CODE
 
   append_to_file "vendor/assets/stylesheets/alchemy/admin/all.css", <<-CODE
