@@ -112,7 +112,7 @@ end
 end
 
 def alchemy_custom_model
-  gem 'alchemy-custom-model', '~> 2.1', '>= 2.1.1'  
+  gem 'alchemy-custom-model', github: "ArchimediaZerogroup/alchemy-custom-model", branch: "master", submodules: true
   gem 'alchemy_file_selector', '~> 0.1.4'
 
   inject_into_file 'config/application.rb', after: "config.load_defaults 5.2\n" do <<-CODE
@@ -166,7 +166,7 @@ def default_gems(deploy_with_docker=true)
       gem 'capistrano-passenger'
     end
   end
-  gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form"
+  gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "rails6"  
 
 end
 
@@ -351,6 +351,22 @@ end
 def alchemy_backend_improvements(repository_url)
   download_file "app/assets/javascripts/mega-menu.js.erb",nil,repository_url
   download_file "app/assets/stylesheets/backend.scss",nil,repository_url
+  download_file "config/initializers/tinymce.rb",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/content.min.css.scss",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/skin.min.css.scss",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/fonts/tinymce-small.svg",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/fonts/tinymce-small.ttf",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/fonts/tinymce-small.woff",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/fonts/tinymce.svg",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/fonts/tinymce.ttf",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/fonts/tinymce.woff",nil,repository_url
+
+  download_file "app/assets/stylesheets/tinymce/skins/custom/img/anchor.gif",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/img/loader.gif",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/img/object.gif",nil,repository_url
+  download_file "app/assets/stylesheets/tinymce/skins/custom/img/trans.gif",nil,repository_url
+
+
   run "yarn add simplebar"
 
   append_to_file "vendor/assets/javascripts/alchemy/admin/all.js", <<-CODE
@@ -362,6 +378,15 @@ def alchemy_backend_improvements(repository_url)
   append_to_file "vendor/assets/stylesheets/alchemy/admin/all.css", <<-CODE
 *= require backend
 *= require simplebar/dist/simplebar.css
+  CODE
+
+  append_to_file "config/initializers/assets.rb", <<-CODE
+Rails.application.config.assets.precompile += %w( tinymce/plugins/alchemy_file_selector/plugin.min.js
+  tinymce/plugins/image/plugin.min.js
+  tinymce/skins/custom/skin.min.css
+  tinymce/skins/custom/content.min.css
+  tinymce/langs/*.js
+  )
   CODE
 
 end
@@ -414,10 +439,11 @@ after_bundle do
 
   generate 'alchemy_i18n:install --locales=it'
 
-  #Configure Alchemy defaults
-  append_to_file "config/alchemy/config.yml" do
-    "\nitems_per_page: 100"
+  
+  gsub_file 'config/alchemy/config.yml', /items_per_page:/, :green do |match|
+    match << "items_per_page: 100"
   end
+
   #Cache assets initializer
   download_file "config/initializers/static_assets_cache.rb",nil,REPOSITORY_URL
   # Add devise css require
