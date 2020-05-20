@@ -112,7 +112,7 @@ end
 end
 
 def alchemy_custom_model
-  gem 'alchemy-custom-model', github: "ArchimediaZerogroup/alchemy-custom-model", branch: "master", submodules: true
+  gem 'alchemy-custom-model', github: "ArchimediaZerogroup/alchemy-custom-model", branch: "master"#, submodules: true
   gem 'alchemy_file_selector', '~> 0.1.4'
 
   inject_into_file 'config/application.rb', after: "config.load_defaults 5.2\n" do <<-CODE
@@ -141,10 +141,10 @@ def alchemy_custom_model
 end
 
 def default_gems(deploy_with_docker=true)
-  gem 'jquery-rails'
-  gem 'jquery-ui-rails'  
-  gem 'alchemy_cms', '~> 4.4', '>= 4.4.4'
-  gem 'alchemy-devise', '~> 4.4'
+  #gem 'jquery-rails'
+  #gem 'jquery-ui-rails'
+  gem 'alchemy_cms', '~> 4.5'
+  gem 'alchemy-devise', '~> 4.5'
   gem 'alchemy_i18n', '~> 2.0'
   gem 'letter_opener'
   gem 'autoprefixer-rails', '~> 9.1', '>= 9.1.4'
@@ -166,7 +166,8 @@ def default_gems(deploy_with_docker=true)
       gem 'capistrano-passenger'
     end
   end
-  gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "rails6"  
+  gem 'alchemy-ajax-form', github: "ArchimediaZerogroup/alchemy-ajax-form", branch: "master"  
+  gem 'alchemy-crop-image', github: 'ArchimediaZerogroup/alchemy-crop-image', branch: 'master'
 
 end
 
@@ -440,8 +441,8 @@ after_bundle do
   generate 'alchemy_i18n:install --locales=it'
 
   
-  gsub_file 'config/alchemy/config.yml', /items_per_page:/, :green do |match|
-    match << "items_per_page: 100"
+  gsub_file 'config/alchemy/config.yml', /items_per_page: *\d*/ do |match|
+    match = "items_per_page: 100"
   end
 
   #Cache assets initializer
