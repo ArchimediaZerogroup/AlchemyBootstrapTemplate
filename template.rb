@@ -380,6 +380,7 @@ def alchemy_backend_improvements(repository_url)
 /*  
 *= require backend
 *= require simplebar/dist/simplebar.css
+*= require alchemy-custom-model/manifest.css
 */
   CODE
 
@@ -460,6 +461,7 @@ after_bundle do
   carousel(application_js, application_css)
   
   alchemy_backend_improvements(REPOSITORY_URL)
+  generate 'alchemy:crop:image:install'
 
   update_gitignore
 end  
