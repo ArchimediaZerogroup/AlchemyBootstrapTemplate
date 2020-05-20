@@ -112,7 +112,7 @@ end
 end
 
 def alchemy_custom_model
-  gem 'alchemy-custom-model', github: "ArchimediaZerogroup/alchemy-custom-model", branch: "master"#, submodules: true
+  gem 'alchemy-custom-model', github: "ArchimediaZerogroup/alchemy-custom-model", branch: "master", submodules: true
   gem 'alchemy_file_selector', '~> 0.1.4'
 
   inject_into_file 'config/application.rb', after: "config.load_defaults 5.2\n" do <<-CODE
@@ -377,8 +377,10 @@ def alchemy_backend_improvements(repository_url)
   CODE
 
   append_to_file "vendor/assets/stylesheets/alchemy/admin/all.css", <<-CODE
+/*  
 *= require backend
 *= require simplebar/dist/simplebar.css
+*/
   CODE
 
   append_to_file "config/initializers/assets.rb", <<-CODE
