@@ -297,6 +297,8 @@ def bootstrap_template(repository_url)
   contents:
   - name: larghezza
     type: EssenceSelect
+    settings:
+      select_values: [1,2,3,4,5,6,7,8,9,10,11,12]    
   - name: classi_css
     type: EssenceText
     default: "px-2 py-2 px-lg-3 py-lg-0"
