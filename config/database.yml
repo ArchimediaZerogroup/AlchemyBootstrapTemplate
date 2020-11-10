@@ -1,0 +1,30 @@
+
+default: &default
+  adapter: <%= ENV.fetch("RAILS_DB_ADAPTER", 'postgresql') %>
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  username:  <%= ENV.fetch("DB_USERNAME",'root') %>
+  password: <%= ENV.fetch("DB_PASSWORD",'root') %>
+  database: <%= ENV.fetch("DB_NAME",'dev') %>
+  host: <%= ENV.fetch("DB_HOST",'0.0.0.0') %>
+  port: <%= ENV.fetch("DB_PORT"){ `docker-compose port db 5432`.strip.match(/[0-9]+$/)[0] rescue "5432"} %>
+
+
+development:
+  <<: *default
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: demo_test_test
+
+
+production:
+  <<: *default
+
+staging:
+  <<: *default
+
