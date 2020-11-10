@@ -9,17 +9,21 @@ The template install Alchemy, other gems and other "snippets" that [Archimedia](
 
 Comment out this gem from Gemfile #gem 'spring-watcher-listen', '~> 2.0.0'. There's a knownn bug for readonly folder watch.
 
+Change ruby version in Gemfile to be like version on Dockerfile
+
 ```
 cd <project_name>
 curl -L https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master/lib/tasks/bootstrap_utility.rake -o lib/tasks/bootstrap_utility.rake
 bundle exec rails alchemy:backend:prepare_environment
+
 docker-compose up
 docker-compose exec app bundle exec rails alchemy:backend:selected_gems
 docker-compose down
 rm -rf Gemfile.lock
 docker-compose up
-docker-compose run app bin/rails webpacker:install
 docker-compose down
+
+docker-compose run app bin/rails webpacker:install
 docker-compose up
 ```
 
