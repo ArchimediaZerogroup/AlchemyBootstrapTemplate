@@ -16,6 +16,7 @@ bundle exec rails alchemy:backend:prepare_environment
 docker-compose up
 docker-compose exec app bundle exec rails alchemy:backend:selected_gems
 docker-compose down
+rm -rf Gemfile.lock
 docker-compose up
 docker-compose run app bin/rails webpacker:install
 docker-compose down
@@ -39,7 +40,7 @@ docker-compose up
 docker-compose exec app bundle exec rails g alchemy_i18n:install --locales=it
 ```
 
-# Comment out //= require alchemy/alchemy.translations  from vendor/assets/javascripts/alchemy_i18n/it.js
+Comment out //= require alchemy/alchemy.translations  from vendor/assets/javascripts/alchemy_i18n/it.js
 
 ```
 docker-compose exec app bundle exec rails generate friendly_id
