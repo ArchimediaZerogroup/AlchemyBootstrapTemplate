@@ -53,7 +53,7 @@ namespace :alchemy do
         f << "gem 'i18n-js', '~> 3.2'"
         f << "gem 'friendly_id-globalize', '1.0.0.alpha3'"
         f << "gem 'webpacker'"
-        f << "gem "sentry-raven""
+        f << "gem \"sentry-raven\""
       }
 
     end

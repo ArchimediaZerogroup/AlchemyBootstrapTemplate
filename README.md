@@ -3,64 +3,55 @@
 This template is used for create project that use [AlchemyCMS](https://github.com/AlchemyCMS/alchemy_cms) as CMS.
 The template install Alchemy, other gems and other "snippets" that [Archimedia](https://www.archimedianet.it) often use into it's projects. 
 
+# Steps
 
-## Requirements ##
-This template require:
-  
-* Ruby on Rails > 5.2.3 
+``` rails _5.2.4.3_ new <project_name> -d postgresql ```
 
-## Use ##
-
-New project
+Comment out this gem from Gemfile #gem 'spring-watcher-listen', '~> 2.0.0'. There's a knownn bug for readonly folder watch.
 
 ```
-DISABLE_SPRING=true rails _5.2.3_ new blog -m https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
-
+cd <project_name>
+curl -L https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master/lib/tasks/bootstrap_utility.rake -o lib/tasks/bootstrap_utility.rake
+bundle exec rails alchemy:backend:prepare_environment
+docker-compose up
+docker-compose exec app bundle exec rails alchemy:backend:selected_gems
+docker-compose down
+docker-compose up
+docker-compose run app bin/rails webpacker:install
+docker-compose down
+docker-compose up
 ```
 
-Use the template into existing project:
+# http://0.0.0.0:3000 Yay! You’re on Rails!
 
 ```
-DISABLE_SPRING=true bin/rails app:template LOCATION=https://raw.githubusercontent.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/master/template.rb
-
+docker-compose exec app bundle exec rails alchemy:install
+docker-compose down
+docker-compose up
+docker-compose exec app bundle exec rails g alchemy:devise:install
+docker-compose down
+docker-compose up
 ```
 
-## What the template do? ##
-1. Generate new Rails application
-2. Include Jquery
-3. Configure assets/javascript
-4. Configure assets/css
-5. Install required components
-6. Install AlchemyCMS
-7. Configure AlchemyCMS
-8. Configure Docker Stack e Capistrano for deploy 
+# http://0.0.0.0:3000 Yay! Alchemy CMS Ready!
 
+```
+docker-compose exec app bundle exec rails g alchemy_i18n:install --locales=it
+```
 
-## Included gems ##
-This is the gems that you can install with template:
- 
-* [Alchemy CMS](https://alchemy-cms.com/)
-* [Alchemy Devise](https://github.com/AlchemyCMS/alchemy-devise)
-* [tiny-slider](https://github.com/ganlanyuan/tiny-slider)
-* [Bootstrap(4)](https://github.com/twbs/bootstrap-rubygem)
-* [Font awesome](https://github.com/bokmann/font-awesome-rails)
-* [Cookie Law](https://github.com/coders51/cookie_law)
-* [Re-Captcha](http://github.com/ambethia/recaptcha)
-* [Capistrano](http://capistranorb.com/)
-* [Stackose](https://github.com/oniram88/stackose)
-* [PG Search](https://github.com/Casecommons/pg_search)
-* [Friendly Id](https://github.com/norman/friendly_id) 
-* [rails-i18n](http://github.com/svenfuchs/rails-i18n)
-* [redis-rack-cache](https://rubygems.org/gems/redis-rack-cache)
-* [redis-rails](https://github.com/redis-store/redis-rails)
-* [alchemy_custom_model](https://github.com/ArchimediaZerogroup/alchemy-custom-model)
-* [alchemy-ajax-form](https://github.com/ArchimediaZerogroup/alchemy-ajax-form)
+# Comment out //= require alchemy/alchemy.translations  from vendor/assets/javascripts/alchemy_i18n/it.js
 
+```
+docker-compose exec app bundle exec rails generate friendly_id
+docker-compose exec app bundle exec rails alchemy:backend:custom_gems
 
+docker-compose down
+docker-compose up
 
-  
-## TODO ##
-* [https://github.com/presidentbeef/brakeman](https://github.com/presidentbeef/brakeman)
-* [https://github.com/thredded/db_text_search](https://github.com/thredded/db_text_search)
+docker-compose exec app bundle exec rails generate alchemy:crop:image:install
+docker-compose exec app bundle exec rails alchemy_custom_model:install
+docker-compose exec app bundle exec rails alchemy:backend:configs
+docker-compose exec app bundle exec rails alchemy:backend:improvements
+docker-compose exec app bundle exec rails alchemy:backend:bootstrap_template
+```
 
-  

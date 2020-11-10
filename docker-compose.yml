@@ -1,9 +1,77 @@
-version: '2'
-services:
-  app:
-    build: .
-    command: rails server --port 3000 --binding 0.0.0.0
+version: '3.7'
+
+x-defaults:
+  app: &default_app
+    build:
+      context: .
+      target: development_image
+    user: ${CMPS_UID_GID} #aggiungere a file .profile: "export CMPS_UID_GID=$(id -u):$(id -g)"
     volumes:
       - '.:/usr/share/www'
+    environment: &enviroments
+      DB_PORT: 5432
+      DB_HOST: db
+      DB_NAME: dev
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      RAILS_ENV: development
+      REDIS_URL: 'redis://redis:6379/2'
+      REDIS_SESSION_URL: "redis://redis:6379/0/session"
+      REDIS_SIDEKIQ_URI: "redis://redis:6379/0/sidekiq"
+      # sviluppo inside DOCKER
+      # questo lo facciamo per far si che durante lo sviluppo la cartella sia in una posizione scrivibile
+      BUNDLE_PATH: '/usr/share/www/vendor/development_bundler'
+      BUNDLE_DEFAULT_INSTALL_USES_PATH: 'true'
+
+services:
+  app:
+    <<: *default_app
+    command: "bash -c 'bundle && bin/rails s -b 0.0.0.0'"
     ports:
-      - '3000:3000'
+      - 3000:3000
+    environment:
+      <<: *enviroments
+      WEBPACKER_DEV_SERVER_HOST: webpack
+
+  webpack:
+    <<: *default_app
+    command: "bash -c 'yarn && bin/webpack-dev-server'"
+    ports:
+      - "3035:3035"
+    environment:
+      <<: *enviroments
+      NODE_ENV: development
+      RAILS_ENV: development
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+
+  sidekiq:
+    <<: *default_app
+    command: "bash -c 'bundle exec sidekiq'"
+
+  redis:
+    image: 'redis:6.0-alpine'
+    volumes:
+      - "redis:/data"
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - 6379
+
+  db:
+    image: postgres:10.12
+    volumes:
+      - ./docker_volumes/post_gres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: dev
+    ports:
+      - 5432
+
+  # servizio simulato smtp
+  smtp:
+    image: mailhog/mailhog
+    ports:
+      - 8025
+
+volumes:
+  redis:
