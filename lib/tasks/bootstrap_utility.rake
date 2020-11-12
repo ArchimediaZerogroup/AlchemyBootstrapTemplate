@@ -31,7 +31,6 @@ namespace :alchemy do
     task selected_gems: [:environment] do
       open('Gemfile', 'a') { |f|
         f << "gem 'jquery-rails'\n"
-        f << "gem 'jquery-ui-rails'\n"
         f << "gem 'alchemy_cms', '~> 4.6', '>= 4.6.2'\n"
         f << "gem 'alchemy-devise', '~> 4.6'\n"
         f << "gem 'alchemy_i18n', '~> 2.1'\n"
