@@ -201,3 +201,8 @@
 }
 
 
+@media screen and (min-width: 1000px) {
+  .collapsed-menu.elements-window-visible #alchemy_preview_window {
+    max-width: initial;
+  }
+}
