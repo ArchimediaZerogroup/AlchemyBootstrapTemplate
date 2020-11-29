@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'fileutils'
+require 'io/console'
 
 REPOSITORY_URL = "https://github.com/ArchimediaZerogroup/AlchemyBootstrapTemplate/raw/master"
 
@@ -82,7 +83,7 @@ namespace :alchemy do
       end
       RAVEN
 
-      a = gets.chomp
+      STDIN.getch
 
 
 
@@ -97,7 +98,7 @@ namespace :alchemy do
     desc "Configs"
     task configs: [:environment] do
       puts "Change 'items_per_page: 100' into config/alchemy/config.yml (press any key when done):"
-      a = gets.chomp
+      STDIN.getch
 
       ["config/initializers/recaptcha.rb",
         "config/locales/devise.it.yml",
