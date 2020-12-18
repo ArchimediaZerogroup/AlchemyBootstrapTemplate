@@ -9,11 +9,11 @@ x-defaults:
     volumes:
       - '.:/usr/share/www'
     environment: &enviroments
-      DB_PORT: 5432
-      DB_HOST: db
-      DB_NAME: dev
-      DB_USERNAME: root
-      DB_PASSWORD: root
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: db
+      POSTGRES_DB: dev
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
       RAILS_ENV: development
       REDIS_URL: 'redis://redis:6379/2'
       REDIS_SESSION_URL: "redis://redis:6379/0/session"

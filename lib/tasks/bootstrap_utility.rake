@@ -47,13 +47,12 @@ namespace :alchemy do
         f << "gem 'font-awesome-rails'\n"
         f << "gem 'recaptcha', '~> 4.14', require: 'recaptcha/rails'\n"
         f << "group :production do\n"
-        f << "gem 'redis-rack-cache'\n"
-        f << "  gem 'redis-rails'\n"
-        f << "end\n"
         f << "gem 'i18n-js', '~> 3.2'\n"
         f << "gem 'friendly_id-globalize', '1.0.0.alpha3'\n"
         f << "gem 'webpacker'\n"
         f << "gem \"sentry-raven\"\n"
+        f << "gem \"activerecord-nulldb-adapter\", require: ENV.fetch(\"RAILS_DB_ADAPTER\", 'postgresql') == 'nulldb'"
+
       }
 
     end
@@ -98,7 +97,11 @@ namespace :alchemy do
     desc "Configs"
     task configs: [:environment] do
       puts "Change 'items_per_page: 100' into config/alchemy/config.yml (press any key when done):"
+      puts "config.cache_store = :file_store, Rails.root.join(""tmp"", ""cache"") into config/environment/production.rb"
+      puts "config.log_level =  ENV.fetch(""RAILS_LOG_LEVEL"",""debug"").to_sym into config/environment/production.rb"
+
       STDIN.getch
+
 
       ["config/initializers/recaptcha.rb",
         "config/locales/devise.it.yml",
@@ -109,15 +112,6 @@ namespace :alchemy do
         download(ftd, REPOSITORY_URL, ftd)
       end
 
-      open('config/environments/production.rb', 'a') { |f|
-        f << "Rails.application.configure do\n"
-        f << "config.cache_store = :redis_store, \"redis://redis:6379/0/cache\", { expires_in: 90.minutes }\n"
-        f << "config.action_dispatch.rack_cache = {\n"
-        f << "metastore: \"redis://redis:6379/1/metastore\",\n"
-        f << "entitystore: \"redis://redis:6379/1/entitystore\"\n"
-        f << "}\n"
-        f << "end\n"        
-      }
 
 
 
