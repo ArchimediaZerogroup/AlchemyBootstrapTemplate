@@ -46,13 +46,11 @@ namespace :alchemy do
         f << "gem 'bootstrap', '~> 4.1', '>= 4.1.3'\n"
         f << "gem 'font-awesome-rails'\n"
         f << "gem 'recaptcha', '~> 4.14', require: 'recaptcha/rails'\n"
-        f << "group :production do\n"
         f << "gem 'i18n-js', '~> 3.2'\n"
         f << "gem 'friendly_id-globalize', '1.0.0.alpha3'\n"
         f << "gem 'webpacker'\n"
         f << "gem \"sentry-raven\"\n"
-        f << "gem \"activerecord-nulldb-adapter\", require: ENV.fetch(\"RAILS_DB_ADAPTER\", 'postgresql') == 'nulldb'"
-
+        f << "gem \"activerecord-nulldb-adapter\", require: ENV.fetch(\"RAILS_DB_ADAPTER\", 'postgresql') == 'nulldb'\n"
       }
 
     end
