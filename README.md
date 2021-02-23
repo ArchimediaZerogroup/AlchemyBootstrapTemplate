@@ -5,7 +5,7 @@ The template install Alchemy, other gems and other "snippets" that [Archimedia](
 
 # Steps
 
-``` rails _5.2.4.3_ new <project_name> -d postgresql ```
+``` rails _5.2.4.5_ new <project_name> -d postgresql ```
 
 Comment out this gem from Gemfile #gem 'spring-watcher-listen', '~> 2.0.0'. There's a knownn bug for readonly folder watch.
 
