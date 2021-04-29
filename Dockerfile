@@ -1,4 +1,4 @@
-FROM reg.gitlab.archimedianet.it/docker_images/rails/2.6-je/pg10:0.0.3 as dependency_image
+FROM reg.gitlab.archimedianet.it/docker_images/rails/2.7-je/pg13:0.1 as dependency_image
 
 RUN mkdir -p /usr/share/www
 WORKDIR /usr/share/www
@@ -55,5 +55,4 @@ RUN if [ "$master_key" == "false" ] ; then echo No Master Key Given; else export
     && rm -fr tmp/cache log/*
 
 ####
-RUN chmod 777 tmp
-RUN chmod 777 log
+RUN chmod 777 tmp && chmod 777 log

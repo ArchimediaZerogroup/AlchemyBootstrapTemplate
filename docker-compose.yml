@@ -12,7 +12,7 @@ x-defaults:
       POSTGRES_PORT: 5432
       POSTGRES_HOST: db
       POSTGRES_DB: dev
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       RAILS_ENV: development
       REDIS_URL: 'redis://redis:6379/2'
@@ -57,12 +57,11 @@ services:
       - 6379
 
   db:
-    image: postgres:10.12
+    image: bitnami/postgresql:13.2.0-debian-10-r36
     volumes:
       - ./docker_volumes/post_gres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: root
-      POSTGRES_USER: root
       POSTGRES_DB: dev
     ports:
       - 5432
@@ -73,5 +72,3 @@ services:
     ports:
       - 8025
 
-volumes:
-  redis:

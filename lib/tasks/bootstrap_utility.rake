@@ -32,8 +32,8 @@ namespace :alchemy do
     task selected_gems: [:environment] do
       open('Gemfile', 'a') { |f|
         f << "gem 'jquery-rails'\n"
-        f << "gem 'alchemy_cms', '~> 4.6', '>= 4.6.2'\n"
-        f << "gem 'alchemy-devise', '~> 4.6'\n"
+        f << "gem 'alchemy_cms', '~> 5.2.0.rc1'\n"
+        f << "gem 'alchemy-devise', '~> 5.1''\n"
         f << "gem 'alchemy_i18n', '~> 2.1'\n"
         f << "gem 'autoprefixer-rails', '~> 9.1', '>= 9.1.4'\n"
         f << "gem 'js-routes'\n"
@@ -51,6 +51,8 @@ namespace :alchemy do
         f << "gem 'webpacker'\n"
         f << "gem \"sentry-raven\"\n"
         f << "gem \"activerecord-nulldb-adapter\", require: ENV.fetch(\"RAILS_DB_ADAPTER\", 'postgresql') == 'nulldb'\n"
+        f << "## Cache per immagini\n"
+        f << "gem 'rack-cache','~> 1.12'\n"
       }
 
     end
@@ -78,6 +80,13 @@ namespace :alchemy do
           Rails.configuration.cache_classes ? require(c) : load(c)
         end
       end
+
+      smtp_settings = Rails.application.credentials.dig(Rails.env.to_sym,:smtp_settings)
+      if smtp_settings
+        config.action_mailer.delivery_method = :smtp
+        config.action_mailer.smtp_settings = smtp_settings
+      end
+
       RAVEN
 
       STDIN.getch
@@ -95,8 +104,19 @@ namespace :alchemy do
     desc "Configs"
     task configs: [:environment] do
       puts "Change 'items_per_page: 100' into config/alchemy/config.yml (press any key when done):"
-      puts "config.cache_store = :file_store, Rails.root.join(""tmp"", ""cache"") into config/environment/production.rb"
-      puts "config.log_level =  ENV.fetch(""RAILS_LOG_LEVEL"",""debug"").to_sym into config/environment/production.rb"
+      puts "config.cache_store = :file_store, Rails.root.join('tmp', 'cache') into config/environment/production.rb"
+      puts "config.log_level =  ENV.fetch(\"RAILS_LOG_LEVEL\",\"debug\").to_sym into config/environment/production.rb"
+      puts "into production.rb and development.rb"
+
+      puts <<-RAVEN
+
+      config.action_dispatch.rack_cache = {
+        verbose: true,
+        metastore: "file:#{Rails.root.join('tmp', 'cache', 'rack', 'meta')}",
+        entitystore: "file:#{Rails.root.join('tmp', 'cache', 'rack', 'body')}"
+      }
+
+      RAVEN
 
       STDIN.getch
 
