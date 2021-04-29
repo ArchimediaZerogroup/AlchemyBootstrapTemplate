@@ -61,8 +61,8 @@ services:
     volumes:
       - ./docker_volumes/post_gres:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: dev
+      POSTGRESQL_PASSWORD: root
+      POSTGRESQL_DATABASE: maico_italia_dev
     ports:
       - 5432
 
