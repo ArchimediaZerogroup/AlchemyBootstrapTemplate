@@ -78,6 +78,7 @@ docker-compose up
 Change .gitignore
     /vendor/development_bundler
     /docker_volumes
+    /uploads
 
 Add gems
     gem 'alchemy_i18n', '~> 2.1'
