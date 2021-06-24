@@ -59,10 +59,10 @@ services:
   db:
     image: bitnami/postgresql:13.2.0-debian-10-r36
     volumes:
-      - ./docker_volumes/post_gres:/var/lib/postgresql/data
+      - ./docker_volumes/post_gres:/bitnami/postgresql
     environment:
       POSTGRESQL_PASSWORD: root
-      POSTGRESQL_DATABASE: maico_italia_dev
+      POSTGRESQL_DATABASE: dev
     ports:
       - 5432
 

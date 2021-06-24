@@ -143,6 +143,7 @@ Change into production.rb and development.rb
       }
     ```
 Copy
+    config/database.yml
     config/initializers/recaptcha.rb
     config/initializers/static_assets_cache.rb
     config/initializers/tinymce.rb
