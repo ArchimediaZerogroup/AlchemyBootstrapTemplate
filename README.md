@@ -65,15 +65,18 @@ docker-compose exec app bundle exec rails alchemy:backend:bootstrap_template
 
 rails new -d postgresql -m https://raw.githubusercontent.com/AlchemyCMS/rails-templates/master/all.rb <MY-PROJECT-NAME>
 
+Comment out this gem from Gemfile #gem 'spring-watcher-listen', '~> 2.0.0'. There's a knownn bug for readonly folder watch.
+Change ruby version in Gemfile to be like version on Dockerfile
+
+
 Update Alchemy Gems
-    gem 'alchemy_cms', '~> 5.1', '>= 5.1.2'
+    gem 'alchemy_cms', git: 'https://github.com/AlchemyCMS/alchemy_cms.git', branch: '5.2-stable'
     gem 'alchemy-devise', '~> 5.1'
 
 Copy 
     .dockerignore 
-    .docker-compose.yml
+    docker-compose.yml
     Dockerfile
-docker-compose up
 
 Change .gitignore
     /vendor/development_bundler
@@ -97,7 +100,7 @@ Add gems
     gem 'sentry-raven'
     gem 'activerecord-nulldb-adapter', require: ENV.fetch("RAILS_DB_ADAPTER", 'postgresql') == 'nulldb'
     gem 'rack-cache','~> 1.12'
-docker-compose down
+
 docker-compose up
 docker-compose exec app bundle exec rails generate friendly_id
 docker-compose exec app bundle exec rails g alchemy_i18n:install --locales=it
@@ -128,6 +131,30 @@ Change config/application.rb
     end
 ```
 Configure credentials for SMTP
+
+```
+development:
+    google_api_key: ""
+    smtp_settings:
+    address: "smtp"
+    port: 1025
+
+production:
+    google_api_key: ""
+    smtp_settings:
+    address: "host.domain.tld"
+    port: "587"
+    domain: "domain.tld"
+    user_name: "username"
+    password: "password"
+    enable_starttls_auto: true
+    authentication: 'plain'
+
+recaptcha:
+    secret_key: CHANGE_WITH_REAL
+    site_key: CHANGE_WITH_REAL
+```
+
 Change
     ```
     items_per_page: 100 into config/alchemy/config.yml:
@@ -169,3 +196,6 @@ Add gems
 
 docker-compose exec app bundle exec rails alchemy_custom_model:install
 docker-compose exec app bundle exec rails generate alchemy:crop:image:install
+
+Copiare file app/assets/javascripts/select2_locale_it.js in /vendor/assets/javascripts/alchemy/admin
+Modificare all.js con //= require alchemy/admin/select2_locale_it
