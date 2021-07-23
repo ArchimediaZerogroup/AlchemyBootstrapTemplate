@@ -84,7 +84,7 @@ Change .gitignore
     /uploads
 
 Add gems
-    gem 'alchemy_i18n', '~> 2.1'
+    gem 'alchemy_i18n', git: 'https://github.com/AlchemyCMS/alchemy_i18n.git', branch: 'main'
     gem 'js-routes'
     gem 'friendly_id', '~> 5.2', '>= 5.2.4'
     gem 'rails-i18n', '~> 6.0'
@@ -100,12 +100,14 @@ Add gems
     gem 'sentry-raven'
     gem 'activerecord-nulldb-adapter', require: ENV.fetch("RAILS_DB_ADAPTER", 'postgresql') == 'nulldb'
     gem 'rack-cache','~> 1.12'
+    gem 'select2-rails'
 
 docker-compose up
 docker-compose exec app bundle exec rails generate friendly_id
 docker-compose exec app bundle exec rails g alchemy_i18n:install --locales=it
 Change config/application.rb
 ```
+    config.i18n.available_locales = [:it, :en]
     config.action_controller.include_all_helpers=false
     config.i18n.default_locale = :it
     config.time_zone = 'Rome'
@@ -179,6 +181,7 @@ Copy
     config/puma.rb
     app/assets/stylesheets/tinymce/
     vendor/assets/javascripts/tinymce
+    app/assets/stylesheets/alchemy/admin/custom.scss
 
 Modify config/initializers/assets.rb
     Rails.application.config.assets.precompile += %w( tinymce/plugins/alchemy_file_selector/plugin.min.js
@@ -190,7 +193,7 @@ Modify config/initializers/assets.rb
 
 Add gems
     gem 'alchemy-ajax-form', '~> 2.0'
-    gem 'alchemy-custom-model', '~> 3.0'
+    gem 'alchemy-custom-model', '~> 3.1', '>= 3.1.1'
     gem 'alchemy_file_selector', '~> 0.1.4'
     gem 'alchemy-crop-image', github: 'ArchimediaZerogroup/alchemy-crop-image', branch: 'master'
 
@@ -199,3 +202,5 @@ docker-compose exec app bundle exec rails generate alchemy:crop:image:install
 
 Copiare file app/assets/javascripts/select2_locale_it.js in /vendor/assets/javascripts/alchemy/admin
 Modificare all.js con //= require alchemy/admin/select2_locale_it
+Aggiungere a vendor/assets/stylesheets/alchemy/admin/all.css con
+*= require alchemy/admin/custom

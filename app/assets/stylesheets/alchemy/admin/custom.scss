@@ -1,0 +1,13 @@
+.alchemy-dialog{
+  .ui-state-active a {
+    color:#000;
+    &:link, &:visited{
+      color:#000;
+    }
+  }
+  .ui-tabs{
+    .ui-tabs-nav{
+      padding:0px;
+    }
+  }
+}
