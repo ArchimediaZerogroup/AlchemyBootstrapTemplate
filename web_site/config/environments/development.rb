@@ -59,4 +59,11 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  config.action_dispatch.rack_cache = {
+    verbose: true,
+    metastore: "file:#{Rails.root.join('tmp', 'cache', 'rack', 'meta')}",
+    entitystore: "file:#{Rails.root.join('tmp', 'cache', 'rack', 'body')}"
+  }
+
 end

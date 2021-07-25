@@ -9,3 +9,6 @@
 // about supported directives.
 //
 //= require alchemy/admin
+//= require alchemy_i18n/it
+//= require select2_locale_it
+//= require flatpickr/it

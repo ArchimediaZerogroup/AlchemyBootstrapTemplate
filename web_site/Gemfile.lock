@@ -28,6 +28,15 @@ GIT
       turbolinks (>= 2.5)
       webpacker (>= 4.0, < 6)
 
+GIT
+  remote: https://github.com/AlchemyCMS/alchemy_i18n.git
+  revision: 7d04b020385a473ac6d6e2c347a285234a806d10
+  branch: main
+  specs:
+    alchemy_i18n (2.1.0)
+      alchemy_cms (>= 4.4.0.a, < 6.0)
+      rails-i18n
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -80,6 +89,8 @@ GEM
     activerecord (6.0.4)
       activemodel (= 6.0.4)
       activesupport (= 6.0.4)
+    activerecord-nulldb-adapter (0.7.0)
+      activerecord (>= 5.2.0, < 6.3)
     activestorage (6.0.4)
       actionpack (= 6.0.4)
       activejob (= 6.0.4)
@@ -98,12 +109,18 @@ GEM
     alchemy-devise (5.1.0)
       alchemy_cms (>= 5.0.0, < 6)
       devise (>= 4.7.1, < 5)
+    autoprefixer-rails (10.2.5.1)
+      execjs (> 0)
     awesome_nested_set (3.4.0)
       activerecord (>= 4.0.0, < 7.0)
     bcrypt (3.1.16)
     bindex (0.8.1)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
+    bootstrap (4.6.0)
+      autoprefixer-rails (>= 9.1.0)
+      popper_js (>= 1.14.3, < 2)
+      sassc-rails (>= 2.0.0)
     builder (3.2.4)
     byebug (11.1.3)
     cancancan (3.3.0)
@@ -142,7 +159,30 @@ GEM
       nokogiri
     erubi (1.10.0)
     execjs (2.8.1)
+    faraday (1.5.1)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
+      faraday-excon (~> 1.1)
+      faraday-httpclient (~> 1.0.1)
+      faraday-net_http (~> 1.0)
+      faraday-net_http_persistent (~> 1.1)
+      faraday-patron (~> 1.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords (>= 0.0.4)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
+    faraday-excon (1.1.0)
+    faraday-httpclient (1.0.1)
+    faraday-net_http (1.0.1)
+    faraday-net_http_persistent (1.2.0)
+    faraday-patron (1.0.0)
     ffi (1.15.3)
+    font-awesome-rails (4.7.0.7)
+      railties (>= 3.2, < 7)
+    friendly_id (5.4.2)
+      activerecord (>= 4.0.0)
+    friendly_id-globalize (1.0.0.alpha3)
+      friendly_id (>= 5.2.0, < 6.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     gutentag (2.6.0)
@@ -151,8 +191,15 @@ GEM
       execjs (~> 2.0)
       sprockets (>= 2.0.0)
       tilt (>= 1.2)
+    httplog (1.5.0)
+      rack (>= 1.0)
+      rainbow (>= 2.0.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    i18n-debug (1.2.0)
+      i18n (< 2)
+    i18n-js (3.8.3)
+      i18n (>= 0.6.6)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     jquery-rails (4.4.0)
@@ -161,6 +208,9 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
+    js-routes (2.0.8)
+      railties (>= 4)
+    json (2.5.1)
     jsonapi-renderer (0.2.2)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
@@ -189,6 +239,7 @@ GEM
     minitest (5.14.4)
     msgpack (1.4.2)
     multi_json (1.15.0)
+    multipart-post (2.1.1)
     nio4r (2.5.7)
     nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
@@ -200,11 +251,14 @@ GEM
       activerecord (>= 4.0)
     orm_adapter (0.5.0)
     pg (1.2.3)
+    popper_js (1.16.0)
     public_suffix (4.0.6)
     puma (4.3.8)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
+    rack-cache (1.12.1)
+      rack (>= 0.4)
     rack-proxy (0.7.0)
       rack
     rack-test (1.1.0)
@@ -229,12 +283,16 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.3.0)
       loofah (~> 2.3)
+    rails-i18n (6.0.0)
+      i18n (>= 0.7, < 2)
+      railties (>= 6.0.0, < 7)
     railties (6.0.4)
       actionpack (= 6.0.4)
       activesupport (= 6.0.4)
       method_source
       rake (>= 0.8.7)
       thor (>= 0.20.3, < 2.0)
+    rainbow (3.0.0)
     rake (13.0.6)
     ransack (2.4.1)
       activerecord (>= 5.2.4)
@@ -243,12 +301,15 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    recaptcha (4.14.0)
+      json
     regexp_parser (2.1.1)
     request_store (1.5.0)
       rack (>= 1.4)
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -263,6 +324,8 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
+    sentry-raven (3.1.2)
+      faraday (>= 1.0)
     simple_form (5.1.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
@@ -308,18 +371,32 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-nulldb-adapter
   alchemy-devise (~> 5.1)
   alchemy_cms!
+  alchemy_i18n!
   bootsnap (>= 1.4.2)
+  bootstrap (~> 4.1, >= 4.1.3)
   byebug
   capybara (>= 2.15)
+  font-awesome-rails
+  friendly_id (~> 5.2, >= 5.2.4)
+  friendly_id-globalize (= 1.0.0.alpha3)
+  httplog
+  i18n-debug
+  i18n-js (~> 3.2)
   jbuilder (~> 2.7)
+  js-routes
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
   puma (~> 4.1)
+  rack-cache (~> 1.12)
   rails (~> 6.0.4)
+  rails-i18n (~> 6.0)
+  recaptcha (~> 4.14)
   sass-rails (>= 6)
   selenium-webdriver
+  sentry-raven
   spring
   turbolinks (~> 5)
   tzinfo-data
