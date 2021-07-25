@@ -14,6 +14,8 @@ RUN apt update && apt install -y nano
 #questo serve per editare le credentials
 ENV EDITOR='nano'
 
+RUN touch /.yarnrc && chmod 777  /.yarnrc
+
 FROM dependency_image as base_image
 ADD Gemfile .
 ADD Gemfile.lock .
