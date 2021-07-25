@@ -1,0 +1,13 @@
+uploads
+log
+test
+public/pages
+public/system
+docker_volumes
+node_modules
+docker-compose*.yml
+Dockerfile
+.gitignore
+.dockerignore
+docs
+vendor/development_bundler

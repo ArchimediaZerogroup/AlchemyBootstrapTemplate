@@ -1,0 +1,59 @@
+version: '3.7'
+
+x-defaults:
+  app: &default_app
+    build:
+      context: .
+      target: development_image
+    user: ${CMPS_UID_GID} #aggiungere a file .profile: "export CMPS_UID_GID=$(id -u):$(id -g)"
+    volumes:
+      - '.:/usr/share/www'
+    environment: &enviroments
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: db
+      POSTGRES_DB: dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      RAILS_ENV: development
+      # sviluppo inside DOCKER
+      # questo lo facciamo per far si che durante lo sviluppo la cartella sia in una posizione scrivibile
+      BUNDLE_PATH: '/usr/share/www/vendor/development_bundler'
+      BUNDLE_DEFAULT_INSTALL_USES_PATH: 'true'
+
+services:
+  app:
+    <<: *default_app
+    command: "bash -c 'bundle && bin/rails s -b 0.0.0.0'"
+    ports:
+      - 3000:3000
+    environment:
+      <<: *enviroments
+      WEBPACKER_DEV_SERVER_HOST: webpack
+
+  webpack:
+    <<: *default_app
+    command: "bash -c 'yarn && bin/webpack-dev-server'"
+    ports:
+      - "3035:3035"
+    environment:
+      <<: *enviroments
+      NODE_ENV: development
+      RAILS_ENV: development
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+
+  db:
+    image: bitnami/postgresql:13.2.0-debian-10-r36
+    volumes:
+      - ./docker_volumes/post_gres:/bitnami/postgresql
+    environment:
+      POSTGRESQL_PASSWORD: root
+      POSTGRESQL_DATABASE: dev
+    ports:
+      - 5432
+
+  # servizio simulato smtp
+  smtp:
+    image: mailhog/mailhog
+    ports:
+      - 8025
+
