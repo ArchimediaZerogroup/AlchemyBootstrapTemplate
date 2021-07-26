@@ -63,7 +63,7 @@ docker-compose exec app bundle exec rails alchemy:backend:bootstrap_template
 
 # Manual steps
 
-rails new -d postgresql -m https://raw.githubusercontent.com/AlchemyCMS/rails-templates/master/all.rb <MY-PROJECT-NAME>
+rails new -d postgresql <MY-PROJECT-NAME>
 
 Comment out this gem from Gemfile #gem 'spring-watcher-listen', '~> 2.0.0'. There's a knownn bug for readonly folder watch.
 Change ruby version in Gemfile to be like version on Dockerfile
@@ -82,6 +82,8 @@ Change .gitignore
     /vendor/development_bundler
     /docker_volumes
     /uploads
+
+Config database.yml
 
 Add gems
     gem 'alchemy_i18n', git: 'https://github.com/AlchemyCMS/alchemy_i18n.git', branch: 'main'
@@ -172,7 +174,6 @@ Change into production.rb and development.rb
       }
     ```
 Copy
-    config/database.yml
     config/initializers/recaptcha.rb
     config/initializers/static_assets_cache.rb
     config/initializers/tinymce.rb
@@ -200,7 +201,30 @@ Add gems
 docker-compose exec app bundle exec rails alchemy_custom_model:install
 docker-compose exec app bundle exec rails generate alchemy:crop:image:install
 
-Copiare file app/assets/javascripts/select2_locale_it.js in /vendor/assets/javascripts/alchemy/admin
-Modificare all.js con //= require alchemy/admin/select2_locale_it
+Copiare app/helpers/application_helper.rb
+
 Aggiungere a vendor/assets/stylesheets/alchemy/admin/all.css con
 *= require alchemy/admin/custom
+
+Copiare app/javascript
+
+Contenuto di  vendor/assets/javascripts/alchemy/admin/all.js
+//= require alchemy/admin
+//= require alchemy/crop/image/application
+//= require flatpickr/it
+//= require alchemy_file_selector/alchemy_admin_require.js
+//= require alchemy-custom-model/manifest.js
+
+
+Contenuto di vendor/assets/stylesheets/alchemy/admin/all.css
+*= require alchemy/admin
+*= require alchemy/crop/image/application
+*= require alchemy-custom-model/manifest.css
+*= require alchemy/admin/custom
+
+
+
+DA SISTEMARE:
+
+Copiare file app/assets/javascripts/select2_locale_it.js in /vendor/assets/javascripts/alchemy/admin
+Modificare all.js con //= require alchemy/admin/select2_locale_it
