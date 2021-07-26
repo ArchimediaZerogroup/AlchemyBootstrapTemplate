@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_25_134023) do
+ActiveRecord::Schema.define(version: 2021_07_26_064530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -237,6 +237,8 @@ ActiveRecord::Schema.define(version: 2021_07_25_134023) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "menu_type", null: false
+    t.string "custom_model_klass"
+    t.string "custom_model_method"
     t.index ["creator_id"], name: "index_alchemy_nodes_on_creator_id"
     t.index ["language_id"], name: "index_alchemy_nodes_on_language_id"
     t.index ["lft"], name: "index_alchemy_nodes_on_lft"
@@ -350,6 +352,17 @@ ActiveRecord::Schema.define(version: 2021_07_25_134023) do
     t.index ["lastname"], name: "index_alchemy_users_on_lastname"
     t.index ["login"], name: "index_alchemy_users_on_login", unique: true
     t.index ["reset_password_token"], name: "index_alchemy_users_on_reset_password_token", unique: true
+  end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
   create_table "gutentag_taggings", id: :serial, force: :cascade do |t|

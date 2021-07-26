@@ -37,6 +37,17 @@ GIT
       alchemy_cms (>= 4.4.0.a, < 6.0)
       rails-i18n
 
+GIT
+  remote: https://github.com/ArchimediaZerogroup/alchemy-crop-image.git
+  revision: 11e0b354e621e2c90dd53fa27bde4ce01544ad1f
+  branch: master
+  specs:
+    alchemy-crop-image (0.1.0)
+      alchemy_cms (>= 4.1)
+      js-routes (~> 1.4, >= 1.4.9)
+      rails (>= 5.2.0, < 7.0.0)
+      sprockets-rails (>= 2.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -81,6 +92,8 @@ GEM
       activemodel (>= 4.1, < 6.2)
       case_transform (>= 0.2)
       jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
+    active_type (1.9.1)
+      activerecord (>= 3.2)
     activejob (6.0.4)
       activesupport (= 6.0.4)
       globalid (>= 0.3.6)
@@ -106,9 +119,29 @@ GEM
       activerecord (>= 4.2)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
+    alchemy-ajax-form (2.0.0)
+      alchemy_cms (~> 5.0)
+      jquery-rails (~> 4.0)
+      js-routes (~> 1.0)
+      mjml-rails (~> 4.1)
+      rails (>= 5.0, < 7.0)
+      recaptcha (~> 4.7)
+      sass-rails (~> 6.0)
+    alchemy-custom-model (3.1.3)
+      active_type (~> 1.3)
+      alchemy_cms (~> 5.1, >= 5.1.2)
+      el_finder (~> 1.1, >= 1.1.13)
+      friendly_id (~> 5.2, >= 5.2.4)
+      friendly_id-globalize (= 1.0.0.alpha3)
+      globalize (~> 5.3)
+      jquery-ui-rails (~> 6.0)
     alchemy-devise (5.1.0)
       alchemy_cms (>= 5.0.0, < 6)
       devise (>= 4.7.1, < 5)
+    alchemy_file_selector (0.1.4)
+      alchemy_cms (>= 4.0)
+      js-routes
+      rails (>= 5.1)
     autoprefixer-rails (10.2.5.1)
       execjs (> 0)
     awesome_nested_set (3.4.0)
@@ -157,6 +190,8 @@ GEM
     dragonfly_svg (0.0.4)
       dragonfly (~> 1.0)
       nokogiri
+    el_finder (1.1.13)
+      image_size (>= 1.0.0)
     erubi (1.10.0)
     execjs (2.8.1)
     faraday (1.5.1)
@@ -185,6 +220,10 @@ GEM
       friendly_id (>= 5.2.0, < 6.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    globalize (5.3.1)
+      activemodel (>= 4.2, < 6.1)
+      activerecord (>= 4.2, < 6.1)
+      request_store (~> 1.0)
     gutentag (2.6.0)
       activerecord (>= 3.2.0)
     handlebars_assets (0.23.9)
@@ -200,6 +239,7 @@ GEM
       i18n (< 2)
     i18n-js (3.8.3)
       i18n (>= 0.6.6)
+    image_size (2.1.1)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     jquery-rails (4.4.0)
@@ -208,7 +248,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    js-routes (2.0.8)
+    js-routes (1.4.14)
       railties (>= 4)
     json (2.5.1)
     jsonapi-renderer (0.2.2)
@@ -237,6 +277,7 @@ GEM
     mini_mime (1.1.0)
     mini_portile2 (2.5.3)
     minitest (5.14.4)
+    mjml-rails (4.6.1)
     msgpack (1.4.2)
     multi_json (1.15.0)
     multipart-post (2.1.1)
@@ -372,8 +413,12 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-nulldb-adapter
+  alchemy-ajax-form (~> 2.0)
+  alchemy-crop-image!
+  alchemy-custom-model (~> 3.1, >= 3.1.1)
   alchemy-devise (~> 5.1)
   alchemy_cms!
+  alchemy_file_selector (~> 0.1.4)
   alchemy_i18n!
   bootsnap (>= 1.4.2)
   bootstrap (~> 4.1, >= 4.1.3)
@@ -386,7 +431,7 @@ DEPENDENCIES
   i18n-debug
   i18n-js (~> 3.2)
   jbuilder (~> 2.7)
-  js-routes
+  js-routes (~> 1.4, >= 1.4.14)
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
   puma (~> 4.1)

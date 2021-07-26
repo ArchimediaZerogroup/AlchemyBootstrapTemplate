@@ -9,6 +9,9 @@
 // about supported directives.
 //
 //= require alchemy/admin
+//= require alchemy/crop/image/application
+//= require flatpickr/it
+//= require alchemy-custom-model/manifest.js
+//= require alchemy_file_selector/alchemy_admin_require.js
 //= require alchemy_i18n/it
 //= require select2_locale_it
-//= require flatpickr/it

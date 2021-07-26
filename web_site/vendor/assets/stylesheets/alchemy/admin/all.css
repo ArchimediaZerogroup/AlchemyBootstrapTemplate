@@ -8,4 +8,7 @@
  * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
  *
  *= require alchemy/admin
- */
+ *= require alchemy/crop/image/application
+ *= require alchemy-custom-model/manifest.css
+ *= require alchemy/admin/custom
+*/
