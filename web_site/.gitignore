@@ -40,3 +40,4 @@ yarn-debug.log*
 /docker_volumes
 /uploads
 /public/pictures
+./idea/

@@ -8,4 +8,15 @@ namespace :alchemy do
         end
       end
     end
+
+    namespace :thumbnails do
+      desc "Recreate picture thumbnails"
+      task recreate: [:environment] do
+        Alchemy::PictureThumb.all.each do |c|
+          c.destroy
+        end
+      end
+    end
+
+
 end
