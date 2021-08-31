@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:experimental
 FROM reg.gitlab.archimedianet.it/docker_images/rails/2.7-je/pg13:0.1 as dependency_image
 
 RUN mkdir -p /usr/share/www
@@ -48,13 +49,15 @@ ADD . .
 # se impostata la master key, viene configurata ed utilizzata per poi eseguire precompilazione con secrets,
 # viene utilizzato quando nella precompilazione si vuole iniettare l'env e quindi la rails env è impostata correttamente
 ARG master_key=false
-RUN if [ "$master_key" == "false" ] ; then echo No Master Key Given; else export RAILS_MASTER_KEY=${master_key}  ; fi \
+RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets \
+    && RAILS_ENV=${CI_ENVIRONMENT_NAME:=production} \
+    && echo "ENV=${RAILS_ENV}" \
+    && env \
     && RAILS_DB_ADAPTER=nulldb bundle exec rails assets:precompile \
     && mkdir -p public/assets/img \
     && mkdir -p public/assets/alchemy/img \
     && RAILS_DB_ADAPTER=nulldb bundle exec rails runner "FileUtils.cp_r(Dir.glob(File.join(Gem.loaded_specs['alchemy-custom-model'].full_gem_path,'vendor','elfinder','img','*')),Rails.root.join('public','assets','img'))" \
     && RAILS_DB_ADAPTER=nulldb bundle exec rails runner "FileUtils.cp_r(Dir.glob(File.join(Gem.loaded_specs['alchemy-custom-model'].full_gem_path,'vendor','elfinder','img','*')),Rails.root.join('public','assets','alchemy','img'))" \
-    && rm -fr tmp/cache log/*
-
-####
-RUN chmod 777 tmp && chmod 777 log
+    && RAILS_DB_ADAPTER=nulldb bundle exec rails runner "FileUtils.cp_r(Dir.glob(File.join(Gem.loaded_specs['alchemy-custom-model'].full_gem_path,'vendor','elfinder','img','*')),Rails.root.join('public','assets','alchemy','img'))" \
+    && rm -fr tmp/cache log/* \
+    && chmod 777 tmp && chmod 777 log
