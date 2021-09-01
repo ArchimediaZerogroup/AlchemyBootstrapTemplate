@@ -11,3 +11,7 @@ Dockerfile
 .dockerignore
 docs
 vendor/development_bundler
+.swarm_cluster*
+.gitlab-ci.yml
+.gitlab
+.git
