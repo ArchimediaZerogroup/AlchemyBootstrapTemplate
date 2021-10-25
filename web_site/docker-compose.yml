@@ -23,7 +23,7 @@ x-defaults:
 services:
   app:
     <<: *default_app
-    command: "bash -c 'bundle && bin/rails s -b 0.0.0.0'"
+    command: "bash -c 'bundle && yarn install --check-files && bin/rails s -b 0.0.0.0'"
     ports:
       - 3000:3000
     environment:
