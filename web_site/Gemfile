@@ -8,7 +8,7 @@ gem 'rails', '~> 6.0.4'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'puma', '~> 4.1'
+gem 'puma', '~> 4.3'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -54,7 +54,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'alchemy_cms', '~> 5.2', '>= 5.2.2'
+gem 'alchemy_cms', '~> 5.2', '>= 5.2.5'
 gem 'alchemy-devise', '~> 5.1'
 
 
@@ -77,6 +77,6 @@ gem 'rack-cache','~> 1.12'
 
 
 gem 'alchemy-ajax-form', '~> 2.0'
-gem 'alchemy-custom-model', '~> 3.1', '>= 3.1.1'
+gem 'alchemy-custom-model', '~> 3.1', '>= 3.1.5'
 gem 'alchemy_file_selector', '~> 0.1.4'
 gem 'alchemy-crop-image', github: 'ArchimediaZerogroup/alchemy-crop-image', branch: 'master'
