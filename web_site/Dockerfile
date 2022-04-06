@@ -1,32 +1,35 @@
 # syntax = docker/dockerfile:experimental
 # CONFIGURAZIONE
-ARG node_version="mhart/alpine-node:12"
-ARG ruby_version="ruby:2.7-alpine"
+ARG ruby_version="ruby:2.7-alpine3.14"
 
 # Root applicazione rails
 ARG rails_root=/usr/share/www
 ARG rails_env=production
 
 #pacchetti necessari a tutte le immagini
-ARG base_packets="alpine-conf bash"
+ARG base_packets="alpine-conf bash tzdata"
+
 # pacchetti necessari alla build e installazione gemme
-ARG build_packages="build-base curl-dev git yaml-dev zlib-dev"
+ARG build_packages="build-base curl-dev git yaml-dev zlib-dev yarn nodejs"
+
 # Default editor, e pacchetto da installare nell'immagine di sviluppo
 ARG default_editor="nano"
-# pacchetti generali per sviluppo e produzione
+
+# Pacchetti generali per sviluppo e produzione, aggiungere o togliere rispetto alle esigenze,
+# cercare di tener solo lo stretto necessario
 #
 # imagemagick => imagemagick  # se usate dragonfly o vecchi paperclip o rails
 # mimemagik => shared-mime-info
 # postgresql(sviluppo) => postgresql-dev
 # postgresql(produzione) => postgresql-client
-ARG app_dev_dependency="tzdata shared-mime-info postgresql-dev imagemagick curl"
-ARG app_deploy_dependency="tzdata shared-mime-info postgresql-client imagemagick"
+ARG app_dev_dependency="shared-mime-info postgresql-dev imagemagick curl yarn nodejs"
+ARG app_deploy_dependency="shared-mime-info postgresql-client imagemagick yarn nodejs"
 
 
-ARG bundler_version="2.1.4"
+ARG bundler_version="2.3.9"
 
-# immagine fasulla per ovviare al problema di clonazione node da immagine versionata
-FROM $node_version as node_source
+#---------------------------------------------
+# INIZIO GENERAZIONE IMMAGINE
 
 
 # immagine base uguale per build e development
@@ -42,55 +45,57 @@ ENV RAILS_ENV=$rails_env
 ENV NODE_ENV=$RAILS_ENV
 ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 
-# INSTALLAZIONE DI NODEJS
-COPY --from=node_source ["/usr/bin/node","/usr/bin/npm","/usr/bin/"]
-COPY --from=node_source /usr/local/share/yarn /usr/local/share/yarn
-RUN ln -s /usr/local/share/yarn/bin/yarn /usr/local/bin/yarn \
-    && ln -s /usr/local/share/yarn/bin/yarnpkg /usr/local/bin/yarnpkg \
-    && touch /.yarnrc && chmod 777 /.yarnrc && mkdir -p /.cache/yarn && chmod 777 -R /.cache
 
-#------------------------------------------------------------
+RUN gem update --system # c'è un warning se non aggiorniamo la versione
+ARG bundler_version
+RUN gem install --default -v "$bundler_version" bundler
 
-
-# immagine di sviluppo e build
-FROM start_image as development_image
-
-# dobbiamo richiamare qua le variabili che ci interessano
 ARG base_packets
+RUN --mount=type=cache,sharing=locked,target=/etc/apk/cache apk update  \
+    && apk upgrade && apk add $base_packets
+RUN setup-timezone -z 'Europe/Rome'
+
+##
+# stage per installare i componenti che servono allo sviluppo e all'immagine di build
+# ma non in produzione
+FROM start_image as development_build_image_dependency
+# dobbiamo richiamare qua le variabili che ci interessano
 ARG build_packages
 ARG app_dev_dependency
 
-RUN apk update \
-    && apk upgrade \
-    && apk add --update --no-cache  \
-    $base_packets  \
-    $build_packages  \
-    $app_dev_dependency
+RUN --mount=type=cache,sharing=locked,target=/etc/apk/cache  \
+    apk add --update $build_packages $app_dev_dependency
+RUN ln -s /usr/bin/python2 /usr/local/bin/python
 
-RUN setup-timezone -z 'Europe/Rome'
-
-#FROM reg.gitlab.archimedianet.it/docker_images/rails/2.7-je/pg13:0.1 as dependency_image
-ARG bundler_version
-RUN gem install bundler -v "$bundler_version"
+#------------------------------------------------------------
+# IMMAGINE DI SVILUPPO
+FROM development_build_image_dependency as development_image
 
 ARG default_editor
-RUN apk add --update --no-cache $default_editor
+RUN --mount=type=cache,sharing=locked,target=/etc/apk/cache \
+    apk add --update $default_editor
 #questo serve per editare le credentials
 ENV EDITOR='nano'
 # helper per webpacker
-RUN touch /.yarnrc && chmod 777  /.yarnrc
+RUN touch /.yarnrc && chmod 777 /.yarnrc
+RUN mkdir /.cache && chmod 777 /.cache
 
+# install rubygem
+COPY Gemfile Gemfile.lock $rails_root/
+RUN bundle
 
 #------------------------------------------------------------
 # IMMAGINE COMPILAZIONE
-FROM development_image as build_image
+FROM development_build_image_dependency as build_image
 
 COPY package.json yarn.lock $rails_root/
 # install rubygem
 COPY Gemfile Gemfile.lock $rails_root/
 
 RUN bundle config --global frozen 1 \
-    && bundle install --without development:test:assets -j4 --retry 3 --path=vendor/bundle \
+    && bundle config set without development:test:assets \
+    && bundle config set path $RAILS_ROOT/vendor/bundle \
+    && bundle install -j4 --retry 3 \
     # Remove unneeded files (cached *.gem, *.o, *.c)
     && rm -rf vendor/bundle/ruby/*/cache/*.gem \
     && find vendor/bundle/ruby/*/gems/ -name "*.c" -delete \
@@ -111,7 +116,11 @@ RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-
     && RAILS_DB_ADAPTER=nulldb bundle exec rails runner "FileUtils.cp_r(Dir.glob(File.join(Gem.loaded_specs['alchemy-custom-model'].full_gem_path,'vendor','elfinder','img','*')),Rails.root.join('public','assets','alchemy','img'))" \
     && rm -fr tmp/cache log/* node_modules app/assets vendor/assets spec test \
     && chmod 777 tmp && chmod 777 log
-
+##
+# Attenzione che se siete in una versione >= della 4 di sprockets,
+# non dovrete cancellare la cartella app/assets/config,
+# quindi potrete cancellare tutto il resto ma non quella.
+##
 
 #------------------------------------------------------------
 # IMMAGINE DI PRODUZIONE
