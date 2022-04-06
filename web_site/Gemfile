@@ -57,8 +57,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'alchemy_cms', '~> 5.3', '>= 5.3.3'
 gem 'alchemy-devise', '~> 5.1'
 
-
-gem 'alchemy_i18n', git: 'https://github.com/AlchemyCMS/alchemy_i18n.git', branch: 'main'
+gem 'alchemy_i18n'#, git: 'https://github.com/AlchemyCMS/alchemy_i18n.git', ref: '3fecce2bd393fa6c6e520693e0f29733d55566ae'
 gem 'js-routes', '~> 1.4', '>= 1.4.14'
 gem 'friendly_id', '~> 5.2', '>= 5.2.4'
 gem 'rails-i18n', '~> 6.0'
