@@ -54,7 +54,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'alchemy_cms', '~> 5.3', '>= 5.3.3'
+gem 'alchemy_cms', '5.2.2'
 gem 'alchemy-devise', '~> 5.1'
 
 gem 'alchemy_i18n'#, git: 'https://github.com/AlchemyCMS/alchemy_i18n.git', ref: '3fecce2bd393fa6c6e520693e0f29733d55566ae'
