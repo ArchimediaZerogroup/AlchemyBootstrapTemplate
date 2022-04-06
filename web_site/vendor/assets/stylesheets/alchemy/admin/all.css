@@ -11,4 +11,5 @@
  *= require alchemy/crop/image/application
  *= require alchemy-custom-model/manifest.css
  *= require alchemy/admin/custom
+ *= require alchemy/admin/alchemy-devise
 */
