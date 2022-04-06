@@ -15,15 +15,11 @@ x-defaults:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       RAILS_ENV: development
-      # sviluppo inside DOCKER
-      # questo lo facciamo per far si che durante lo sviluppo la cartella sia in una posizione scrivibile
-      BUNDLE_PATH: '/usr/share/www/vendor/development_bundler'
-      BUNDLE_DEFAULT_INSTALL_USES_PATH: 'true'
 
 services:
   app:
     <<: *default_app
-    command: "bash -c 'bundle && yarn install --check-files && bin/rails s -b 0.0.0.0'"
+    command: "bundle exec rails s -b 0.0.0.0"
     ports:
       - 3000:3000
     environment:
@@ -32,7 +28,7 @@ services:
 
   webpack:
     <<: *default_app
-    command: "bash -c 'yarn && bin/webpack-dev-server'"
+    command: "bin/webpack-dev-server"
     ports:
       - "3035:3035"
     environment:

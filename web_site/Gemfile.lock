@@ -1,13 +1,4 @@
 GIT
-  remote: https://github.com/AlchemyCMS/alchemy_i18n.git
-  revision: 3fecce2bd393fa6c6e520693e0f29733d55566ae
-  branch: main
-  specs:
-    alchemy_i18n (2.3.0)
-      alchemy_cms (>= 4.4.0.a, < 6.1)
-      rails-i18n
-
-GIT
   remote: https://github.com/ArchimediaZerogroup/alchemy-crop-image.git
   revision: 7b189485d57f65decdc0d6f02b8423ce34c5ef52
   branch: master
@@ -136,6 +127,9 @@ GEM
       alchemy_cms (>= 4.0)
       js-routes
       rails (>= 5.1)
+    alchemy_i18n (2.3.0)
+      alchemy_cms (>= 4.4.0.a, < 6.0)
+      rails-i18n
     autoprefixer-rails (10.4.2.0)
       execjs (~> 2)
     awesome_nested_set (3.5.0)
@@ -402,7 +396,7 @@ DEPENDENCIES
   alchemy-devise (~> 5.1)
   alchemy_cms (~> 5.3, >= 5.3.3)
   alchemy_file_selector (~> 0.1.4)
-  alchemy_i18n!
+  alchemy_i18n
   bootsnap (>= 1.4.2)
   bootstrap (~> 4.1, >= 4.1.3)
   byebug
@@ -436,4 +430,4 @@ RUBY VERSION
    ruby 2.7.5p203
 
 BUNDLED WITH
-   2.1.4
+   2.3.10
