@@ -8,6 +8,7 @@ x-defaults:
     user: ${CMPS_UID_GID} #aggiungere a file .profile: "export CMPS_UID_GID=$(id -u):$(id -g)"
     volumes:
       - '.:/usr/share/www'
+      - '/home/jury/Lavori/ruby/workspaces/alchemy-custom-model:/alchemy-custom-model'
     environment: &enviroments
       POSTGRES_PORT: 5432
       POSTGRES_HOST: db
@@ -15,6 +16,10 @@ x-defaults:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       RAILS_ENV: development
+      # sviluppo inside DOCKER
+      # questo lo facciamo per far si che durante lo sviluppo la cartella sia in una posizione scrivibile
+      BUNDLE_PATH: '/usr/share/www/vendor/development_bundler'
+      BUNDLE_DEFAULT_INSTALL_USES_PATH: 'true'
 
 services:
   app:

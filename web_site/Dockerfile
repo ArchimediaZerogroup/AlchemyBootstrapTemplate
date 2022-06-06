@@ -1,8 +1,9 @@
 # syntax = docker/dockerfile:experimental
 # CONFIGURAZIONE
-ARG ruby_version="ruby:2.7-alpine3.14"
+ARG node_version="mhart/alpine-node:12"
+ARG ruby_version="ruby:2.7-alpine"
 
-# Root applicazione rails
+# Root applicazione rails e env
 ARG rails_root=/usr/share/www
 ARG rails_env=production
 
@@ -10,7 +11,7 @@ ARG rails_env=production
 ARG base_packets="alpine-conf bash tzdata"
 
 # pacchetti necessari alla build e installazione gemme
-ARG build_packages="build-base curl-dev git yaml-dev zlib-dev yarn nodejs"
+ARG build_packages="build-base curl-dev git yaml-dev zlib-dev"
 
 # Default editor, e pacchetto da installare nell'immagine di sviluppo
 ARG default_editor="nano"
@@ -19,18 +20,23 @@ ARG default_editor="nano"
 # cercare di tener solo lo stretto necessario
 #
 # imagemagick => imagemagick  # se usate dragonfly o vecchi paperclip o rails
+# libvips     => vips
 # mimemagik => shared-mime-info
 # postgresql(sviluppo) => postgresql-dev
 # postgresql(produzione) => postgresql-client
-ARG app_dev_dependency="shared-mime-info postgresql-dev imagemagick curl yarn nodejs"
-ARG app_deploy_dependency="shared-mime-info postgresql-client imagemagick yarn nodejs"
+# sqlite(sviluppo/build/production) => sqlite-dev
+# mysql(sviluppo/build/production) => mariadb-dev
+ARG app_dev_dependency="shared-mime-info postgresql-dev imagemagick"
+ARG app_deploy_dependency="shared-mime-info postgresql-client imagemagick"
 
 
-ARG bundler_version="2.3.9"
+ARG bundler_version="2.1.4"
+
+# immagine fasulla per ovviare al problema di clonazione node da immagine versionata
+FROM $node_version as node_source
 
 #---------------------------------------------
-# INIZIO GENERAZIONE IMMAGINE
-
+# STAGE START
 
 # immagine base uguale per build e development
 FROM $ruby_version as start_image
@@ -45,47 +51,52 @@ ENV RAILS_ENV=$rails_env
 ENV NODE_ENV=$RAILS_ENV
 ENV BUNDLE_APP_CONFIG="$RAILS_ROOT/.bundle"
 
+# INSTALLAZIONE DI NODEJS
+COPY --from=node_source ["/usr/bin/node","/usr/bin/npm","/usr/bin/"]
+COPY --from=node_source /usr/local/share/yarn /usr/local/share/yarn
+RUN ln -s /usr/local/share/yarn/bin/yarn /usr/local/bin/yarn \
+    && ln -s /usr/local/share/yarn/bin/yarnpkg /usr/local/bin/yarnpkg \
+    && touch /.yarnrc && chmod 777 /.yarnrc
 
-RUN gem update --system # c'è un warning se non aggiorniamo la versione
 ARG bundler_version
-RUN gem install --default -v "$bundler_version" bundler
+RUN gem install bundler -v "$bundler_version"
 
 ARG base_packets
-RUN --mount=type=cache,sharing=locked,target=/etc/apk/cache apk update  \
-    && apk upgrade && apk add $base_packets
+RUN apk update \
+    && apk upgrade \
+    && apk add --update --no-cache  \
+    $base_packets
+
 RUN setup-timezone -z 'Europe/Rome'
 
-##
-# stage per installare i componenti che servono allo sviluppo e all'immagine di build
-# ma non in produzione
+#------------------------------------------------------------
+# STAGE INTERMEDIO DEV/BUILD
 FROM start_image as development_build_image_dependency
+
 # dobbiamo richiamare qua le variabili che ci interessano
 ARG build_packages
 ARG app_dev_dependency
 
-RUN --mount=type=cache,sharing=locked,target=/etc/apk/cache  \
-    apk add --update $build_packages $app_dev_dependency
-RUN ln -s /usr/bin/python2 /usr/local/bin/python
+RUN apk update \
+    && apk upgrade \
+    && apk add --update --no-cache  \
+    $build_packages  \
+    $app_dev_dependency
+
+# helper per webpacker
+RUN touch /.yarnrc && chmod 777  /.yarnrc
 
 #------------------------------------------------------------
-# IMMAGINE DI SVILUPPO
+# STAGE DI SVILUPPO
 FROM development_build_image_dependency as development_image
-
 ARG default_editor
-RUN --mount=type=cache,sharing=locked,target=/etc/apk/cache \
-    apk add --update $default_editor
+RUN apk add --update --no-cache $default_editor
 #questo serve per editare le credentials
 ENV EDITOR='nano'
-# helper per webpacker
-RUN touch /.yarnrc && chmod 777 /.yarnrc
-RUN mkdir /.cache && chmod 777 /.cache
 
-# install rubygem
-COPY Gemfile Gemfile.lock $rails_root/
-RUN bundle
 
 #------------------------------------------------------------
-# IMMAGINE COMPILAZIONE
+# STAGE BUILD
 FROM development_build_image_dependency as build_image
 
 COPY package.json yarn.lock $rails_root/
@@ -93,9 +104,7 @@ COPY package.json yarn.lock $rails_root/
 COPY Gemfile Gemfile.lock $rails_root/
 
 RUN bundle config --global frozen 1 \
-    && bundle config set without development:test:assets \
-    && bundle config set path $RAILS_ROOT/vendor/bundle \
-    && bundle install -j4 --retry 3 \
+    && bundle install --without development:test:assets -j4 --retry 3 --path=vendor/bundle \
     # Remove unneeded files (cached *.gem, *.o, *.c)
     && rm -rf vendor/bundle/ruby/*/cache/*.gem \
     && find vendor/bundle/ruby/*/gems/ -name "*.c" -delete \
@@ -108,13 +117,14 @@ COPY . .
 ARG master_key=false
 RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets \
     && echo "ENV=${RAILS_ENV}" \
-    && env \
     && RAILS_DB_ADAPTER=nulldb bundle exec rails assets:precompile \
-    && mkdir -p public/assets/img \
-    && mkdir -p public/assets/alchemy/img \
-    && RAILS_DB_ADAPTER=nulldb bundle exec rails runner "FileUtils.cp_r(Dir.glob(File.join(Gem.loaded_specs['alchemy-custom-model'].full_gem_path,'vendor','elfinder','img','*')),Rails.root.join('public','assets','img'))" \
-    && RAILS_DB_ADAPTER=nulldb bundle exec rails runner "FileUtils.cp_r(Dir.glob(File.join(Gem.loaded_specs['alchemy-custom-model'].full_gem_path,'vendor','elfinder','img','*')),Rails.root.join('public','assets','alchemy','img'))" \
-    && rm -fr tmp/cache log/* node_modules app/assets vendor/assets spec test \
+    && rm -fr tmp/cache \
+    log/* \
+    node_modules \
+    app/assets \
+    vendor/assets \
+    spec \
+    test \
     && chmod 777 tmp && chmod 777 log
 ##
 # Attenzione che se siete in una versione >= della 4 di sprockets,
@@ -123,7 +133,7 @@ RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-
 ##
 
 #------------------------------------------------------------
-# IMMAGINE DI PRODUZIONE
+# STAGE DI PRODUZIONE
 FROM start_image
 
 ARG base_packets
